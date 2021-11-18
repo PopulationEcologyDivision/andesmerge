@@ -4,10 +4,10 @@
 \alias{loadData}
 \title{loadData}
 \usage{
-loadData(dataPath = NULL, quiet = FALSE)
+loadData(dataPath = "inst/sampleData/", quiet = FALSE)
 }
 \arguments{
-\item{dataPath}{default is \code{NULL} the folder containing files to be loaded into R.  If left 
+\item{dataPath}{default is \code{"inst/sampleData/"} the folder containing files to be loaded into R.  If left 
 as NULL, csv files in the\code{sampleAndesData} folder will be loaded}
 
 \item{quiet}{default is \code{FALSE} Determines whether or not the script should output 

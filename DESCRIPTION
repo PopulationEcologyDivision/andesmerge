@@ -1,6 +1,6 @@
 Package: andesmerge
 Title: stuff
-Version: 2021.11.16
+Version: 2021.11.18
 Authors@R: c(
             person(given = "Pablo",
             family = "Vergara",
