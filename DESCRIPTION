@@ -13,7 +13,10 @@ Authors@R: c(
 Description: This package does stuff...
 Depends:
     R (>= 2.10)
-Imports:
+Enhances: 
+    ROracle,
+    DBI,
+    RODBC
 Encoding: UTF-8
 License: MIT + file LICENSE
 URL: https://github.com/pevweb/andesmerge/

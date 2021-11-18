@@ -4,7 +4,7 @@
 \alias{loadData}
 \title{loadData}
 \usage{
-loadData(dataPath = "inst/sampleData/", quiet = FALSE)
+loadData(dataPath = "inst/sampleData/", quietly = FALSE)
 }
 \arguments{
 \item{dataPath}{default is \code{"inst/sampleData/"} the folder containing files to be loaded into R.  If left 
