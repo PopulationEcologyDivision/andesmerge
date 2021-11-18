@@ -11,9 +11,8 @@
 #' @export
 loadData <- function(dataPath = NULL, quiet = FALSE){
   if (is.null(dataPath)){
-    setwd(here::here())
-    dataPath="samplAndesData"
-    message("Loading sample data")
+    dataPath="data/"
+    message("Loading sample data \n(This is actually real GULF data that we ultimately want to replace with sample data)")
   }
   filenames <- list.files(dataPath, pattern=".*csv")
   if (length(filenames)<1)stop("No csv files found")

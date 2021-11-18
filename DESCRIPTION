@@ -1,0 +1,21 @@
+Package: andesmerge
+Title: stuff
+Version: 2021.11.16
+Authors@R: c(
+            person(given = "Pablo",
+            family = "Vergara",
+            role = c("aut","cre"),
+            email = "Pablo.Vergara@dfo-mpo.gc.ca"),
+    person(given = "Mike",
+           family = "McMahon",
+           role = c("aut"),
+           email = "Mike.McMahon@dfo-mpo.gc.ca"))
+Description: This package does stuff...
+Depends:
+    R (>= 2.10)
+Imports:
+Encoding: UTF-8
+License: MIT + file LICENSE
+LazyData: true
+URL: https://github.com/pevweb/andesmerge/
+RoxygenNote: 7.1.1
