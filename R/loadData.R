@@ -1,7 +1,7 @@
 #' @title loadData
 #' @description This function loads all of the csv files in a specified folder into the global 
 #' environment.  The object names will be identical to the original file names.
-#' @param dataPath default is \code{NULL} the folder containing files to be loaded into R.  If left 
+#' @param dataPath default is \code{"inst/sampleData/"} the folder containing files to be loaded into R.  If left 
 #' as NULL, csv files in the\code{sampleAndesData} folder will be loaded
 #' @param quiet default is \code{FALSE} Determines whether or not the script should output 
 #' informational messages 
@@ -9,11 +9,7 @@
 #' @family general_use
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
-loadData <- function(dataPath = NULL, quiet = FALSE){
-  if (is.null(dataPath)){
-    dataPath="data/"
-    message("Loading sample data \n(This is actually real GULF data that we ultimately want to replace with sample data)")
-  }
+loadData <- function(dataPath = "inst/sampleData/", quiet = FALSE){
   filenames <- list.files(dataPath, pattern=".*csv")
   if (length(filenames)<1)stop("No csv files found")
   for(i in 1:length(filenames))

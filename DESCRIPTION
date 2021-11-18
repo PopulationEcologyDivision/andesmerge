@@ -16,6 +16,5 @@ Depends:
 Imports:
 Encoding: UTF-8
 License: MIT + file LICENSE
-LazyData: true
 URL: https://github.com/pevweb/andesmerge/
 RoxygenNote: 7.1.1
