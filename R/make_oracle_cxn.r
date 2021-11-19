@@ -38,6 +38,11 @@ make_oracle_cxn <- function(usepkg = 'roracle',
                             fn.oracle.password="_none_",
                             fn.oracle.dsn="_none_",
                             quietly = FALSE) {
+  Sys.setenv(TZ = "GMT")
+  Sys.setenv(ORA_SDTZ = "GMT")
+  if (!quietly){
+    message("set Sys.setenv(TZ='GMT') and Sys.setenv(ORA_SDTZ='GMT')")
+  }
   oracle_cxn = NULL
   use.roracle <-function(oracle.dsn, oracle.username, oracle.password, quietly){
     oracle_cxn <-tryCatch(
