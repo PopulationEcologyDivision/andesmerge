@@ -22,7 +22,7 @@ environment.  The object names will be identical to the original file names.
 }
 \seealso{
 Other general_use: 
-\code{\link{inserter}()}
+\code{\link{toOracle}()}
 }
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}
