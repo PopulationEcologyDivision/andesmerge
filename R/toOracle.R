@@ -1,7 +1,7 @@
 #' @title toOracle
 #' @description This function loads any of 6 known data frame objects into Oracle, ensuring that the 
 #' records of the new objects will not replace any existing records.
-#' @param cxnObj default is \code{NULL}.  This is a connection object from make_oracle_cxn(). 
+#' @param cxnObj default is \code{NULL}.  This is a connection object from Mar.utils::make_oracle_cxn(). 
 #' @param source_df default is \code{NULL}.  This is a data frame containing the data that should be 
 #' loaded to Oracle.  It should correspond with the structure used by one of ESE_MISSIONS, ESE_SETS, 
 #' ESE_CATCHES, ESE_BASKETS, ESE_SPECIMENS, ESE_LV1_OBSERVATIONS

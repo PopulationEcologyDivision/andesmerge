@@ -12,7 +12,7 @@ toOracle(
 )
 }
 \arguments{
-\item{cxnObj}{default is \code{NULL}.  This is a connection object from make_oracle_cxn().}
+\item{cxnObj}{default is \code{NULL}.  This is a connection object from Mar.utils::make_oracle_cxn().}
 
 \item{source_df}{default is \code{NULL}.  This is a data frame containing the data that should be 
 loaded to Oracle.  It should correspond with the structure used by one of ESE_MISSIONS, ESE_SETS, 
