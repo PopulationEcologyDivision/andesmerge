@@ -20,6 +20,10 @@ nothing - just loads data to environment
 This function loads all of the csv files in a specified folder into the global 
 environment.  The object names will be identical to the original file names.
 }
+\seealso{
+Other general_use: 
+\code{\link{inserter}()}
+}
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}
 }

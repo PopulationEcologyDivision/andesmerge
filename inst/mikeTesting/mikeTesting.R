@@ -1,0 +1,6 @@
+R.utils::sourceDirectory("c:/git/MMMcMahon/andesmerge/R/", modifiedOnly=F)
+setwd("c:/git/MMMcMahon/andesmerge/")
+loadData()
+Mar.datawrangling::get_data_custom(schema = 'groundfish', tables = "GSMISSIONS", data.dir = data.dir, env = .GlobalEnv)
+oraCxn <- make_oracle_cxn(usepkg = "RODBC")
+inserter(cxnObj = oraCxn, source_df = GSMISSIONS, target_table = "GSMISSIONS", target_schema = "mcmahonm")
