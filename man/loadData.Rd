@@ -22,6 +22,7 @@ environment.  The object names will be identical to the original file names.
 }
 \seealso{
 Other general_use: 
+\code{\link{eseExtractor}()},
 \code{\link{toOracle}()}
 }
 \author{

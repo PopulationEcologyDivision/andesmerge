@@ -33,6 +33,7 @@ records of the new objects will not replace any existing records.
 }
 \seealso{
 Other general_use: 
+\code{\link{eseExtractor}()},
 \code{\link{loadData}()}
 }
 \author{
