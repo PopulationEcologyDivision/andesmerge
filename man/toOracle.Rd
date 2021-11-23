@@ -7,8 +7,9 @@
 toOracle(
   cxnObj = NULL,
   source_df = NULL,
+  target_schema = NULL,
   target_table = NULL,
-  target_schema = NULL
+  createReplaceTarget = FALSE
 )
 }
 \arguments{
@@ -18,11 +19,16 @@ toOracle(
 loaded to Oracle.  It should correspond with the structure used by one of ESE_MISSIONS, ESE_SETS, 
 ESE_CATCHES, ESE_BASKETS, ESE_SPECIMENS, ESE_LV1_OBSERVATIONS}
 
+\item{target_schema}{default is \code{NULL}.  This is the name of the Oracle schema where the 
+data stored in\code{source_df} should be loaded}
+
 \item{target_table}{default is \code{NULL}.  This is the name of the specific Oracle table within
 \code{target_schema} where the data should be loaded}
 
-\item{target_schema}{default is \code{NULL}.  This is the name of the Oracle schema where the 
-data stored in\code{source_df} should be loaded}
+\item{createReplaceTarget}{default is \code{FALSE}.  By default, new data is appended to tables
+that already exist within the specified \code{target_schema}.  Setting this to \code{TRUE} will 
+result in the creation of new tables or the replacement of existing tables within 
+\code{target_schema}.  Use with caution.}
 }
 \value{
 

@@ -4,13 +4,7 @@
 \alias{eseExtractor}
 \title{eseExtractor}
 \usage{
-eseExtractor(
-  cxnObj = NULL,
-  mission = NULL,
-  tabs = c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", "ESE_SPECIMENS",
-    "ESE_LV1_OBSERVATIONS"),
-  quiet = FALSE
-)
+eseExtractor(cxnObj = NULL, mission = NULL, tabs = NULL, quiet = FALSE)
 }
 \arguments{
 \item{cxnObj}{default is \code{NULL}.  This is a connection object from 
@@ -21,9 +15,10 @@ eseExtractor(
 \code{"ALL"} is also valid, and will return all records for all of the specified tables. 
 Use with caution.}
 
-\item{tabs}{default is \code{c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", 
-"ESE_SPECIMENS", "ESE_LV1_OBSERVATIONS")}.  This is a vector the ESE tables that should be 
-extracted.  By default, all will be extracted, but fewer names can be sent to extract a subset.}
+\item{tabs}{default is \code{NULL}.  This is a vector the ESE tables that should be 
+extracted.  By default, all will be extracted, but fewer names can be sent to extract a subset.  
+Valid values include \code{c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", 
+"ESE_SPECIMENS", "ESE_LV1_OBSERVATIONS")}.}
 
 \item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
 informational messages}

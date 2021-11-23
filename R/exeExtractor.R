@@ -7,19 +7,24 @@
 #' (e.g "CAR2021240") that will be used to limit the extractions to particular mission(s). 
 #' \code{"ALL"} is also valid, and will return all records for all of the specified tables. 
 #' Use with caution.
-#' @param tabs default is \code{c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", 
-#' "ESE_SPECIMENS", "ESE_LV1_OBSERVATIONS")}.  This is a vector the ESE tables that should be 
-#' extracted.  By default, all will be extracted, but fewer names can be sent to extract a subset.
+#' @param tabs default is \code{NULL}.  This is a vector the ESE tables that should be 
+#' extracted.  By default, all will be extracted, but fewer names can be sent to extract a subset.  
+#' Valid values include \code{c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", 
+#' "ESE_SPECIMENS", "ESE_LV1_OBSERVATIONS")}.
 #' @param quiet default is \code{FALSE} Determines whether or not the script should output 
 #' informational messages 
 #' @return nothing - just loads data to environment
 #' @family general_use
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
-eseExtractor <- function(cxnObj = NULL, mission = NULL, tabs = c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", "ESE_SPECIMENS", "ESE_LV1_OBSERVATIONS"), quiet = FALSE){
-  tabs <- toupper(tabs)
-  tabsExist <- c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", "ESE_SPECIMENS", "ESE_LV1_OBSERVATIONS") 
-
+eseExtractor <- function(cxnObj = NULL, mission = NULL, tabs = NULL, quiet = FALSE){
+  if (is.null(tabs)){
+    tabs <- getEseTables()
+  }else{
+    tabs <- toupper(tabs)
+  }
+  tabsExist <- getEseTables()
+  
   mission <- toupper(mission)
   if (is.null(cxnObj)) stop("Can't proceed without valid cxnObj")
   if (is.null(mission)) stop("'mission' cannot be NULL.  Please provide a vector of 1 or more valid missions")

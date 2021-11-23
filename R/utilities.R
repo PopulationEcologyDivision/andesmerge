@@ -1,0 +1,52 @@
+#' @title getEseTables
+#' @description This function returns the names of the ese tables.
+#' @return character vector of the 6 core ESE tables
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' 
+getEseTables <- function(){
+  return(c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", "ESE_SPECIMENS", "ESE_LV1_OBSERVATIONS")) 
+}
+
+#' @title getKeyFields
+#' @description This function returns the key fields for any of the ESE tables
+#' @param table default is \code{NULL}.  This is the name of the table for which the key fields are 
+#' desired
+#' @return nothing - just loads data to environment
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' 
+getKeyFields <- function(table=NULL){
+  #for each known table, create a key from fields needed to create unique value
+  #each table will need it's own group of fields to do so
+  keyFields <- switch(table, 
+                      "ESE_MISSIONS" =         c("MISSION"),
+                      "ESE_SETS" =             c("MISSION", "SETNO"),
+                      "ESE_CATCHES" =          c("MISSION", "SETNO", "SPEC"),
+                      "ESE_BASKETS" =          c("MISSION", "SETNO", "SPEC", "SIZE_CLASS"),
+                      "ESE_SPECIMENS" =        c("MISSION", "SETNO", "SPEC", "SIZE_CLASS","SPECIMEN_ID"),
+                      "ESE_LV1_OBSERVATIONS" = c("MISSION", "SETNO", "SPEC", "SIZE_CLASS","SPECIMEN_ID","LV1_OBSERVATION_ID")
+  )
+  return(keyFields)
+}
+
+#' @title getTblKey
+#' @description This function takes a data frame and a vector of field names from that data frame.
+#' It concatenates together all of the combinations of values from those key fields into a vector.  
+#' When appropriate fields are chosen as \code{keyFields}, the result can be used to create a 
+#' primary key for identifying unique rows
+#' @param df default is \code{NULL}.  This is a connection object from Mar.utils::make_oracle_cxn(). 
+#' @param keyFields default is \code{NULL}.  This is a connection object from Mar.utils::make_oracle_cxn(). 
+#' @return nothing - just loads data to environment
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+getTblKey <- function(df=NULL, keyFields = NULL){
+  #paste together keyFields of submitted data to create vector of unique values
+  if (length(keyFields)>1){
+    uvec <- apply( df[ , keyFields ] , 1 , paste0 , collapse = "_" )
+  }else{ 
+    uvec <- sort(unique(df[,keyFields]))
+  }
+  uvec <- gsub(pattern = " ", replacement = "", x = uvec) 
+  return(uvec)
+}

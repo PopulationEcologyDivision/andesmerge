@@ -4,3 +4,5 @@ setwd("c:/git/MMMcMahon/andesmerge/")
 Mar.datawrangling::get_data_custom(schema = 'groundfish', tables = "ESE_MISSIONS", data.dir = data.dir, env = .GlobalEnv)
 oraCxn <- make_oracle_cxn(usepkg = "RODBC")
 toOracle(cxnObj = oraCxn, source_df = ESE_MISSIONS, target_table = "ESE_MISSIONS", target_schema = "mcmahonm")
+
+eseExtractor(cxnObj = oraCxn, mission = "CAR2021240")
