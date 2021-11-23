@@ -4,7 +4,13 @@
 \alias{eseExtractor}
 \title{eseExtractor}
 \usage{
-eseExtractor(cxnObj = NULL, mission = NULL, quiet = FALSE)
+eseExtractor(
+  cxnObj = NULL,
+  mission = NULL,
+  tabs = c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", "ESE_SPECIMENS",
+    "ESE_LV1_OBSERVATIONS"),
+  quiet = FALSE
+)
 }
 \arguments{
 \item{cxnObj}{default is \code{NULL}.  This is a connection object from 
@@ -12,6 +18,10 @@ eseExtractor(cxnObj = NULL, mission = NULL, quiet = FALSE)
 
 \item{mission}{default is \code{NULL}.  This is a vector of one or more mission identifiers 
 (e.g "CAR2021240") that will be used to limit the extractions to particular Mission(s).}
+
+\item{tabs}{default is \code{c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", 
+"ESE_SPECIMENS", "ESE_LV1_OBSERVATIONS")}.  This is a vector the ESE tables that should be 
+extracted.  By default, all will be extracted, but fewer names can be sent to extract a subset.}
 
 \item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
 informational messages}
