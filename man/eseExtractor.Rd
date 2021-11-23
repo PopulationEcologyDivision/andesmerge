@@ -17,7 +17,9 @@ eseExtractor(
 \code{Mar.utils::make_oracle_cxn()}.}
 
 \item{mission}{default is \code{NULL}.  This is a vector of one or more mission identifiers 
-(e.g "CAR2021240") that will be used to limit the extractions to particular Mission(s).}
+(e.g "CAR2021240") that will be used to limit the extractions to particular mission(s). 
+\code{"ALL"} is also valid, and will return all records for all of the specified tables. 
+Use with caution.}
 
 \item{tabs}{default is \code{c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", 
 "ESE_SPECIMENS", "ESE_LV1_OBSERVATIONS")}.  This is a vector the ESE tables that should be 
