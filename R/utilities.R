@@ -42,6 +42,10 @@ getKeyFields <- function(table=NULL){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 getTblKey <- function(df=NULL, keyFields = NULL){
   #paste together keyFields of submitted data to create vector of unique values
+  if (!all(keyFields %in% names(df))) {
+    #the specified df does not have all of the keyfields
+    return(NA)
+  }
   if (length(keyFields)>1){
     uvec <- apply( df[ , keyFields ] , 1 , paste0 , collapse = "_" )
   }else{ 
@@ -49,4 +53,14 @@ getTblKey <- function(df=NULL, keyFields = NULL){
   }
   uvec <- gsub(pattern = " ", replacement = "", x = uvec) 
   return(uvec)
+}
+
+#' @title cleanEse
+#' @description This function removes any ESE objects from the R environment
+#' @return nothing - just remove data frames from environment
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+cleanEse <- function(){
+ eseObs <- getEseTables()
+ rm(list = eseObs, envir = .GlobalEnv)
 }
