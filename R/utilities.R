@@ -65,3 +65,50 @@ cleanEse <- function(){
  eseObs <- getEseTables()
  rm(list = eseObs, envir = .GlobalEnv)
 }
+
+
+#' @title addSizeClassToCatch
+#' @description This function fills in the catch with the missing size class 2 entries.   
+#' Andes does not provide a way to add Size class directly, Size classes are entered via the basket form.
+#' @param basket A data frame containing the basket information from Andes
+#' @param catch A data frame containing the catch information from Andes
+#' @param quiet default is \code{FALSE} Determines whether or not the script should output 
+#' informational messages 
+#' @return the merged catch card
+#' @family general_use
+#' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
+
+addSizeClassToCatch <- function(basket, catch, quiet = FALSE){
+  
+  # find all Size class 2 entries in basket to add to catch
+  index =  basket$SIZE_CLASS == 2
+  
+  if(length(which(index)) == 0){
+    if(!quiet) message("No Size Class 2 entries in Basket, nothing to do")
+    return(catch)
+  } 
+  
+  # Create a generic catch row
+  temp = catch[1,]
+  
+  for(i in 1:length(which(index)))
+  {
+    temp$SETNO  = basket[index,][i,]$SETNO
+    temp$SPEC = basket[index,][i,]$SPEC
+    temp$NOTE = "New entry of Size Class 2 created from Basket information"
+    temp$UNWEIGHED_BASKETS = NA
+    temp$SIZE_CLASS = 2
+    
+    # We only want to create one entry in the catch card. Sometimes we will have more than one basket with size class 2, 
+    index2 = catch$SETNO == temp$SETNO & catch$SPEC == temp$SPEC & catch$SIZE_CLASS == 2
+    if(length(which(index2)) > 0){
+      if(!quiet) message(paste0("Class Size 2 was already entered for set#: ",temp$SETNO, " , species: ", temp$SPEC))
+    }else{
+      catch = rbind(catch, temp)
+    }
+  }
+  
+  # return the catch card
+  return(catch)
+}
+

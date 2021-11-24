@@ -39,8 +39,10 @@ records of the new objects will not replace any existing records.
 }
 \seealso{
 Other general_use: 
+\code{\link{addSizeClassToCatch}()},
 \code{\link{eseExtractor}()},
-\code{\link{loadData}()}
+\code{\link{loadData}()},
+\code{\link{matchAndesToESE}()}
 }
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}
