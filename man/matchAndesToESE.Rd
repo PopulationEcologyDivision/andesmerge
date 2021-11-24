@@ -20,6 +20,7 @@ be loaded into Oracle.
 \seealso{
 Other general_use: 
 \code{\link{addSizeClassToCatch}()},
+\code{\link{checkPrimaryFields}()},
 \code{\link{eseExtractor}()},
 \code{\link{loadData}()},
 \code{\link{toOracle}()}
