@@ -9,7 +9,7 @@
 #' @family general_use
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
-loadData <- function(dataPath = "inst/sampleData/", quietly = FALSE){
+loadData <- function(dataPath = "inst/sampleData/", quiet = FALSE){
   #add trailing "/" if necess
   if(substr(dataPath ,(nchar(dataPath)+1)-1,nchar(dataPath)) != "/")dataPath = paste0(dataPath,"/")
   
@@ -20,6 +20,6 @@ loadData <- function(dataPath = "inst/sampleData/", quietly = FALSE){
     thisFile = filenames[i]
     thisFileName <- sub('\\.csv$', '', thisFile) 
     assign(thisFileName, read.csv(file.path(dataPath,thisFile)), envir = .GlobalEnv)
-    if (!quietly) message("loaded ", dataPath,thisFile)
+    if (!quiet) message("loaded ", dataPath,thisFile)
   }
 }
