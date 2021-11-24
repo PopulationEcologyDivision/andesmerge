@@ -22,7 +22,9 @@ environment.  The object names will be identical to the original file names.
 }
 \seealso{
 Other general_use: 
+\code{\link{addSizeClassToCatch}()},
 \code{\link{eseExtractor}()},
+\code{\link{matchAndesToESE}()},
 \code{\link{toOracle}()}
 }
 \author{
