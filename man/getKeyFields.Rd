@@ -18,6 +18,7 @@ This function returns the key fields for any of the ESE tables
 }
 \seealso{
 Other internal: 
+\code{\link{cleanEse}()},
 \code{\link{getEseTables}()},
 \code{\link{getTblKey}()}
 }

@@ -22,6 +22,7 @@ primary key for identifying unique rows
 }
 \seealso{
 Other internal: 
+\code{\link{cleanEse}()},
 \code{\link{getEseTables}()},
 \code{\link{getKeyFields}()}
 }

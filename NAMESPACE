@@ -2,4 +2,5 @@
 
 export(eseExtractor)
 export(loadData)
+export(matchAndesToESE)
 export(toOracle)
