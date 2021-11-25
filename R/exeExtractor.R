@@ -13,11 +13,12 @@
 #' "ESE_SPECIMENS", "ESE_LV1_OBSERVATIONS")}.
 #' @param quiet default is \code{FALSE} Determines whether or not the script should output 
 #' informational messages 
-#' @return nothing - just loads data to environment
+#' @param env default is \code{.GlobalEnv} The environment where the data should be loaded
+#' @return nothing - just loads data
 #' @family general_use
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
-eseExtractor <- function(cxnObj = NULL, mission = NULL, tabs = NULL, quiet = FALSE){
+eseExtractor <- function(cxnObj = NULL, mission = NULL, tabs = NULL, quiet = FALSE, env = .GlobalEnv){
   if (is.null(tabs)){
     tabs <- getEseTables()
   }else{
@@ -44,7 +45,7 @@ eseExtractor <- function(cxnObj = NULL, mission = NULL, tabs = NULL, quiet = FAL
   }
   for (t in 1:length(tabsValid)){
     qry <- paste0("Select * from GROUNDFISH.",tabsValid[t]," ", whereM)
-    assign(x = tabsValid[t], value = cxnObj$thecmd(cxnObj$channel, qry), envir = .GlobalEnv)
-    if (!quiet) message("Loaded ",tabsValid[t]," for mission(s) '",paste0(mission, collapse = "', '"), "' into the local environment")
+    assign(x = tabsValid[t], value = cxnObj$thecmd(cxnObj$channel, qry), env = env)
+    if (!quiet) message("Loaded ",tabsValid[t]," for mission(s) '",paste0(mission, collapse = "', '"), "'")
   }
 }

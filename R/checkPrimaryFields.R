@@ -16,6 +16,7 @@ checkPrimaryFields <- function(primaryTable = NULL){
     if (length(res)==0){
       message("\tAll values of ",paste0(keyField, collapse=","), " that exist in ", parent," can be found in ",child)
     }else{
+      browser()
       message("\tCP The following combinations of ",paste0(keyField, collapse="_")," exist in ", parent,", but NOT in ",child)
       print(head(res))
     }
@@ -25,6 +26,8 @@ checkPrimaryFields <- function(primaryTable = NULL){
     if (length(res)==0){
       message("\tAll values of ",paste0(keyField, collapse=","), " that exist in ", child," can be found in ",parent)
     }else{
+      
+      browser()
       message("\tPC The following combinations of ",paste0(keyField, collapse="_")," exist in ", child,", but NOT in ",parent)
       paste0("\t\t",unique(res),collapse=", ")
     }
