@@ -4,7 +4,7 @@
 \alias{loadData}
 \title{loadData}
 \usage{
-loadData(dataPath = "inst/sampleData/", quietly = FALSE)
+loadData(dataPath = "inst/sampleData/", quiet = FALSE)
 }
 \arguments{
 \item{dataPath}{default is \code{"inst/sampleData/"} the folder containing files to be loaded into R.  If left 
@@ -23,6 +23,7 @@ environment.  The object names will be identical to the original file names.
 \seealso{
 Other general_use: 
 \code{\link{addSizeClassToCatch}()},
+\code{\link{checkPrimaryFields}()},
 \code{\link{eseExtractor}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{toOracle}()}

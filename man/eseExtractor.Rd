@@ -33,6 +33,7 @@ GROUNDFISH schema.
 \seealso{
 Other general_use: 
 \code{\link{addSizeClassToCatch}()},
+\code{\link{checkPrimaryFields}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{toOracle}()}
