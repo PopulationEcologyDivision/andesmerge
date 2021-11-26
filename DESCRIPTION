@@ -16,6 +16,7 @@ Depends:
 Imports:
     Mar.utils,
     stringi,
+	stringr,
 	tidyr
 Enhances: 
     ROracle,
