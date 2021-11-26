@@ -4,7 +4,13 @@
 \alias{eseExtractor}
 \title{eseExtractor}
 \usage{
-eseExtractor(cxnObj = NULL, mission = NULL, tabs = NULL, quiet = FALSE)
+eseExtractor(
+  cxnObj = NULL,
+  mission = NULL,
+  tabs = NULL,
+  quiet = FALSE,
+  env = .GlobalEnv
+)
 }
 \arguments{
 \item{cxnObj}{default is \code{NULL}.  This is a connection object from 
@@ -22,9 +28,11 @@ Valid values include \code{c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BAS
 
 \item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
 informational messages}
+
+\item{env}{default is \code{.GlobalEnv} The environment where the data should be loaded}
 }
 \value{
-nothing - just loads data to environment
+nothing - just loads data
 }
 \description{
 This function extracts all of the ESE data for a specified MISSION from the 

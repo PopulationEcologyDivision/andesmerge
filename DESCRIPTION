@@ -21,7 +21,8 @@ Imports:
 Enhances: 
     ROracle,
     DBI,
-    RODBC
+    RODBC,
+    rlang
 Remotes: 
     Maritimes/Mar.utils
 Encoding: UTF-8

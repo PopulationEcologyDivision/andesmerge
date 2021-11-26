@@ -4,7 +4,7 @@
 \alias{matchAndesToESE}
 \title{matchAndesToESE}
 \usage{
-matchAndesToESE(quiet = FALSE)
+matchAndesToESE(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
 }
 \arguments{
 \item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
