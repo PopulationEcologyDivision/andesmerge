@@ -4,7 +4,7 @@
 \alias{loadData}
 \title{loadData}
 \usage{
-loadData(dataPath = "inst/sampleData/", quiet = FALSE)
+loadData(dataPath = .andesData$defaultCsvPath, quietly = FALSE)
 }
 \arguments{
 \item{dataPath}{default is \code{"inst/sampleData/"} the folder containing files to be loaded into R.  If left 
@@ -23,9 +23,13 @@ environment.  The object names will be identical to the original file names.
 \seealso{
 Other general_use: 
 \code{\link{addSizeClassToCatch}()},
+\code{\link{basketTweaks}()},
+\code{\link{catchTweaks}()},
 \code{\link{checkPrimaryFields}()},
 \code{\link{eseExtractor}()},
 \code{\link{matchAndesToESE}()},
+\code{\link{setTweaks}()},
+\code{\link{specimenTweaks}()},
 \code{\link{toOracle}()}
 }
 \author{

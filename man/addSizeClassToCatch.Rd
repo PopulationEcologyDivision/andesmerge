@@ -23,10 +23,14 @@ Andes does not provide a way to add Size class directly, Size classes are entere
 }
 \seealso{
 Other general_use: 
+\code{\link{basketTweaks}()},
+\code{\link{catchTweaks}()},
 \code{\link{checkPrimaryFields}()},
 \code{\link{eseExtractor}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},
+\code{\link{setTweaks}()},
+\code{\link{specimenTweaks}()},
 \code{\link{toOracle}()}
 }
 \author{
