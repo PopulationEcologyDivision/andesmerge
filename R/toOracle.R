@@ -22,6 +22,7 @@ toOracle <- function(cxnObj = NULL, source_df= NULL, target_schema = NULL, targe
   target_schema <- toupper(target_schema)
   keyFields <- getKeyFields(target_table)
   doAppend <- TRUE   
+  doSafer <- TRUE
   doOverwrite <- FALSE
   if (is.null(keyFields))stop("Target table not a recognized target")
   
@@ -50,6 +51,7 @@ Are you certain you want to do this?\n\n")
     }
     doAppend = FALSE
     doOverwrite = TRUE
+    doSafer = FALSE
   }
   if (cxnObj$usepkg=='roracle'){
     this = tryCatch(
@@ -62,11 +64,10 @@ Are you certain you want to do this?\n\n")
       }
     )
   } else if (cxnObj$usepkg=='rodbc'){
-    target_table <- paste0(target_schema,".",target_table)
     this = tryCatch(
       {
         RODBC::sqlSave(channel = cxnObj$channel, dat = source_df, tablename = target_table, 
-                       colnames = FALSE, rownames = FALSE, append = doAppend)
+                       colnames = FALSE, rownames = FALSE, append = doAppend, safer = doSafer)
       },
       error=function(cond){
         return(-1)
@@ -75,3 +76,4 @@ Are you certain you want to do this?\n\n")
   }
   if (this == -1) message("Could not write ", deparse(substitute(source_df)) ," to ",target_schema,".", target_table)
 }
+
