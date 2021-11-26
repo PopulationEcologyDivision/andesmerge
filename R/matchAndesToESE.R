@@ -70,6 +70,8 @@ x$set$WAVE_HEIGHT_CODE         = NA # unused ?
 x$set$LIGHT_LEVEL_CODE         = NA # unused ?
 x$set$GEAR_MONITOR_DEVICE_CODE = NA # unused ?
 
+# perform tweaks to base data here
+x$set = setTweaks(x$set)
 
 # Match data for BASSKET table  
 x$basket$MISSION     = missionNumber
@@ -78,9 +80,9 @@ x$basket$SPEC        = basket$species_code
 x$basket$SIZE_CLASS  = basket$size_class
 x$basket$SPECIMEN_ID = basket$id  # not sure about this one
 
-#TWEAK FOR 2021 data.  Should go in separate function to be called by year (will talk to Mike about this)
- index = x$basket$SIZE_CLASS == 3 & x$basket$SPEC == 23
- x$basket[index,]$SIZE_CLASS = 2
+# perform tweaks to base data here
+x$basket = basketTweaks(x$basket)
+
 
 
 # Match data for CATCH table
@@ -99,7 +101,8 @@ x$catch$NUMBER_CAUGHT     = catch$specimen_count  # need to verify that this fie
 
 x$catch = addSizeClassToCatch(x$basket,x$catch)
 
-
+# perform tweaks to base data here
+x$catch = catchTweaks(x$catch)
 
 # Match data for SPECIMEN table
 
@@ -109,7 +112,7 @@ x$specimen$SPEC        = specimen$species_code
 x$specimen$SIZE_CLASS  = specimen$size_class
 x$specimen$SPECIMEN_ID = specimen$id
 
-
+x$specimen = specimenTweaks(x$specimen)
 
 # Match data for level 1 observations 
 
