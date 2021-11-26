@@ -77,7 +77,7 @@ cleanEse <- function(){
 #' @return the merged catch card
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
-
+#' @export
 addSizeClassToCatch <- function(basket, catch, quiet = FALSE){
   
   # find all Size class 2 entries in basket to add to catch
@@ -111,4 +111,13 @@ addSizeClassToCatch <- function(basket, catch, quiet = FALSE){
   # return the catch card
   return(catch)
 }
+
+
+##### PATH DEFINITON #####
+
+# default path in repo where CSV files are stored
+.andesData = list()
+.andesData$defaultCsvPath <- "inst/sampleData/"
+
+# other paths...
 

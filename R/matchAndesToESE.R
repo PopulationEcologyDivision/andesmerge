@@ -7,11 +7,11 @@
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
-matchAndesToESE <- function(quiet = FALSE){
+matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE){
 #library(stringi)
 
 # load Andes  CSV files extracted from server at end of survey
-andesmerge::loadData()
+andesmerge::loadData(dataPath = dataPath)
 
 # Object names created from load could change, Cahnge here if needed
 set      = tmp_set_data
@@ -83,10 +83,7 @@ x$basket$SPECIMEN_ID = basket$id  # not sure about this one
  x$basket[index,]$SIZE_CLASS = 2
 
 
-
-
-
- # Match data for CATCH table
+# Match data for CATCH table
 
 x$catch$MISSION           = missionNumber
 x$catch$SETNO             = catch$set_number
@@ -99,6 +96,7 @@ x$catch$NOTE              = catch$notes
 x$catch$UNWEIGHED_BASKETS = catch$unweighed_baskets
 x$catch$NUMBER_CAUGHT     = catch$specimen_count  # need to verify that this field is what I think
 # New entries based on basket with size class of 2 will be entered here
+
 x$catch = addSizeClassToCatch(x$basket,x$catch)
 
 
