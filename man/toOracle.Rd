@@ -40,10 +40,14 @@ records of the new objects will not replace any existing records.
 \seealso{
 Other general_use: 
 \code{\link{addSizeClassToCatch}()},
+\code{\link{basketTweaks}()},
+\code{\link{catchTweaks}()},
 \code{\link{checkPrimaryFields}()},
 \code{\link{eseExtractor}()},
 \code{\link{loadData}()},
-\code{\link{matchAndesToESE}()}
+\code{\link{matchAndesToESE}()},
+\code{\link{setTweaks}()},
+\code{\link{specimenTweaks}()}
 }
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}
