@@ -45,7 +45,7 @@ eseExtractor <- function(cxnObj = NULL, mission = NULL, tabs = NULL, quiet = FAL
   }
   for (t in 1:length(tabsValid)){
     qry <- paste0("Select * from GROUNDFISH.",tabsValid[t]," ", whereM)
-    assign(x = tabsValid[t], value = cxnObj$thecmd(cxnObj$channel, qry), env = env)
+    assign(x = tabsValid[t], value = cxnObj$thecmd(cxnObj$channel, qry), envir = env)
     if (!quiet) message("Loaded ",tabsValid[t]," for mission(s) '",paste0(mission, collapse = "', '"), "'")
   }
 }

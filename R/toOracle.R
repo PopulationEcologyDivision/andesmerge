@@ -13,7 +13,7 @@
 #' that already exist within the specified \code{target_schema}.  Setting this to \code{TRUE} will 
 #' result in the creation of new tables or the replacement of existing tables within 
 #' \code{target_schema}.  Use with caution.  
-#' @return 
+#' @return nothing, but data gets loaded to the selected location in Oracle.
 #' @family general_use
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export

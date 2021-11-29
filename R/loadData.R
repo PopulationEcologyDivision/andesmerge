@@ -10,7 +10,7 @@
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 
-loadData <- function(dataPath = .andesData$defaultCsvPath, quietly = FALSE){
+loadData <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE){
   #add trailing "/" if necess
   if(substr(dataPath ,(nchar(dataPath)+1)-1,nchar(dataPath)) != "/")dataPath = paste0(dataPath,"/")
   

@@ -31,7 +31,7 @@ result in the creation of new tables or the replacement of existing tables withi
 \code{target_schema}.  Use with caution.}
 }
 \value{
-
+nothing, but data gets loaded to the selected location in Oracle.
 }
 \description{
 This function loads any of 6 known data frame objects into Oracle, ensuring that the 
