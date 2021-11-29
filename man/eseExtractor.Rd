@@ -43,7 +43,6 @@ Other general_use:
 \code{\link{addSizeClassToCatch}()},
 \code{\link{basketTweaks}()},
 \code{\link{catchTweaks}()},
-\code{\link{checkPrimaryFields}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{setTweaks}()},

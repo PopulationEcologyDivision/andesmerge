@@ -22,7 +22,6 @@ Other general_use:
 \code{\link{addSizeClassToCatch}()},
 \code{\link{basketTweaks}()},
 \code{\link{catchTweaks}()},
-\code{\link{checkPrimaryFields}()},
 \code{\link{eseExtractor}()},
 \code{\link{loadData}()},
 \code{\link{setTweaks}()},

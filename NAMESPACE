@@ -3,7 +3,6 @@
 export(addSizeClassToCatch)
 export(basketTweaks)
 export(catchTweaks)
-export(checkPrimaryFields)
 export(eseExtractor)
 export(getEseTables)
 export(integrityCheck)
