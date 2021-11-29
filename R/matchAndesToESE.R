@@ -20,15 +20,24 @@ basket   = tmp_basket_data
 obs_type = tmp_obs_types_data
 specimen = tmp_specimen_data
 cruise   = tmp_cruise_data
-
+rm(list=c("tmp_set_data","tmp_catch_data","tmp_basket_data","tmp_obs_types_data", "tmp_specimen_data","tmp_cruise_data"), envir = .GlobalEnv)
 # All tables will need this number
 missionNumber = gsub( "-","",cruise$mission_number)
 
 x = list()
+x$cruise =   data.frame(matrix(NA, nrow = dim(cruise)[1], ncol = 0))
+x$cruise$MISSION <- missionNumber
+x$cruise$SAMPLING_REQUIREMENT <- cruise$area_of_operation
+x$cruise$NOTE <- cruise$description
+x$cruise$DATA_VERSION <- NA
+x$cruise$PROGRAM_TITLE <- 'Maritimes Bottom Trawl Surveys'
+
 x$set =  data.frame(matrix(NA, nrow = dim(set)[1], ncol =0 ))
 x$basket =  data.frame(matrix(NA, nrow = dim(basket)[1], ncol = 0))
 x$catch =  data.frame(matrix(NA, nrow = dim(catch)[1], ncol = 0))
 x$specimen =  data.frame(matrix(NA, nrow = dim(specimen)[1], ncol = 0))
+
+# Match data for cruise table 
 
 # Match data for SET table 
 x$set$MISSION                  = missionNumber
@@ -142,6 +151,13 @@ x$lv1_obs$DATA_VALUE	= tempSpecimen$value
 
   x$lv1_obs$LV1_OBSERVATION_ID = merged$LV1_OBSERVATION_ID
   x$lv1_obs$DATA_DESC = merged$DATA_DESC
- 
+  
+  names(x)[which(names(x) == "cruise")] <- "ESE_MISSIONS"
+  names(x)[which(names(x) == "set")] <- "ESE_SETS"
+  names(x)[which(names(x) == "basket")] <- "ESE_BASKETS"
+  names(x)[which(names(x) == "catch")] <- "ESE_CATCHES"
+  names(x)[which(names(x) == "specimen")] <- "ESE_SPECIMENS"
+  names(x)[which(names(x) == "lv1_obs")] <- "ESE_LV1_OBSERVATIONS"
+  
   return(x) 
 }
