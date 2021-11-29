@@ -90,7 +90,7 @@ To avoid false positives, other tables will NOT report when these sets are missi
         if (nrow(f)>0){
           message("\tvs ", childTabName,": The following records can not be linked on ",paste0(compareFields, collapse=","),": ")
           if (debug){
-            print(head(f,5))
+            print(utils::head(f,5))
           }else{
             print(f)
           }

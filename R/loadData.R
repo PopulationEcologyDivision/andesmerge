@@ -21,7 +21,7 @@ loadData <- function(dataPath = .andesData$defaultCsvPath, quietly = FALSE){
     thisFile = filenames[i]
     thisFileName <- sub('\\.csv$', '', thisFile) 
 
-    assign(thisFileName, read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE), envir = .GlobalEnv)
+    assign(thisFileName, utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE), envir = .GlobalEnv)
     if (!quiet) message("loaded ", dataPath,thisFile)
   }
 }

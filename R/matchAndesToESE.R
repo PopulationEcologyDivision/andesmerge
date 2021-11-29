@@ -13,7 +13,7 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
 # load Andes  CSV files extracted from server at end of survey
 andesmerge::loadData(dataPath = dataPath)
 
-# Object names created from load could change, Cahnge here if needed
+# Object names created from load could change, Change here if needed
 set      = tmp_set_data
 catch    = tmp_catch_data
 basket   = tmp_basket_data
@@ -37,8 +37,8 @@ x$set$START_DATE               = as.POSIXct(set$start_date, tz="UTC")
 x$set$START_TIME               = as.POSIXct(set$start_date, tz="UTC")
 x$set$END_DATE                 = as.POSIXct(set$start_date, tz="UTC")
 x$set$END_TIME                 = as.POSIXct(set$start_date, tz="UTC")
-x$set$STRAT                    = stri_extract_last_regex(set$new_station, "\\d{3}")
-x$set$STATION                  = stri_extract_first_regex(set$new_station, "\\d{3}")
+x$set$STRAT                    = stringi::stri_extract_last_regex(set$new_station, "\\d{3}")
+x$set$STATION                  = stringi::stri_extract_first_regex(set$new_station, "\\d{3}")
 x$set$SLAT                     = round(as.numeric(paste0(set$start_latitude_DD,set$start_latitude_MMmm)),2)
 x$set$ELAT                     = round(as.numeric(paste0(set$end_latitude_DD,set$end_latitude_MMmm)),2)
 x$set$SLONG                    = abs(round(as.numeric(paste0(set$start_longitude_DD,set$start_longitude_MMmm)),2))
@@ -55,9 +55,9 @@ x$set$END_DEPTH                = set$end_depth_m
 x$set$WIND                     = NA # need to check if used
 x$set$FORCE                    = set$wind_force_code
 x$set$CURNT                    = NA # need to check if used
-x$set$EXPERIMENT_TYPE_CODE     = as.numeric(stri_extract_first_regex(set$experiment_type, "\\d{1}"))
-x$set$GEAR                     = as.numeric(stri_extract_first_regex(set$gear_type, "[0-9]+"))
-x$set$AUX                      = as.numeric(stri_extract_first_regex(set$auxiliary_equipment, "[0-9]+"))
+x$set$EXPERIMENT_TYPE_CODE     = as.numeric(stringi::stri_extract_first_regex(set$experiment_type, "\\d{1}"))
+x$set$GEAR                     = as.numeric(stringi::stri_extract_first_regex(set$gear_type, "[0-9]+"))
+x$set$AUX                      = as.numeric(stringi::stri_extract_first_regex(set$auxiliary_equipment, "[0-9]+"))
 x$set$WARPOUT                  = set$port_warp
 x$set$NOTE                     = set$remarks
 x$set$SURFACE_TEMPERATURE      = NA # data to come later, not captured during survey
@@ -117,7 +117,7 @@ x$specimen = specimenTweaks(x$specimen)
 # Match data for level 1 observations 
 
 # Need to turn specimen table from wide format to long in order to have each observation on its own row
-tempSpecimen <- gather(specimen, variable, value, 13:22)
+tempSpecimen <- tidyr::gather(specimen, variable, value, 13:22)
 # remove all NA values
 tempSpecimen = tempSpecimen[!is.na(tempSpecimen$value),]
 # periods were introduced in the data frame names, they must be taken out before we can compare to other table  
