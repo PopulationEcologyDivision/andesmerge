@@ -38,34 +38,34 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
   x$specimen =  data.frame(matrix(NA, nrow = dim(specimen)[1], ncol = 0))
   
   # Match data for cruise table 
-  
+  browser()
   # Match data for SET table 
   x$set$MISSION                  = missionNumber
   x$set$SETNO                    = set$set_number 
-  x$set$START_DATE               = as.POSIXct(set$start_date, tz="UTC")
-  x$set$START_TIME               = as.POSIXct(set$start_date, tz="UTC")
-  x$set$END_DATE                 = as.POSIXct(set$start_date, tz="UTC")
-  x$set$END_TIME                 = as.POSIXct(set$start_date, tz="UTC")
+  x$set$START_DATE               = as.integer(as.character(as.POSIXct(set$start_date, tz="UTC"), format='%d%m%Y'))
+  x$set$START_TIME               = as.integer(as.character(as.POSIXct(set$start_date, tz="UTC"), format='%H%M'))
+  x$set$END_DATE                 = as.integer(as.character(as.POSIXct(set$end_date, tz="UTC"), format='%d%m%Y'))
+  x$set$END_TIME                 = as.integer(as.character(as.POSIXct(set$end_date, tz="UTC"), format='%H%M'))
   x$set$STRAT                    = stringi::stri_extract_last_regex(set$new_station, "\\d{3}")
-  x$set$STATION                  = stringi::stri_extract_first_regex(set$new_station, "\\d{3}")
   x$set$SLAT                     = round(as.numeric(paste0(set$start_latitude_DD,set$start_latitude_MMmm)),2)
   x$set$ELAT                     = round(as.numeric(paste0(set$end_latitude_DD,set$end_latitude_MMmm)),2)
   x$set$SLONG                    = abs(round(as.numeric(paste0(set$start_longitude_DD,set$start_longitude_MMmm)),2))
   x$set$ELONG                    = abs(round(as.numeric(paste0(set$end_longitude_DD,set$end_longitude_MMmm)),2))
-  x$set$AREA                     = NA # need to check if used
-  x$set$DIST                     = set$distance_towed
+  x$set$AREA                     = NA # MMM - used, but not sure what it would map to yet
+  x$set$DIST                     = set$distance_towed #MMM - is this nautical miles
   x$set$HOWD                     = set$distance_towed_obtained_code
   x$set$SPEED                    = set$ship_speed
   x$set$HOWS                     = set$ship_speed_obtained_code
-  x$set$DMIN                     = NA # need to check if used
-  x$set$DMAX                     = NA # need to check if used
-  x$set$START_DEPTH              = set$start_depth_m
-  x$set$END_DEPTH                = set$end_depth_m
-  x$set$WIND                     = NA # need to check if used
+  x$set$DMIN                     = NA   # = set$dmin/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
+  x$set$DMAX                     = NA   # = set$dmax/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
+  x$set$START_DEPTH              = set$start_depth_m/1.8288 # MMM - converting from meters to fathoms
+  x$set$END_DEPTH                = set$end_depth_m/1.8288 # MMM - converting from meters to fathoms
+  if (!quiet) message("DMIN, DMAX, START_DEPTH, and END_DEPTH were all converted from meters to fathoms (i.e. m/1.8288)")
+  x$set$WIND                     = set$wind_direction_degree 
   x$set$FORCE                    = set$wind_force_code
-  x$set$CURNT                    = NA # need to check if used
+  x$set$CURNT                    = set$tide_direction_code # need to check if used
   x$set$EXPERIMENT_TYPE_CODE     = as.numeric(stringi::stri_extract_first_regex(set$experiment_type, "\\d{1}"))
-  x$set$GEAR                     = as.numeric(stringi::stri_extract_first_regex(set$gear_type, "[0-9]+"))
+  x$set$GEAR                     = as.numeric(stringi::stri_extract_first_regex(set$gear_type, "[0-9]+"))  #assume this is correct (and not gear_type_id)
   x$set$AUX                      = as.numeric(stringi::stri_extract_first_regex(set$auxiliary_equipment, "[0-9]+"))
   x$set$WARPOUT                  = set$port_warp
   x$set$NOTE                     = set$remarks
@@ -73,11 +73,12 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
   x$set$BOTTOM_TEMPERATURE       = NA # data to come later, not captured during survey
   x$set$BOTTOM_SALINITY          = NA # data to come later, not captured during survey
   x$set$HYDRO                    = NA # data to come later, not captured during survey
-  x$set$BOTTOM_TYPE_CODE         = NA # unused ?
-  x$set$BOTTOM_TEMP_DEVICE_CODE  = NA # unused ?
-  x$set$WAVE_HEIGHT_CODE         = NA # unused ?
-  x$set$LIGHT_LEVEL_CODE         = NA # unused ?
-  x$set$GEAR_MONITOR_DEVICE_CODE = NA # unused ?
+  x$set$STATION                  = stringi::stri_extract_first_regex(set$new_station, "\\d{3}")
+  # x$set$BOTTOM_TYPE_CODE         = NA # unused ?
+  # x$set$BOTTOM_TEMP_DEVICE_CODE  = NA # unused ?
+  # x$set$WAVE_HEIGHT_CODE         = NA # unused ?
+  # x$set$LIGHT_LEVEL_CODE         = NA # unused ?
+  # x$set$GEAR_MONITOR_DEVICE_CODE = NA # unused ?
   
   # perform tweaks to base data here
   x$set = setTweaks(x$set)
