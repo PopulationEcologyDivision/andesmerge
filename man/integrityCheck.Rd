@@ -5,21 +5,15 @@
 \title{integrityCheck}
 \usage{
 integrityCheck(
-  cxnObj = NULL,
-  mission = NULL,
+  eseList = NULL,
   type1Only = FALSE,
   debug = FALSE,
   addErrors = FALSE
 )
 }
 \arguments{
-\item{cxnObj}{default is \code{NULL}.  This is a connection object from 
-\code{Mar.utils::make_oracle_cxn()}.}
-
-\item{mission}{default is \code{NULL}.  This is a vector of one or more mission identifiers 
-(e.g "CAR2021240") that will be used to limit the extractions to particular mission(s). 
-\code{"ALL"} is also valid, and will return all records for all of the specified tables. 
-Use with caution.}
+\item{eseList}{default is \code{NULL}. This is the output object from either \code{eseExtractor()}
+or \code{matchAndesToESE}.}
 
 \item{type1Only}{default is \code{FALSE}. The presence of failed tows can result in a cascade of 
 'missing' records in other tables. Setting this to \code{TRUE} will output which sets are not 
