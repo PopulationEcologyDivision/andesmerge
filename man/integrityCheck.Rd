@@ -8,7 +8,8 @@ integrityCheck(
   eseList = NULL,
   type1Only = FALSE,
   debug = FALSE,
-  addErrors = FALSE
+  addErrors = FALSE,
+  quiet = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,9 @@ multiple runs without having to re-extract the data}
 \item{addErrors}{default is \code{TRUE}.  When \code{TRUE}, this modifies some SETNO, SPEC and 
 SIZE_CLASS to review how such changes will be handles by the function.  It will only work if 
 \code{debug = T}}
+
+\item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
+informational messages}
 }
 \value{
 a list with an entry for each ESE table (i.e. the 'Parents'.  Each element then contains 

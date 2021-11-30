@@ -12,6 +12,8 @@
 #' @param addErrors default is \code{TRUE}.  When \code{TRUE}, this modifies some SETNO, SPEC and 
 #' SIZE_CLASS to review how such changes will be handles by the function.  It will only work if 
 #' \code{debug = T}
+#' @param quiet default is \code{FALSE} Determines whether or not the script should output 
+#' informational messages 
 #' @return a list with an entry for each ESE table (i.e. the 'Parents'.  Each element then contains 
 #' a dataframe containing the records for each 'child' table against which it was compared.  If all 
 #' records could be linked, the entry for the child records will be NA. If the child table was not 
@@ -19,7 +21,7 @@
 #' @family qc
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
-integrityCheck <- function(eseList = NULL, type1Only =FALSE, debug =FALSE, addErrors=FALSE){
+integrityCheck <- function(eseList = NULL, type1Only =FALSE, debug =FALSE, addErrors=FALSE, quiet=FALSE){
   if (addErrors & !debug)message("'addErrors=T' can only be performed if 'debug=T'\n")
   setTypeCheck <- function(setTable=NULL){
     typeXSets<- setTable[which(is.na(setTable$EXPERIMENT_TYPE_CODE) | setTable$EXPERIMENT_TYPE_CODE != 1),]
@@ -35,8 +37,10 @@ integrityCheck <- function(eseList = NULL, type1Only =FALSE, debug =FALSE, addEr
       } else{
         msg_text <- paste0(msg_text, "\nYou can set 'type1Only = TRUE' to avoid seeing references to these non-type 1 sets.") 
       }
-      message(msg_text)
-      print(typeXSets)
+      if (!quiet) {
+        message(msg_text)
+        print(typeXSets)
+      }
     }else{
       res <- NA
     }
@@ -84,7 +88,7 @@ integrityCheck <- function(eseList = NULL, type1Only =FALSE, debug =FALSE, addEr
     parentTabName <- toCheck[p]
     parentTabFields <- getKeyFields(parentTabName)
     parentTab <- qcEnv[[parentTabName]]
-    message(parentTabName)
+    if (!quiet) message(parentTabName)
     childTabNames <- setdiff(toCheck, parentTabName)
 
     for (c in 1:length(childTabNames)){
@@ -94,7 +98,7 @@ integrityCheck <- function(eseList = NULL, type1Only =FALSE, debug =FALSE, addEr
       compareFields <- intersect(childTabFields, parentTabFields)
 
       if (parentTabName %in% c("ESE_SPECIMENS","ESE_LV1_OBSERVATIONS") && childTabName == c("ESE_CATCHES","ESE_BASKETS")){
-        message("\t", childTabName,": <skipped> (An entry in ",childTabName," does not necessitate an associated entry in ",parentTabName, " based on ",paste0(compareFields, collapse=","),")")
+        if (!quiet) message("\t", childTabName,": <skipped> (An entry in ",childTabName," does not necessitate an associated entry in ",parentTabName, " based on ",paste0(compareFields, collapse=","),")")
         x[[parentTabName]][[childTabName]]<- "skipped"
         next
       }
@@ -112,13 +116,13 @@ integrityCheck <- function(eseList = NULL, type1Only =FALSE, debug =FALSE, addEr
         f <- f[complete.cases(f),] 
         if (nrow(f)>0){
           f = f[with(f, order(MISSION, SETNO)), ]
-          message("\t", childTabName,": The following records can not be linked to ",parentTabName," on ",paste0(compareFields, collapse=","),": ")
+          if (!quiet) message("\t", childTabName,": The following records can not be linked to ",parentTabName," on ",paste0(compareFields, collapse=","),": ")
           x[[parentTabName]][[childTabName]]<- f
-            print(utils::head(f,5))
-          if (nrow(f)>5) message("\t\t(Please check the output object for more rows of data)")
+          if (!quiet)print(utils::head(f,5))
+          if (!quiet && nrow(f)>5) message("\t\t(Please check the output object for more rows of data)")
         }else{
           x[[parentTabName]][[childTabName]]<- NA
-          message("\t", childTabName,": All records can be linked to ",parentTabName," on ",paste0(compareFields, collapse=","))
+          if (!quiet) message("\t", childTabName,": All records can be linked to ",parentTabName," on ",paste0(compareFields, collapse=","))
         }
       }
     }
