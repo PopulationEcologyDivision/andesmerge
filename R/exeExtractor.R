@@ -19,6 +19,7 @@
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 eseExtractor <- function(cxnObj = NULL, mission = NULL, tabs = NULL, quiet = FALSE, env = .GlobalEnv){
+
   if (is.null(tabs)){
     tabs <- getEseTables()
   }else{
@@ -43,9 +44,15 @@ eseExtractor <- function(cxnObj = NULL, mission = NULL, tabs = NULL, quiet = FAL
     message("No valid tables requested, stoppping")
     return(NULL)
   }
+
+  
+  x = list()
+  
   for (t in 1:length(tabsValid)){
     qry <- paste0("Select * from GROUNDFISH.",tabsValid[t]," ", whereM)
-    assign(x = tabsValid[t], value = cxnObj$thecmd(cxnObj$channel, qry), envir = env)
-    if (!quiet) message("Loaded ",tabsValid[t]," for mission(s) '",paste0(mission, collapse = "', '"), "'")
+    x[[tabsValid[t]]]<- cxnObj$thecmd(cxnObj$channel, qry)
+    # assign(x = tabsValid[t], value = cxnObj$thecmd(cxnObj$channel, qry), envir = env)
+    if (!quiet) message("Extracted ",tabsValid[t]," for mission(s) '",paste0(mission, collapse = "', '"), "'")
   }
+  return(x)
 }
