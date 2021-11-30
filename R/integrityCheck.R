@@ -12,18 +12,22 @@
 #' @param addErrors default is \code{TRUE}.  When \code{TRUE}, this modifies some SETNO, SPEC and 
 #' SIZE_CLASS to review how such changes will be handles by the function.  It will only work if 
 #' \code{debug = T}
-#' @return nothing - just outputs messages
+#' @return a list with an entry for each ESE table (i.e. the 'Parents'.  Each element then contains 
+#' a dataframe containing the records for each 'child' table against which it was compared.  If all 
+#' records could be linked, the entry for the child records will be NA. If the child table was not 
+#' compared to the parent, then the entry will be 'skipped'.
 #' @family qc
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 integrityCheck <- function(eseList = NULL, type1Only =FALSE, debug =FALSE, addErrors=FALSE){
+  if (addErrors & !debug)message("'addErrors=T' can only be performed if 'debug=T'\n")
   setTypeCheck <- function(setTable=NULL){
     typeXSets<- setTable[which(is.na(setTable$EXPERIMENT_TYPE_CODE) | setTable$EXPERIMENT_TYPE_CODE != 1),]
-    typeXSets <- typeXSets[,c("MISSION", "SETNO", "START_DATE", "STRAT", "SLAT", "SLONG", "DIST", "EXPERIMENT_TYPE_CODE", "GEAR","NOTE")]
-    typeXSets$NOTE <- paste0(substr(typeXSets$NOTE,1, 50),"...")
-    typeXSets = typeXSets[with(typeXSets, order(MISSION, SETNO)), ]
-    # "START_TIME", "END_DATE", "END_TIME", "ELAT", "ELONG", 
     if(nrow(typeXSets)>0){
+      typeXSets <- typeXSets[,c("MISSION", "SETNO", "START_DATE", "STRAT", "SLAT", "SLONG", "DIST", "EXPERIMENT_TYPE_CODE", "GEAR","NOTE")]
+      typeXSets$NOTE <- paste0(substr(typeXSets$NOTE,1, 50),"...")
+      typeXSets = typeXSets[with(typeXSets, order(MISSION, SETNO)), ]
+      
       res <- paste0(typeXSets$MISSION, "_",typeXSets$SETNO)
       msg_text <- "Note that ESE_SETS includes the following set(s) with EXPERIMENT_TYPE_CODE  != 1."
       if(type1Only){
@@ -38,20 +42,16 @@ integrityCheck <- function(eseList = NULL, type1Only =FALSE, debug =FALSE, addEr
     }
     return(res)
   }
-  
+  x<-list()
   if (!exists("qcEnv", envir = .GlobalEnv)){
     # if debug is True, don't re-extract ese if they are available.
     qcEnv <- new.env()
-    # if(localFiles){
     qcEnv$ESE_BASKETS <- eseList$ESE_BASKETS
     qcEnv$ESE_CATCHES <- eseList$ESE_CATCHES
     qcEnv$ESE_LV1_OBSERVATIONS <- eseList$ESE_LV1_OBSERVATIONS
     qcEnv$ESE_MISSIONS <- eseList$ESE_MISSIONS
     qcEnv$ESE_SETS <- eseList$ESE_SETS
     qcEnv$ESE_SPECIMENS <- eseList$ESE_SPECIMENS
-    # }else{
-    #   eseExtractor(cxnObj = cxnObj, mission=mission, env = qcEnv)
-    # }
     if (debug) {
       .GlobalEnv$qcEnv<-rlang::env_clone(qcEnv)
       message("Saved copy of extracted ESE data for future debugging")
@@ -64,8 +64,6 @@ integrityCheck <- function(eseList = NULL, type1Only =FALSE, debug =FALSE, addEr
   }
   
   toCheck <- getEseTables()
-  
-  
   
   notableSets <- setTypeCheck(setTable = qcEnv$ESE_SETS)
   if (type1Only){
@@ -88,43 +86,42 @@ integrityCheck <- function(eseList = NULL, type1Only =FALSE, debug =FALSE, addEr
     parentTab <- qcEnv[[parentTabName]]
     message(parentTabName)
     childTabNames <- setdiff(toCheck, parentTabName)
+
     for (c in 1:length(childTabNames)){
       childTabName <- childTabNames[c]
       childTabFields <- getKeyFields(childTabName)
       childTab <- qcEnv[[childTabName]]
       compareFields <- intersect(childTabFields, parentTabFields)
-      if ((parentTabName == "ESE_SPECIMENS" & childTabName %in% c("ESE_CATCHES","ESE_BASKETS")) |
-          (parentTabName == "ESE_LV1_OBSERVATIONS" & childTabName %in% c("ESE_CATCHES","ESE_BASKETS"))
-      ){
-        message("\t", childTabName,": (Skipping check against ",parentTabName," on ",paste0(compareFields, collapse=","),")")
+
+      if (parentTabName %in% c("ESE_SPECIMENS","ESE_LV1_OBSERVATIONS") && childTabName == c("ESE_CATCHES","ESE_BASKETS")){
+        message("\t", childTabName,": <skipped> (An entry in ",childTabName," does not necessitate an associated entry in ",parentTabName, " based on ",paste0(compareFields, collapse=","),")")
+        x[[parentTabName]][[childTabName]]<- "skipped"
         next
       }
-      if(nrow(childTab[,compareFields, drop=F])<1){
-        message(childTabName," had no usable data")
-        browser()
+    
+      if(nrow(parentTab[,compareFields, drop=F])<1 || nrow(childTab[,compareFields, drop=F])<1){
+        if(nrow(parentTab[,compareFields, drop=F])<1) message(parentTab," had no usable data")
+        if(nrow(childTab[,compareFields, drop=F])<1) message(childTab," had no usable data")
         next
       }
-      if(nrow(parentTab[,compareFields, drop=F])<1){
-        message(parentTab," had no usable data")
-        browser()
-        next
-      }
+      
       ttt<-dplyr::setdiff(childTab[,compareFields, drop=F],parentTab[,compareFields, drop=F])
       if(length(ttt)>0){
-        
         f<-merge(parentTab, ttt, by=compareFields, all.y=T)
+        #line below makes sure we're getting actual joins
+        f <- f[complete.cases(f),] 
         if (nrow(f)>0){
           f = f[with(f, order(MISSION, SETNO)), ]
           message("\t", childTabName,": The following records can not be linked to ",parentTabName," on ",paste0(compareFields, collapse=","),": ")
-          if (debug){
+          x[[parentTabName]][[childTabName]]<- f
             print(utils::head(f,5))
-          }else{
-            print(f)
-          }
+          if (nrow(f)>5) message("\t\t(Please check the output object for more rows of data)")
         }else{
+          x[[parentTabName]][[childTabName]]<- NA
           message("\t", childTabName,": All records can be linked to ",parentTabName," on ",paste0(compareFields, collapse=","))
         }
       }
     }
   }
+  return(invisible(x))
 }  

@@ -27,7 +27,10 @@ SIZE_CLASS to review how such changes will be handles by the function.  It will 
 \code{debug = T}}
 }
 \value{
-nothing - just outputs messages
+a list with an entry for each ESE table (i.e. the 'Parents'.  Each element then contains 
+a dataframe containing the records for each 'child' table against which it was compared.  If all 
+records could be linked, the entry for the child records will be NA. If the child table was not 
+compared to the parent, then the entry will be 'skipped'.
 }
 \description{
 This function verifies that key fields within one ESE table exist in the other 
