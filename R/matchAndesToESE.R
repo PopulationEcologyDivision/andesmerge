@@ -25,6 +25,8 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
   missionNumber = gsub( "-","",cruise$mission_number)
   
   x = list()
+  
+  # Match data for cruise table 
   x$cruise =   data.frame(matrix(NA, nrow = dim(cruise)[1], ncol = 0))
   x$cruise$MISSION <- missionNumber
   x$cruise$SAMPLING_REQUIREMENT <- cruise$area_of_operation
@@ -36,9 +38,7 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
   x$basket =  data.frame(matrix(NA, nrow = dim(basket)[1], ncol = 0))
   x$catch =  data.frame(matrix(NA, nrow = dim(catch)[1], ncol = 0))
   x$specimen =  data.frame(matrix(NA, nrow = dim(specimen)[1], ncol = 0))
-  
-  # Match data for cruise table 
-  browser()
+
   # Match data for SET table 
   x$set$MISSION                  = missionNumber
   x$set$SETNO                    = set$set_number 
@@ -51,35 +51,32 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
   x$set$ELAT                     = round(as.numeric(paste0(set$end_latitude_DD,set$end_latitude_MMmm)),2)
   x$set$SLONG                    = abs(round(as.numeric(paste0(set$start_longitude_DD,set$start_longitude_MMmm)),2))
   x$set$ELONG                    = abs(round(as.numeric(paste0(set$end_longitude_DD,set$end_longitude_MMmm)),2))
-  x$set$AREA                     = NA # MMM - used, but not sure what it would map to yet
   x$set$DIST                     = set$distance_towed #MMM - is this nautical miles
   x$set$HOWD                     = set$distance_towed_obtained_code
   x$set$SPEED                    = set$ship_speed
   x$set$HOWS                     = set$ship_speed_obtained_code
-  x$set$DMIN                     = NA   # = set$dmin/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
-  x$set$DMAX                     = NA   # = set$dmax/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
   x$set$START_DEPTH              = set$start_depth_m/1.8288 # MMM - converting from meters to fathoms
   x$set$END_DEPTH                = set$end_depth_m/1.8288 # MMM - converting from meters to fathoms
-  if (!quiet) message("DMIN, DMAX, START_DEPTH, and END_DEPTH were all converted from meters to fathoms (i.e. m/1.8288)")
+  if (!quiet) message("START_DEPTH, and END_DEPTH were converted from meters to fathoms (i.e. m/1.8288)")
   x$set$WIND                     = set$wind_direction_degree 
   x$set$FORCE                    = set$wind_force_code
   x$set$CURNT                    = set$tide_direction_code # need to check if used
   x$set$EXPERIMENT_TYPE_CODE     = as.numeric(stringi::stri_extract_first_regex(set$experiment_type, "\\d{1}"))
   x$set$GEAR                     = as.numeric(stringi::stri_extract_first_regex(set$gear_type, "[0-9]+"))  #assume this is correct (and not gear_type_id)
   x$set$AUX                      = as.numeric(stringi::stri_extract_first_regex(set$auxiliary_equipment, "[0-9]+"))
-  x$set$WARPOUT                  = set$port_warp
   x$set$NOTE                     = set$remarks
+  x$set$STATION                  = stringi::stri_extract_first_regex(set$new_station, "\\d{3}")
+  
+  #following need to be reviewed with Maritimes data
+  x$set$WARPOUT                  = set$port_warp
+  x$set$AREA                     = NA # MMM - used, but not sure what it would map to yet
+  x$set$DMIN                     = NA   # = set$dmin/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
+  x$set$DMAX                     = NA   # = set$dmax/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
   x$set$SURFACE_TEMPERATURE      = NA # data to come later, not captured during survey
   x$set$BOTTOM_TEMPERATURE       = NA # data to come later, not captured during survey
   x$set$BOTTOM_SALINITY          = NA # data to come later, not captured during survey
   x$set$HYDRO                    = NA # data to come later, not captured during survey
-  x$set$STATION                  = stringi::stri_extract_first_regex(set$new_station, "\\d{3}")
-  # x$set$BOTTOM_TYPE_CODE         = NA # unused ?
-  # x$set$BOTTOM_TEMP_DEVICE_CODE  = NA # unused ?
-  # x$set$WAVE_HEIGHT_CODE         = NA # unused ?
-  # x$set$LIGHT_LEVEL_CODE         = NA # unused ?
-  # x$set$GEAR_MONITOR_DEVICE_CODE = NA # unused ?
-  
+ 
   # perform tweaks to base data here
   x$set = setTweaks(x$set)
   
@@ -96,7 +93,6 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
   
   
   # Match data for CATCH table
-  
   x$catch$MISSION           = missionNumber
   x$catch$SETNO             = catch$set_number
   x$catch$SPEC              = catch$species_code
