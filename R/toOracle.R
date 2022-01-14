@@ -49,11 +49,16 @@ Are you certain you want to do this?\n\n")
         stop("Cancelled")
       }
     }
-    doAppend = FALSE
-    doOverwrite = TRUE
-    doSafer = FALSE
   }
+
   if (cxnObj$usepkg=='roracle'){
+    if (createReplaceTarget){
+      doAppend = FALSE
+      doOverwrite = TRUE
+    }else{
+      doAppend = TRUE
+      doOverwrite = FALSE
+    }
     this = tryCatch(
       {
         ROracle::dbWriteTable(conn = cxnObj$channel, schema=target_schema, value = source_df, 
@@ -64,10 +69,18 @@ Are you certain you want to do this?\n\n")
       }
     )
   } else if (cxnObj$usepkg=='rodbc'){
+    if (createReplaceTarget){
+      doSafer = FALSE
+    }else{
+      doSafer = TRUE
+    }
     this = tryCatch(
       {
-        RODBC::sqlSave(channel = cxnObj$channel, dat = source_df, tablename = target_table, 
-                       colnames = FALSE, rownames = FALSE, append = doAppend, safer = doSafer)
+        # RODBC::sqlDrop(channel = cxnObj$channel, sqtable = paste0(target_schema,".",target_table))
+        RODBC::sqlSave(channel = cxnObj$channel, dat = source_df, 
+                       tablename = paste0(target_schema,".",target_table), 
+                       safer = TRUE, verbose = T, nastring = NULL,
+                       rownames = F)
       },
       error=function(cond){
         return(-1)
