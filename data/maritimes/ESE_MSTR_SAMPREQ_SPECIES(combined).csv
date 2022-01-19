@@ -1,0 +1,250 @@
+SAMPLING_REQUIREMENT,SPECIES_CODE,LENGTH_WEIGHT_A_MALE,LENGTH_WEIGHT_B_MALE,LENGTH_WEIGHT_A_FEMALE,LENGTH_WEIGHT_B_FEMALE,LENGTH_WEIGHT_A_UNSPECIFIED,LENGTH_WEIGHT_B_UNSPECIFIED,MAXIMUM_LENGTH,MATURE_LENGTH,LENGTH_TYPE,LENGTH_UNITS,WEIGHT_TYPE,WEIGHT_UNITS
+Georges Bank,10,0.006533374,3.085052576,0.006533374,3.085052576,0.006533374,3.085052576,140,30,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,11,0.008389364,3.032280124,0.008389364,3.032280124,0.008389364,3.032280124,90,20,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,12,0.003065658,3.237492109,0.003065658,3.237492109,0.003065658,3.237492109,120,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,13,0.002846173,3.228043316,0.002846173,3.228043316,0.002846173,3.228043316,120,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,14,0.003290168,3.185513377,0.003576634,3.164515151,0.005852643,2.980706907,75,15,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,15,0.004195648,3.213912388,0.004195648,3.213912388,0.004195648,3.213912388,100,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,16,0.008911857,3.040442223,0.008911857,3.040442223,0.008911857,3.040442223,105,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,19,0.002194467,3.334205461,0.002194467,3.334205461,0.002194467,3.334205461,120,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,20,0.009964753,3.117957121,0.009964753,3.117957121,0.009964753,3.117957121,29,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,23,0.0105072,3.111076848,0.0105072,3.111076848,0.0105072,3.111076848,60,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,30,0.004521918,3.210222773,0.004521918,3.210222773,0.004521918,3.210222773,200,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,31,0.003450993,3.244593144,0.003450993,3.244593144,0.003450993,3.244593144,200,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,40,0.003892399,3.200923552,0.003892399,3.200923552,0.003892399,3.200923552,95,15,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,41,0.002533558,3.239304939,0.002533558,3.239304939,0.002533558,3.239304939,100,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,42,0.004452525,3.171060631,0.004452525,3.171060631,0.004452525,3.171060631,100,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,43,0.00965237,3.051055396,0.00965237,3.051055396,0.00965237,3.051055396,100,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,44,0.008751771,2.916653022,0.008751771,2.916653022,0.008751771,2.916653022,100,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,49,,,,,,,100,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,50,0.007678756,3.027006157,0.007678756,3.027006157,0.007678756,3.027006157,120,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,51,0.006912118,3.087304625,0.006912118,3.087304625,0.006912118,3.087304625,120,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,52,0.013938513,2.904192151,0.013938513,2.904192151,0.013938513,2.904192151,100,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,60,3.25E-06,3.121436385,3.25E-06,3.121436385,3.25E-06,3.121436385,400,0,Total Length,Millimeters,Total Weight,Grams
+Georges Bank,61,0.005161678,3.243783805,0.005161678,3.243783805,0.005161678,3.243783805,55,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,62,0.007059552,3.156102257,0.007059552,3.156102257,0.007059552,3.156102257,35,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,64,0.002972159,3.196063666,0.002972159,3.196063666,0.002972159,3.196063666,30,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,70,0.003055827,3.32297441,0.003055827,3.32297441,0.003055827,3.32297441,45,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,112,0.003516692,3.134647889,0.003516692,3.134647889,0.003516692,3.134647889,120,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,114,0.002934873,3.137164324,0.002934873,3.137164324,0.002934873,3.137164324,200,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,118,0.011204752,3.014441033,0.011204752,3.014441033,0.011204752,3.014441033,47,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,122,0.008356669,3.178785125,0.008356669,3.178785125,0.008356669,3.178785125,48,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,123,0.012291552,3.100020972,0.012291552,3.100020972,0.012291552,3.100020972,50,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,138,0.035023584,2.589853495,0.035023584,2.589853495,0.035023584,2.589853495,17,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,141,0.001983401,3.434116925,0.001983401,3.434116925,0.001983401,3.434116925,100,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,142,0.00258478,3.319485107,0.00258478,3.319485107,0.00258478,3.319485107,100,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,143,0.010701287,3.002235565,0.010701287,3.002235565,0.010701287,3.002235565,50,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,146,0.004224269,3.183683918,0.004224269,3.183683918,0.004224269,3.183683918,21,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,150,0.079494911,1.934393754,0.079494911,1.934393754,0.079494911,1.934393754,20,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,152,0.253052985,1.327714089,0.253052985,1.327714089,0.253052985,1.327714089,14,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,156,0.00473636,3.173587075,0.00473636,3.173587075,0.00473636,3.173587075,24,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,157,0.120188216,1.773603229,0.120188216,1.773603229,0.120188216,1.773603229,13,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,159,0.001256001,3.056126997,0.001256001,3.056126997,0.001256001,3.056126997,140,30,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,160,0.003326634,3.277181773,0.003326634,3.277181773,0.003326634,3.277181773,46,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,164,0.012442321,2.985648934,0.012442321,2.985648934,0.012442321,2.985648934,49,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,165,0.003437893,3.365336283,0.003437893,3.365336283,0.003437893,3.365336283,,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,180,0.016568959,2.700942392,0.016568959,2.700942392,0.016568959,2.700942392,14,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,194,0.013343961,2.805097968,0.013343961,2.805097968,0.013343961,2.805097968,44,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,200,0.001748675,3.250461742,0.001748675,3.250461742,0.001748675,3.250461742,150,0,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,201,0.007477269,3.060128713,0.007477269,3.060128713,0.007477269,3.060128713,150,0,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,202,0.00398299,3.037292267,0.00398299,3.037292267,0.00398299,3.037292267,100,0,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,203,0.003718657,3.124869859,0.003718657,3.124869859,0.003718657,3.124869859,100,0,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,204,0.003011441,3.191074683,0.003011441,3.191074683,0.003011441,3.191074683,150,0,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,216,0.197120986,2.447632107,0.197120986,2.447632107,0.197120986,2.447632107,105,,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,220,0.003919342,2.969863214,0.002424478,3.110990018,0.003919342,2.969863214,120,0,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,221,0.003932982,3.042745995,0.003932982,3.042745995,0.003932982,3.042745995,100,0,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,222,0.000772588,3.313875447,0.000772588,3.313875447,0.000772588,3.313875447,105,,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,223,0.002029068,3.295018538,0.002029068,3.295018538,0.002029068,3.295018538,96,,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,224,0.001540888,3.313910001,0.001540888,3.313910001,0.001540888,3.313910001,68,,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,227,0.01338062,2.767744667,0.01338062,2.767744667,0.01338062,2.767744667,16,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,241,0.009304591,2.373915412,0.009304591,2.373915412,0.009304591,2.373915412,200,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,243,,,,,,,300,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,247,0.160648546,2.405773414,0.160648546,2.405773414,0.160648546,2.405773414,46,,Pre Anal Fin Length,Millimeters,Total Weight,Grams
+Georges Bank,248,0.126881632,2.49245194,0.126881632,2.49245194,0.126881632,2.49245194,79,,Pre Anal Fin Length,Millimeters,Total Weight,Grams
+Georges Bank,252,0.001202633,3.686133967,0.001202633,3.686133967,0.001202633,3.686133967,17,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,293,0.000404309,4.371465244,0.000404309,4.371465244,0.000404309,4.371465244,9,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,300,0.007997644,3.072785883,0.007997644,3.072785883,0.007997644,3.072785883,200,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,301,0.010508349,3.096977792,0.010508349,3.096977792,0.010508349,3.096977792,47,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,302,0.008431572,3.132769734,0.008431572,3.132769734,0.008431572,3.132769734,46,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,303,0.08006,2.088,0.08006,2.088,0.08006,2.088,20,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,304,0.007508296,2.976934055,0.007508296,2.976934055,0.007508296,2.976934055,17,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,305,0.013736694,2.851639389,0.013736694,2.851639389,0.013736694,2.851639389,14,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,306,0.055755451,2.211620373,0.055755451,2.211620373,0.055755451,2.211620373,36,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,309,0.327644873,1.143239461,0.327644873,1.143239461,0.327644873,1.143239461,8,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,313,0.011925028,3.002330229,0.011925028,3.002330229,0.011925028,3.002330229,17,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,317,0.003736405,3.320753534,0.003736405,3.320753534,0.003736405,3.320753534,17,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,320,0.009806431,3.169587624,0.009806431,3.169587624,0.009806431,3.169587624,200,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,323,0.147238638,1.701188742,0.147238638,1.701188742,0.147238638,1.701188742,12,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,329,0.005627208,3.094722456,0.005627208,3.094722456,0.005627208,3.094722456,31,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,330,0.011241398,2.865554112,0.011241398,2.865554112,0.011241398,2.865554112,17,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,340,0.064761171,1.562198382,0.064761171,1.562198382,0.064761171,1.562198382,25,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,350,0.003502334,2.955037336,0.003502334,2.955037336,0.003502334,2.955037336,24,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,376,1.003703739,0.650521427,1.003703739,0.650521427,1.003703739,0.650521427,6,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,384,0.064029242,2.703475322,0.064029242,2.703475322,0.064029242,2.703475322,12,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,400,0.026132452,2.871423451,0.026132452,2.871423451,0.026132452,2.871423451,100,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,410,0.822408478,2.400757196,0.822408478,2.400757196,0.822408478,2.400757196,36,0,Pre Anal Fin Length,Millimeters,Total Weight,Grams
+Georges Bank,411,0.015641168,3.499496965,0.015641168,3.499496965,0.015641168,3.499496965,61,1,Pre Anal Fin Length,Millimeters,Total Weight,Grams
+Georges Bank,412,0.000571405,3.542276666,0.000571405,3.542276666,0.000571405,3.542276666,52,1,Pre Anal Fin Length,Millimeters,Total Weight,Grams
+Georges Bank,414,0.24621098,2.900969656,0.24621098,2.900969656,0.24621098,2.900969656,60,1,Pre Anal Fin Length,Millimeters,Total Weight,Grams
+Georges Bank,455,0.005455366,2.418777781,0.005455366,2.418777781,0.005455366,2.418777781,43,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,478,0.001135328,3.816733263,0.001135328,3.816733263,0.001135328,3.816733263,14,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,501,0.062201403,2.942108973,0.062201403,2.942108973,0.062201403,2.942108973,100,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,502,0.083868828,2.859426481,0.083868828,2.859426481,0.083868828,2.859426481,12,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,503,0.012952179,2.995046933,0.012952179,2.995046933,0.012952179,2.995046933,140,30,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,506,0.073520958,2.112598284,0.073520958,2.112598284,0.073520958,2.112598284,7,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,520,0.033491937,2.558017417,0.033491937,2.558017417,0.033491937,2.558017417,13,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,526,0.026607562,2.787813328,0.026607562,2.787813328,0.026607562,2.787813328,14,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,558,0.054389568,2.109465132,0.054389568,2.109465132,0.054389568,2.109465132,17,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,576,0.014480716,2.801665268,0.014480716,2.801665268,0.014480716,2.801665268,12,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,588,0.500476908,1.532936512,0.500476908,1.532936512,0.500476908,1.532936512,38,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,590,0.001742,3.11985,0.00174,3.1198,0.00174,3.1198,26,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,594,0.005085081,3.163186989,0.005085081,3.163186989,0.005085081,3.163186989,84,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,595,0.011768999,3.214273183,0.011768999,3.214273183,0.011768999,3.214273183,16,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,600,0.000741922,3.138608713,0.000741922,3.138608713,0.000741922,3.138608713,43,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,602,0.000621169,3.050715239,0.000621169,3.050715239,0.000621169,3.050715239,76,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,604,0.000550106,2.354536247,0.000550106,2.354536247,0.000550106,2.354536247,96,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,607,0.000179237,3.31527155,0.000179237,3.31527155,0.000179237,3.31527155,41,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,608,0.000144454,3.599731881,0.000144454,3.599731881,0.000144454,3.599731881,68,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,610,0.004856673,2.686890945,0.004856673,2.686890945,0.004856673,2.686890945,200,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,612,0.000756328,3.01089307,0.000756328,3.01089307,0.000756328,3.01089307,29,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,613,0.000247719,2.932662169,0.000247719,2.932662169,0.000247719,2.932662169,75,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,614,0.009110687,2.151677681,0.009110687,2.151677681,0.009110687,2.151677681,99,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,619,0.002267611,3.132018926,0.002267611,3.132018926,0.002267611,3.132018926,54,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,620,0.003667146,3.083939232,0.003667146,3.083939232,0.003667146,3.083939232,52,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,622,0.031048591,1.954241983,0.031048591,1.954241983,0.031048591,1.954241983,40,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,623,0.001938,3.091221,0.001938,3.091221,0.001938,3.091221,38,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,625,0.008906834,2.916240811,0.008906834,2.916240811,0.008906834,2.916240811,41,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,627,0.002751369,2.997200488,0.002751369,2.997200488,0.002751369,2.997200488,22,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,630,0.001298803,3.118964112,0.001298803,3.118964112,0.001298803,3.118964112,40,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,631,0.404468485,0.915536111,0.404468485,0.915536111,0.404468485,0.915536111,21,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,632,0.057120663,1.807775265,0.057120663,1.807775265,0.057120663,1.807775265,15,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,633,0.001364946,3.209469278,0.001364946,3.209469278,0.001364946,3.209469278,19,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,635,0.026357538,2.469872299,0.026357538,2.469872299,0.026357538,2.469872299,23,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,640,0.00166258,3.221156427,0.00166258,3.221156427,0.00166258,3.221156427,200,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,647,0.002680558,3.067863274,0.002680558,3.067863274,0.002680558,3.067863274,56,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,649,0.015726536,2.605966451,0.015726536,2.605966451,0.015726536,2.605966451,38,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,650,0.005522579,2.714627792,0.005522579,2.714627792,0.005522579,2.714627792,32,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,701,0.008937952,3.280558802,0.008937952,3.280558802,0.008937952,3.280558802,27,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,702,0.001506055,2.565531038,0.001506055,2.565531038,0.001506055,2.565531038,27,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,704,0.035630459,2.689060428,0.035630459,2.689060428,0.035630459,2.689060428,48,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,708,0.085331553,1.964885075,0.085331553,1.964885075,0.085331553,1.964885075,8,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,712,0.000979077,3.105060258,0.000979077,3.105060258,0.000979077,3.105060258,28,0,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,716,0.003697573,3.064521225,0.003697573,3.064521225,0.003697573,3.064521225,26,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,724,0.00811818,3.001562482,0.00811818,3.001562482,0.00811818,3.001562482,79,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,725,0.001577196,3.627704981,0.001577196,3.627704981,0.001577196,3.627704981,17,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,729,0.006950603,2.911887001,0.006950603,2.911887001,0.006950603,2.911887001,28,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,732,0.0000143,3.908490251,0.0000143,3.908490251,0.0000143,3.908490251,56,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,743,0.018316064,2.967262863,0.018316064,2.967262863,0.018316064,2.967262863,27,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,745,0.003424547,2.965299944,0.003424547,2.965299944,0.003424547,2.965299944,22,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,749,0.001415254,3.526310309,0.001415254,3.526310309,0.001415254,3.526310309,48,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,756,2.912316356,0.047700897,2.912316356,0.047700897,2.912316356,0.047700897,16,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,759,5.59E-07,4.966257931,5.59E-07,4.966257931,5.59E-07,4.966257931,25,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,774,0.108316852,2.421506743,0.108316852,2.421506743,0.108316852,2.421506743,15,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,777,0.078636444,2.388150159,0.078636444,2.388150159,0.078636444,2.388150159,10,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,784,0.000000616,4.760643425,0.000000616,4.760643425,0.000000616,4.760643425,89,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,795,0.01481918,2.949577532,0.01481918,2.949577532,0.01481918,2.949577532,15,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,811,0.024557917,2.676375703,0.024557917,2.676375703,0.024557917,2.676375703,9,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,814,0.000612878,3.503723739,0.000612878,3.503723739,0.000612878,3.503723739,53,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,819,0.000300798,3.839901831,0.000300798,3.839901831,0.000300798,3.839901831,24,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,862,0.005321484,2.921965201,0.005321484,2.921965201,0.005321484,2.921965201,38,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,863,0.000675182,3.819159326,0.000675182,3.819159326,0.000675182,3.819159326,16,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,865,0.001905231,2.697687594,0.001905231,2.697687594,0.001905231,2.697687594,47,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,866,0.05820583,2.449539695,0.05820583,2.449539695,0.05820583,2.449539695,8,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,880,0.058434192,2.185297826,0.058434192,2.185297826,0.058434192,2.185297826,13,1,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,883,0.028245762,2.155468019,0.028245762,2.155468019,0.028245762,2.155468019,15,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,909,0.017164694,2.479710686,0.017164694,2.479710686,0.017164694,2.479710686,15,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,924,0.033481278,2.590877707,0.033481278,2.590877707,0.033481278,2.590877707,13,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,947,0.001895304,3.154572035,0.001895304,3.154572035,0.001895304,3.154572035,87,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,967,0.427816478,1.784989868,0.427816478,1.784989868,0.427816478,1.784989868,40,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,983,0.003385171,3.009604231,0.003385171,3.009604231,0.003385171,3.009604231,86,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,1006,0.032659698,2.914162463,0.032659698,2.914162463,0.032659698,2.914162463,13,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,1028,0.002028787,2.679148032,0.002028787,2.679148032,0.002028787,2.679148032,50,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,1030,0.004082759,2.463704168,0.004082759,2.463704168,0.004082759,2.463704168,45,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,1054,0.000491267,3.541318302,0.000491267,3.541318302,0.000491267,3.541318302,44,,Fork Length,Centimeters,Total Weight,Grams
+Georges Bank,1064,0.005576727,2.750887561,0.005576727,2.750887561,0.005576727,2.750887561,21,,,,Total Weight,Grams
+Georges Bank,1191,0.003944924,3.100458419,0.003944924,3.100458419,0.003944924,3.100458419,45,40,Total Length,Centimeters,Total Weight,Grams
+Georges Bank,1215,1.830350527,0.149087575,1.830350527,0.149087575,1.830350527,0.149087575,8,,,,Total Weight,Grams
+Georges Bank,1264,0.000288476,3.607992304,0.000288476,3.607992304,0.000288476,3.607992304,82,,,,Total Weight,Grams
+Georges Bank,2000,,,,,,,200,30,Carapace Width,Centimeters,Total Weight,Grams
+Georges Bank,2510,0.001005798,2.529322246,0.001005798,2.529322246,0.001005798,2.529322246,91,,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2511,0.000653113,2.660699052,0.00076391,2.634900135,0.000356119,2.793699702,200,30,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2512,,,,,,,200,30,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2513,0.000862121,2.591496226,0.000628127,2.688610244,0.000862121,2.591496226,200,30,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2519,,,,,,,200,30,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2520,0.00267896,2.605361663,0.00267896,2.605361663,0.00267896,2.605361663,71,,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2521,0.003863273,2.468613495,0.005602592,2.342288037,0.003863273,2.468613495,200,30,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2523,0.000418172,2.975230986,0.000675325,2.864012354,0.000600879,2.892754952,200,30,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2526,0.000607389,2.874906611,0.000807165,2.785823547,0.000607389,2.874906611,200,30,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2527,0.006851101,2.316898273,0.006851101,2.316898273,0.006851101,2.316898273,200,30,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2528,0.000303417,3.128240376,0.000303417,3.128240376,0.000303417,3.128240376,200,30,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2531,,,,,,,200,30,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2532,0.000307093,2.95760254,0.00041992,2.866609204,0.000307093,2.95760254,200,30,Carapace Width,Millimeters,Total Weight,Grams
+Georges Bank,2541,10.08667643,-0.517203017,10.08667643,-0.517203017,10.08667643,-0.517203017,20,,,,Total Weight,Grams
+Georges Bank,2550,0.001280624,2.89622584,0.001887698,2.813595167,0.001280624,2.89622584,200,30,Carapace Length,Millimeters,Total Weight,Grams
+Georges Bank,2555,0.00465162,2.544335954,0.00465162,2.544335954,0.00465162,2.544335954,26,,,,Total Weight,Grams
+Georges Bank,2556,0.096001742,1.376263934,0.096001742,1.376263934,0.096001742,1.376263934,28,,,,Total Weight,Grams
+Georges Bank,4321,0.0000938,3.053237564,0.0000938,3.053237564,0.0000938,3.053237564,200,30,Shell Height,Millimeters,Total Weight,Grams
+Georges Bank,4322,0.000221465,2.89276172,0.000221465,2.89276172,0.000221465,2.89276172,200,30,Shell Height,Millimeters,Total Weight,Grams
+Georges Bank,4500,1.613608485,1.536377364,1.613608485,1.536377364,1.613608485,1.536377364,200,30,Mantle Length,Centimeters,Total Weight,Grams
+Georges Bank,4511,0.131646943,2.35342574,0.131646943,2.35342574,0.131646943,2.35342574,100,0,Mantle Length,Centimeters,Total Weight,Grams
+Georges Bank,4512,0.150674731,2.341089219,0.150674731,2.341089219,0.150674731,2.341089219,200,30,Mantle Length,Centimeters,Total Weight,Grams
+Georges Bank,4541,0.253463031,2.208974516,0.253463031,2.208974516,0.253463031,2.208974516,19,,Mantle Length,Centimeters,Total Weight,Grams
+Georges Bank,4584,0.20169762,2.139142289,0.20169762,2.139142289,0.20169762,2.139142289,15,,Mantle Length,Centimeters,Total Weight,Grams
+Georges Bank,9999,0.01,3,0.01,3,0.01,3,200,0,,Centimeters,Total Weight,Grams
+Comparative,17,0.004524,3.17753,0.004524,3.17753,0.004524,3.17753,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,39,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,63,0.000786,3.75,0.000786,3.75,0.000786,3.75,22,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,65,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,94,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,113,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,115,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,147,0.00917,2.67,0.00917,2.67,0.00917,2.67,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,149,0.0088,2.91,0.0088,2.91,0.0088,2.91,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,155,0.0897,2.03,0.0897,2.03,0.0897,2.03,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,158,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,163,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,169,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,176,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,182,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,207,0.00944,2.84,0.00944,2.84,0.00944,2.84,,,Total Length,Centimeters,Total Weight,Grams
+Comparative,211,,,,,,,,,Total Length,Centimeters,Total Weight,Grams
+Comparative,240,0.0215,2.31,0.0215,2.31,0.0215,2.31,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,286,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,307,0.0111,3.21,0.0111,3.21,0.0111,3.21,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,308,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,314,0.00468,3.31,0.00468,3.31,0.00468,3.31,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,331,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,341,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,351,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,500,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,504,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,505,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,511,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,512,0.00648,3.28,0.00648,3.28,0.00648,3.28,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,593,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,601,0.00092,3.16,0.00092,3.16,0.00092,3.16,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,603,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,616,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,617,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,621,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,626,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,637,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,642,,,,,,,69,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,646,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,656,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,689,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,700,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,709,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,711,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,714,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,720,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,740,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,741,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,742,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,744,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,771,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,805,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,816,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,844,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,845,,,,,,,,,Fork Length,Centimeters,Total Weight,Grams
+Comparative,4514,,,,,,,,,Mantle Length,Centimeters,Total Weight,Grams
