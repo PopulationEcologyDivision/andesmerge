@@ -20,7 +20,7 @@ createInsertIntoSampReq <- function(protocol, rawFile){
   for(i in 1:dim(x)[1]){
     str1 = "("
     str2  = paste(sampling.id, 1 ,1, x[i,]$SPECIES_CODE, x[i,]$LENGTH_WEIGHT_A_MALE, x[i,]$LENGTH_WEIGHT_B_MALE, x[i,]$LENGTH_WEIGHT_A_FEMALE, x[i,]$LENGTH_WEIGHT_B_FEMALE, x[i,]$LENGTH_WEIGHT_A_UNSPECIFIED, x[i,]$LENGTH_WEIGHT_B_UNSPECIFIED, x[i,]$MAXIMUM_LENGTH, x[i,]$MATURE_LENGTH, x[i,]$LENGTH_TYPE, x[i,]$LENGTH_UNITS, x[i,]$WEIGHT_TYPE, x[i,]$WEIGHT_UNITS,0, 25,"NULL","NULL","NULL",0,"'2021-10-08 18:00:43.364000000'","'2021-10-08 18:00:43.364000000'","NULL","NULL","NULL",'NULL',0,"NULL",  sep=",")
-    if(i == dim(x[1])){
+    if(i == dim(x)[1]){
       str3 = ")"  
     }else{
       str3 = "),"  
@@ -65,7 +65,7 @@ createInsertIntoObsGrp <- function(protocol, rawFile){
     #need to fix this, add commas
     str2  = paste0("'",x[i,]$OBSERVATION_GROUP,"', ","'",x[i,]$OBSERVATION_GROUP,"',",x[i,]$WHEN_FISH_NUMBER,",", x[i,]$PROCESS_ORDER,",", x[i,]$ACTIVE,",", x[i,]$MIN_LENGTH,",", x[i,]$MAX_LENGTH,",", x[i,]$STRATIFY_BY_SEX,",", x[i,]$LENGTH_GROUP,",", 1,",", x[i,]$NUM_OBS_LENGTH_GROUP,","," NULL,'2022-01-15 01:46:31.021323000'",",'2022-01-15 01:46:31.021323000'",",",10,",",10,",", "(select id from shared_models_samplingrequirement sms where sampling_protocol_id = ",protocol," AND species_id = ",x[i,]$SPECIES_CODE,")")
     
-    if(i == dim(x[1])){
+    if(i == dim(x)[1]){
       str3 = ")"  
     }else{
       str3 = "),"  
@@ -116,7 +116,7 @@ createInsertIntoObsFields <- function(protocol, rawFile){
     str2  = paste0(x[i,]$ACTIVE,",",x[i,]$LV1_OBSERVATION,",",x[i,]$PROCESS_ORDER,
                    ", (select id from shared_models_observationgroup smo where name = '", x[i,]$OBSERVATION_GROUP, "'  AND sampling_requirement_id = (select id from shared_models_samplingrequirement sms where sampling_protocol_id = ",
                    sampling.id, " AND species_id = " ,x[i,]$SPECIES_CODE,"))")
-    if(i == dim(x[1])){
+    if(i == dim(x)[1]){
       str3 = ")"  
     }else{
       str3 = "),"  
