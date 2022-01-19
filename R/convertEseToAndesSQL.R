@@ -9,10 +9,10 @@ createInsertIntoSampReq <- function(protocol, rawFile){
   
   x = read.csv(file=paste0(base,rawFile))
   
-  x$LENGTH_TYPE = as.numeric(andesmerge::convertLengthType(x$LENGTH_TYPE))
-  x$LENGTH_UNITS = as.numeric(andesmerge::convertLengthUnits(x$LENGTH_UNITS))
-  x$WEIGHT_TYPE  = as.numeric(andesmerge::convertWeighType(x$WEIGHT_TYPE))
-  x$WEIGHT_UNITS = as.numeric(andesmerge::convertWeightUnits(x$WEIGHT_UNITS))
+  x$LENGTH_TYPE = as.numeric(convertLengthType(x$LENGTH_TYPE))
+  x$LENGTH_UNITS = as.numeric(convertLengthUnits(x$LENGTH_UNITS))
+  x$WEIGHT_TYPE  = as.numeric(convertWeighType(x$WEIGHT_TYPE))
+  x$WEIGHT_UNITS = as.numeric(convertWeightUnits(x$WEIGHT_UNITS))
   
   df <- data.frame(matrix(ncol = 1, nrow = 0))
   str.insert = "insert into shared_models_samplingrequirement (sampling_protocol_id,sample_by_default,rounding_rule, species_id ,a_male ,b_male, a_female, b_female, a_unk, b_unk, max_length,mature_length_unk,length_type,length_unit,weight_type,weight_unit,wait_for_sex, tolerance_threshold,immature_code,mature_length_male,mature_length_female, prompt_for_specimen_count,created_at, updated_at, created_by_id, last_modified_by_id,maturity_observation_type_id,min_length, always_collect_sex, max_basket_weight) values "
@@ -53,8 +53,8 @@ createInsertIntoSampReq <- function(protocol, rawFile){
 createInsertIntoObsGrp <- function(protocol, rawFile){
   x = read.csv(file=paste0(base,rawFile))
   
-  x$ACTIVE = andesmerge::convertYesNo(x$ACTIVE)
-  x$STRATIFY_BY_SEX = andesmerge::convertYesNo(x$STRATIFY_BY_SEX)
+  x$ACTIVE = convertYesNo(x$ACTIVE)
+  x$STRATIFY_BY_SEX = convertYesNo(x$STRATIFY_BY_SEX)
   x$WHEN_FISH_NUMBER = 1  # need to ask Jaies what this is supposed to  be
   
   
@@ -99,8 +99,8 @@ createInsertIntoObsFields <- function(protocol, rawFile){
   
   x = read.csv(file=paste0(base,rawFile))
   
-  x$LV1_OBSERVATION = andesmerge::convertFieldType(x$LV1_OBSERVATION)
-  x$ACTIVE  = andesmerge::convertYesNo(x$ACTIVE)
+  x$LV1_OBSERVATION = convertFieldType(x$LV1_OBSERVATION)
+  x$ACTIVE  = convertYesNo(x$ACTIVE)
   
   #is_active =  x[i,]$ACTIVE
   #process_order = x[i,]$PROCESS_ORDER

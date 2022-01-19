@@ -58,6 +58,7 @@ convertLengthUnits <- function(x){
 #' @family internal
 #' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
 #' @export
+#' 
 convertLengthType <- function(x){
   # Codes from the data_fixtures folder in Andes.  These values are hard coded and there is no lookup tables for them 
   # Note that these could change and would need updating here

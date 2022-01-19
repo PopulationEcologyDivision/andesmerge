@@ -22,9 +22,20 @@ primary key for identifying unique rows
 }
 \seealso{
 Other internal: 
+\code{\link{base}},
 \code{\link{cleanEse}()},
+\code{\link{convertFieldType}()},
+\code{\link{convertLengthType}()},
+\code{\link{convertLengthUnits}()},
+\code{\link{convertWeighType}()},
+\code{\link{convertWeightUnits}()},
+\code{\link{convertYesNo}()},
+\code{\link{createInsertIntoObsFields}()},
+\code{\link{createInsertIntoObsGrp}()},
+\code{\link{createInsertIntoSampReq}()},
 \code{\link{getEseTables}()},
-\code{\link{getKeyFields}()}
+\code{\link{getKeyFields}()},
+\code{\link{get_value}()}
 }
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}

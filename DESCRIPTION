@@ -1,6 +1,6 @@
 Package: andesmerge
 Title: stuff
-Version: 2021.11.18
+Version: 2022.01.19
 Authors@R: c(
             person(given = "Pablo",
             family = "Vergara",
@@ -14,6 +14,7 @@ Description: This package does stuff...
 Depends:
     R (>= 2.10)
 Imports:
+    here,
     Mar.utils,
     stringi,
 	stringr,
