@@ -1,0 +1,4 @@
+insert into shared_models_observationgroup_sexes (observationgroup_id, observationtypecategory_id) values 
+((select id from shared_models_observationgroup where sampling_requirement_id = (select id from shared_models_samplingrequirement sms where sampling_protocol_id =20 and species_id = 2550) AND name = 'Berried Females' ),66),
+((select id from shared_models_observationgroup where sampling_requirement_id = (select id from shared_models_samplingrequirement sms where sampling_protocol_id =20 and species_id = 2550) AND name = 'Females' ),66),
+((select id from shared_models_observationgroup where sampling_requirement_id = (select id from shared_models_samplingrequirement sms where sampling_protocol_id =20 and species_id = 2550) AND name = 'Males' ),65)

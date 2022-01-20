@@ -29,6 +29,58 @@ convertYesNo <- function(x){
   return(x)
 }
 
+
+
+#' @title convertStrata
+#' @description This function returns converted strata table.  Needed to expand zone 5Z3 and 5Z4 
+#' @return converted sex codes
+#' @family internal
+#' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
+#' @export
+#' 
+convertStrata <- function(x){
+  # zone 5Z3 is expanded to 5Z31, 5Z32, 5Z33 and 5Z34
+  # zone 5Z4 is expanded to 5Z41 and 5Z42 
+  
+  # zone and number of subdivisions for each of the zones
+  df = data.frame(strat = c("5Z3", "5Z4"), num = c(4      ,2))
+  
+  # HAck here since areas are defined with more precision on Andes. convert the data frame before processing
+  for(j in 1:dim(df)[1]){
+    index = x$STRATUM == df[j,]$strat
+    tmp = x[index,]
+    x = x[!index,]
+    # replicate lines as many times as needed
+    Z <- tmp[rep(seq_len(nrow(tmp)), each = df[j,]$num),] 
+    # increment the number at end of strata
+    for(i in 1:dim(Z)[1]){ Z[i,]$STRATUM = paste0(df[j,]$strat,i - df[j,]$num*(floor(i/(df[j,]$num + 0.1)))) }
+    
+    x = rbind(x, Z)
+  }
+  return(x)
+}
+
+
+
+#' @title convertSex
+#' @description This function returns converted sex codes
+#' @return converted sex codes
+#' @family internal
+#' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
+#' @export
+#' 
+convertSex <- function(x){
+  
+  ESE.vals <- list("1" = 65,
+                   "2" = 66,
+                   "3" = 66) # will use same code for berried female for now.  
+  
+  ESE.vals = unlist(ESE.vals)
+  x = get_value(x, ESE.vals)
+  
+  return(x)
+}
+
 #' @title convertLengthUnits
 #' @description This function returns index values used by andes for given string in ESE
 #' @return numeric value representing of index
