@@ -16,7 +16,7 @@ basketTweaks <- function(x = NULL, quiet = FALSE){
   mission = x$MISSION[1]
   
   # Parse tweaks by mission #
-  if (!quiet) message("Atempting to perform tweaks on Basket data for mission  ", mission)
+  if (!quiet) message("Attempting to perform tweaks on Basket data for mission  ", mission)
   
   # Tweaks FOR 2021 data on the Cartier
   if(mission == "CJC2021222"){
@@ -57,7 +57,7 @@ catchTweaks <- function(x = NULL, quiet = FALSE){
   mission = x$MISSION[1]
   
   # Parse tweaks by mission #
-  if (!quiet) message("Atempting to perform tweaks on Basket data for mission  ", mission)
+  if (!quiet) message("Attempting to perform tweaks on Basket data for mission  ", mission)
   
   # Tweaks FOR 2021 data on the Cartier
   if(mission == "CJC2021222"){
@@ -92,7 +92,7 @@ specimenTweaks <- function(x = NULL, quiet = FALSE){
   mission = x$MISSION[1]
   
   # Parse tweaks by mission #
-  if (!quiet) message("Atempting to perform tweaks on Specimen data for mission  ", mission)
+  if (!quiet) message("Attempting to perform tweaks on Specimen data for mission  ", mission)
   
   # Tweaks FOR 2021 data on the Cartier
   if(mission == "CJC2021222"){
@@ -100,7 +100,6 @@ specimenTweaks <- function(x = NULL, quiet = FALSE){
   }
   
   #...  
-  
   if (!quiet & !is.na(tweaksPerformedOn)) message("Tweaks were performed on Specimen data for mission ", tweaksPerformedOn)
   
   return(x)
@@ -127,7 +126,7 @@ setTweaks <- function(x = NULL, quiet = FALSE){
   mission = x$MISSION[1]
   
   # Parse tweaks by mission #
-  if (!quiet) message("Atempting to perform tweaks on Set data for mission  ", mission)
+  if (!quiet) message("Attempting to perform tweaks on Set data for mission  ", mission)
   
   # Tweaks FOR 2021 data on the Cartier
   if(mission == "CJC2021222"){
