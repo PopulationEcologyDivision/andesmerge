@@ -11,8 +11,7 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
   #library(stringi)
   
   # load Andes  CSV files extracted from server at end of survey
-  andesmerge::loadData(dataPath = dataPath)
-  
+  loadData(dataPath = dataPath)
   # Object names created from load could change, Change here if needed
   set      = tmp_set_data
   catch    = tmp_catch_data
@@ -21,6 +20,20 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
   specimen = tmp_specimen_data
   cruise   = tmp_cruise_data
   rm(list=c("tmp_set_data","tmp_catch_data","tmp_basket_data","tmp_obs_types_data", "tmp_specimen_data","tmp_cruise_data"), envir = .GlobalEnv)
+ 
+  ### This was added in response to some missing cursory data - seems like exporting the data too
+  ### early will likely result in this not being as rare an event as we might hop
+  if (nrow(set[nchar(set[["experiment_type"]])==0 &
+               nchar(set[["start_date"]])==0 &
+              nchar(set[["end_date"]])==0,])>0){
+    bad <- sort(unique(set[nchar(set[["experiment_type"]])==0 &
+                 nchar(set[["start_date"]])==0 &
+                 nchar(set[["end_date"]])==0,"set_number"]))
+    warning("\n!!One or more sets had a bunch of empty fields.  These sets have been dropped to allow 
+the loading to proceed, but should be dealt with before finalizing the load: \nSet(s):", paste0(bad, collapse=","))
+    set<-set[!set$set_number %in% bad,]
+     }
+  
   # All tables will need this number
   missionNumber = gsub( "-","",cruise$mission_number)
   
@@ -42,10 +55,12 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
   # Match data for SET table 
   x$set$MISSION                  = missionNumber
   x$set$SETNO                    = set$set_number 
-  x$set$START_DATE               = as.integer(as.character(as.POSIXct(set$start_date, tz="UTC"), format='%d%m%Y'))
-  x$set$START_TIME               = as.integer(as.character(as.POSIXct(set$start_date, tz="UTC"), format='%H%M'))
-  x$set$END_DATE                 = as.integer(as.character(as.POSIXct(set$end_date, tz="UTC"), format='%d%m%Y'))
-  x$set$END_TIME                 = as.integer(as.character(as.POSIXct(set$end_date, tz="UTC"), format='%H%M'))
+  x$set$SDATE                    = strftime(as.POSIXlt(set$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S"))
+  x$set$TIME                     = as.integer(as.character(as.POSIXlt(set$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M'))
+  x$set$DUR                      = round(difftime(as.POSIXct(set$end_date, tz="UTC",format='%Y-%m-%d %H:%M:%S'), as.POSIXct(set$start_date, tz="UTC",format='%Y-%m-%d %H:%M:%S'), units = "mins"))
+  x$set$ETIME                    = as.integer(as.character(as.POSIXlt(set$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M'))
+
+  
   x$set$STRAT                    = stringi::stri_extract_last_regex(set$new_station, "\\d{3}")
   x$set$SLAT                     = round(as.numeric(paste0(set$start_latitude_DD,set$start_latitude_MMmm)),2)
   x$set$ELAT                     = round(as.numeric(paste0(set$end_latitude_DD,set$end_latitude_MMmm)),2)
@@ -117,11 +132,11 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
   x$specimen$SPEC        = specimen$species_code
   x$specimen$SIZE_CLASS  = specimen$size_class
   x$specimen$SPECIMEN_ID = specimen$id
-  
+
   x$specimen = specimenTweaks(x$specimen)
   
   # Match data for level 1 observations 
-  
+
   # Need to turn specimen table from wide format to long in order to have each observation on its own row
   tempSpecimen <- tidyr::gather(specimen, variable, value, 13:22)
   # remove all NA values
