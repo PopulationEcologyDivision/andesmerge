@@ -136,9 +136,8 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$specimen = specimenTweaks(x$specimen)
   
   # Match data for level 1 observations 
-
   # Need to turn specimen table from wide format to long in order to have each observation on its own row
-  tempSpecimen <- tidyr::gather(specimen, variable, value, 13:22)
+  tempSpecimen <- tidyr::gather(specimen, variable, value, 13:ncol(specimen))
   # remove all NA values
   tempSpecimen = tempSpecimen[!is.na(tempSpecimen$value),]
   # periods were introduced in the data frame names, they must be taken out before we can compare to other table  
