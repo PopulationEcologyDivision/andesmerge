@@ -14,7 +14,7 @@ loadData <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE){
   #add trailing "/" if necess
   if(substr(dataPath ,(nchar(dataPath)+1)-1,nchar(dataPath)) != "/")dataPath = paste0(dataPath,"/")
   
-  filenames <- list.files(dataPath, pattern=".*csv")
+  filenames <- list.files(dataPath, pattern="\\.csv$")
   if (length(filenames)<1)stop("No csv files found")
   for(i in 1:length(filenames))
   {
