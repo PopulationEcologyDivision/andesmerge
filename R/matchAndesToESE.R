@@ -77,6 +77,7 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$set$FORCE                    = set$wind_force_code
   x$set$CURNT                    = set$tide_direction_code # need to check if used
   x$set$EXPERIMENT_TYPE_CODE     = setExperimentType(set)
+  browser()
   x$set$GEAR                     = as.numeric(stringi::stri_extract_first_regex(set$gear_type, "[0-9]+"))  #assume this is correct (and not gear_type_id)
   x$set$AUX                      = as.numeric(stringi::stri_extract_first_regex(set$auxiliary_equipment, "[0-9]+"))
   x$set$NOTE                     = set$remarks
