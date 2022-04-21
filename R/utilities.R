@@ -112,6 +112,19 @@ addSizeClassToCatch <- function(basket, catch, quiet = FALSE){
   return(catch)
 }
 
+#' @title cleanfields
+#' @description This function takes a field and replaces various odd "smart" curly quotes and 
+#' apostrophes and replaces them with normal versions
+#' @param data default is \code{NULL}.  This is a field in a data frame 
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+cleanfields <- function(data= NULL){
+  #replace other stuff with nothing
+  data <- gsub(x = data, pattern = "â€™", replacement = "'") # replace curly apostrophe with '
+  data <- gsub(x = data, pattern = 'â€œ', replacement = '"') # replace curly open quote with "
+  data <- gsub(x = data, pattern = 'â€', replacement = '"') # replace curly close quote with "
+  return(data)
+}
 
 ##### PATH DEFINITON #####
 
