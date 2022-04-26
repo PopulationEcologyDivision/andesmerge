@@ -28,7 +28,7 @@ basketTweaks <- function(x = NULL, quiet = FALSE){
     #....
     tweaksPerformedOn = mission
   }
-  #...  
+
   
   if (!quiet & !is.na(tweaksPerformedOn)) message("Tweaks were performed on Basket data for mission ", tweaksPerformedOn)
   
@@ -64,8 +64,6 @@ catchTweaks <- function(x = NULL, quiet = FALSE){
     tweaksPerformedOn = mission
   }
   
-  #...  
-  
   if (!quiet & !is.na(tweaksPerformedOn)) message("Tweaks were performed on Catch data for mission ", tweaksPerformedOn)
   
   return(x)
@@ -98,7 +96,6 @@ specimenTweaks <- function(x = NULL, quiet = FALSE){
   if(mission == "CJC2021222"){
     tweaksPerformedOn = mission
   }
-  
   #...  
   if (!quiet & !is.na(tweaksPerformedOn)) message("Tweaks were performed on Specimen data for mission ", tweaksPerformedOn)
   
@@ -132,9 +129,12 @@ setTweaks <- function(x = NULL, quiet = FALSE){
   if(mission == "CJC2021222"){
     tweaksPerformedOn = mission
   }
-  
-  #...  
-  
+  if(mission == "CAR2022102"){
+    #NEST trawl is not 23, but 15 - change here; expect this will be corrected in the future
+    x[x$GEAR==23,"GEAR"] <- 15
+    tweaksPerformedOn = mission
+  }
+
   if (!quiet & !is.na(tweaksPerformedOn)) message("Tweaks were performed on Set data for mission ", tweaksPerformedOn)
   
   return(x)

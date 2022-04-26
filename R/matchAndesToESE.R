@@ -20,7 +20,6 @@ matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
   specimen = tmp_specimen_data
   cruise   = tmp_cruise_data
   rm(list=c("tmp_set_data","tmp_catch_data","tmp_basket_data","tmp_obs_types_data", "tmp_specimen_data","tmp_cruise_data"), envir = .GlobalEnv)
- 
   ### This was added in response to some missing cursory data - seems like exporting the data too
   ### early will likely result in this not being as rare an event as we might hop
   if (nrow(set[nchar(set[["experiment_type"]])==0 &
@@ -43,7 +42,7 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$cruise =   data.frame(matrix(NA, nrow = dim(cruise)[1], ncol = 0))
   x$cruise$MISSION <- missionNumber
   x$cruise$SAMPLING_REQUIREMENT <- cruise$area_of_operation
-  x$cruise$NOTE <- cruise$description
+  x$cruise$NOTE <- cleanfields(cruise$description)
   x$cruise$DATA_VERSION <- NA
   x$cruise$PROGRAM_TITLE <- 'Maritimes Bottom Trawl Surveys'
   
@@ -78,19 +77,16 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$set$CURNT                    = set$tide_direction_code # need to check if used
   x$set$EXPERIMENT_TYPE_CODE     = setExperimentType(set)
   x$set$GEAR                     = as.numeric(stringi::stri_extract_first_regex(set$gear_type, "[0-9]+"))  #assume this is correct (and not gear_type_id)
-  #MMM for Maritimes, NEST trawl is not 23, but 15 - change here
-  x$set[x$set$GEAR==23,"GEAR"] <- 15
   x$set$AUX                      = as.numeric(stringi::stri_extract_first_regex(set$auxiliary_equipment, "[0-9]+"))
-  x$set$NOTE                     = set$remarks
-  x$set$NOTE <- cleanfields(x$set$NOTE)
+  x$set$NOTE                     = cleanfields(set$remarks)
 
   x$set$STATION                  = stringi::stri_extract_first_regex(set$new_station, "\\d{3}")
   
   #following need to be reviewed with Maritimes data
   x$set$WARPOUT                  = set$port_warp
   x$set$AREA                     = NA # MMM - used, but not sure what it would map to yet
-  x$set$DMIN                     = NA   # = set$dmin/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
-  x$set$DMAX                     = NA   # = set$dmax/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
+  x$set$DMIN                     = NA # = set$dmin/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
+  x$set$DMAX                     = NA # = set$dmax/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
   x$set$SURFACE_TEMPERATURE      = NA # data to come later, not captured during survey
   x$set$BOTTOM_TEMPERATURE       = NA # data to come later, not captured during survey
   x$set$BOTTOM_SALINITY          = NA # data to come later, not captured during survey
@@ -119,7 +115,7 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   #CATCH data does not have size class info. That info is only available in the basket. 
   # We will simply put the default size class for now and then create the missing size class 2
   x$catch$SIZE_CLASS        = 1
-  x$catch$NOTE              = catch$notes
+  x$catch$NOTE              = cleanfields(catch$notes)
   x$catch$UNWEIGHED_BASKETS = catch$unweighed_baskets
   x$catch$NUMBER_CAUGHT     = catch$specimen_count  # need to verify that this field is what I think
   # New entries based on basket with size class of 2 will be entered here
@@ -173,6 +169,5 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   names(x)[which(names(x) == "catch")] <- "ESE_CATCHES"
   names(x)[which(names(x) == "specimen")] <- "ESE_SPECIMENS"
   names(x)[which(names(x) == "lv1_obs")] <- "ESE_LV1_OBSERVATIONS"
-  
   return(x) 
 }
