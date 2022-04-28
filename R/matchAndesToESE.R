@@ -1,13 +1,14 @@
 #' @title matchAndesToESE
 #' @description This function matches the new CSV dump from Andes to the old ESE table schema so that data can
 #' be loaded into Oracle.  
+#' @param dataPath default is \code{NULL}.  This is the location of the csv files exported from andes
 #' @param quiet default is \code{FALSE} Determines whether or not the script should output 
 #' informational messages 
 #' @return a list with all objects needed to load to Oracle
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
-matchAndesToESE <- function(dataPath = .andesData$defaultCsvPath, quiet = FALSE){
+matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
   #library(stringi)
   
   # load Andes  CSV files extracted from server at end of survey
@@ -106,8 +107,6 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   # perform tweaks to base data here
   x$basket = basketTweaks(x$basket)
   
-  
-  
   # Match data for CATCH table
   x$catch$MISSION           = missionNumber
   x$catch$SETNO             = catch$set_number
@@ -136,70 +135,18 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
 
   x$specimen = specimenTweaks(x$specimen)
   
-  
-  # Match data for level 1 observations 
-  # Need to turn specimen table from wide format to long in order to have each observation on its own row
-  specDets <- c(8,9,13:ncol(specimen))
-
-  tempSpecimen <- tidyr::gather(specimen, variable, value, all_of(specDets))
-  
-  tempSpecimen_Format <- function(x = NULL, quiet = FALSE){ 
-    browser()
-    x<-x[,c("set_number", "species_code", "size_class", "id", "variable", "value")]
-    x$MISSION <- missionNumber
-    colnames(x)[colnames(x)=="set_number"] <- "SETNO"
-    colnames(x)[colnames(x)=="species_code"] <- "SPEC"
-    colnames(x)[colnames(x)=="size_class"] <- "SIZE_CLASS"
-    colnames(x)[colnames(x)=="id"] <- "SPECIMEN_ID"
-    colnames(x)[colnames(x)=="variable"] <- "LV1_OBSERVATION"
-    colnames(x)[colnames(x)=="value"] <- "DATA_VALUE"
     
-    # remove 1) all NA values, 2) empty cells (i.e. ""), 3) cases of "."
-    x = x[!is.na(x$DATA_VALUE) & nchar(x$DATA_VALUE)>0 & x$DATA_VALUE != ".",]
-    
-    #MMM - removed bit that auto-populated DATA_DESC from tmp_obs_types_data
-    x[,"DATA_VALUE"]<-cleanfields(x[,"DATA_VALUE"])
-    x[,"LV1_OBSERVATION"]     <-cleanfields(x[,"LV1_OBSERVATION"])
-    # periods were introduced in the data frame names - remove them 
-    x$LV1_OBSERVATION = gsub("\\."," ", x$LV1_OBSERVATION)    
-    x$LV1_OBSERVATION = gsub("_"," ", x$LV1_OBSERVATION)
-    #the following two values show up that cannot be matched against obstypes
-    x$LV1_OBSERVATION[x$LV1_OBSERVATION=="comment"]<-"comments"
-    x$LV1_OBSERVATION[x$LV1_OBSERVATION=="maturity maritimes"]<-"maturity (maritimes)"
-    x$LV1_OBSERVATION =  stringi::stri_trans_totitle(x$LV1_OBSERVATION)
-
-    #add LV1_OBSERVATION_ID by grouping by Specimen_id, and then numbering all measurements within the group
-    library(dplyr)
-    x <- x %>%
-      group_by(SETNO, SPEC, SIZE_CLASS, SPECIMEN_ID) %>%
-      arrange(LV1_OBSERVATION, .by_group = TRUE) %>% 
-      mutate(LV1_OBSERVATION_ID =row_number()) %>%
-      as.data.frame()
-    
-    x$DATA_DESC <- NA
-    x[x$LV1_OBSERVATION == "Collect Otoliths" & x$DATA_VALUE ==1 ,c("LV1_OBSERVATION","DATA_DESC")] <- c("Age Material Type"
-                                                                                                         ,"Otolith Taken")
-    return(x)
-  }
-  
-  tempSpecimen = tempSpecimen_Format(tempSpecimen)
-
+  tempSpecimen = reFormatSpecimen(specimen)
   x$lv1_obs  =  data.frame(matrix(NA, nrow = dim(tempSpecimen)[1], ncol = 0))
   
   x$lv1_obs$MISSION = missionNumber
-  x$lv1_obs$SETNO =  tempSpecimen$set_number
-  x$lv1_obs$SPEC	 = tempSpecimen$species_code
-  x$lv1_obs$SIZE_CLASS = tempSpecimen$size_class
-  x$lv1_obs$SPECIMEN_ID = tempSpecimen$id
-  x$lv1_obs$LV1_OBSERVATION= tempSpecimen$variable
-  x$lv1_obs$DATA_VALUE	= tempSpecimen$value
+  x$lv1_obs$SETNO =  tempSpecimen$SETNO
+  x$lv1_obs$SPEC	 = tempSpecimen$SPEC
+  x$lv1_obs$SIZE_CLASS = tempSpecimen$SIZE_CLASS
+  x$lv1_obs$SPECIMEN_ID = tempSpecimen$SPECIMEN_ID
+  x$lv1_obs$LV1_OBSERVATION= tempSpecimen$LV1_OBSERVATION
+  x$lv1_obs$DATA_VALUE	= tempSpecimen$DATA_VALUE
   x$lv1_obs$LV1_OBSERVATION_ID = tempSpecimen$LV1_OBSERVATION_ID
-  
-  
-  
-
-
-
   
   names(x)[which(names(x) == "cruise")] <- "ESE_MISSIONS"
   names(x)[which(names(x) == "set")] <- "ESE_SETS"

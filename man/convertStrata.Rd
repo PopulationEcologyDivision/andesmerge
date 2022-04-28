@@ -2,20 +2,23 @@
 % Please edit documentation in R/convert.utilities.R
 \name{convertStrata}
 \alias{convertStrata}
-\title{convertsex}
+\title{convertStrata}
 \usage{
 convertStrata(x)
+}
+\arguments{
+\item{x}{default is \code{NULL}. This is the string to be processed.}
 }
 \value{
 converted sex codes
 }
 \description{
-This function returns converted sex codes
+This function returns converted strata table.  Needed to expand zone 5Z3 and 5Z4
 }
 \seealso{
 Other internal: 
-\code{\link{base}},
 \code{\link{cleanEse}()},
+\code{\link{cleanfields}()},
 \code{\link{convertFieldType}()},
 \code{\link{convertLengthType}()},
 \code{\link{convertLengthUnits}()},
@@ -23,15 +26,11 @@ Other internal:
 \code{\link{convertWeighType}()},
 \code{\link{convertWeightUnits}()},
 \code{\link{convertYesNo}()},
-\code{\link{createInsertIntoObsFields}()},
-\code{\link{createInsertIntoObsGrp}()},
-\code{\link{createInsertIntoSampReq}()},
-\code{\link{createInsertIntoSex}()},
-\code{\link{createInsertIntoStrata}()},
 \code{\link{getEseTables}()},
 \code{\link{getKeyFields}()},
 \code{\link{getTblKey}()},
-\code{\link{get_value}()}
+\code{\link{get_value}()},
+\code{\link{reFormatSpecimen}()}
 }
 \author{
 Pablo Vergara, \email{pablo.vergara@dfo-mpo.gc.ca}

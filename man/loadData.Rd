@@ -4,10 +4,10 @@
 \alias{loadData}
 \title{loadData}
 \usage{
-loadData(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
+loadData(dataPath = NULL, quiet = FALSE)
 }
 \arguments{
-\item{dataPath}{default is \code{"inst/sampleData/"} the folder containing files to be loaded into R.  If left 
+\item{dataPath}{default is \code{NULL} the folder containing files to be loaded into R.  If left 
 as NULL, csv files in the\code{sampleAndesData} folder will be loaded}
 
 \item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
@@ -27,6 +27,7 @@ Other general_use:
 \code{\link{catchTweaks}()},
 \code{\link{eseExtractor}()},
 \code{\link{matchAndesToESE}()},
+\code{\link{setExperimentType}()},
 \code{\link{setTweaks}()},
 \code{\link{specimenTweaks}()},
 \code{\link{toOracle}()}

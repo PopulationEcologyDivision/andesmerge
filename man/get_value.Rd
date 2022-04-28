@@ -6,6 +6,11 @@
 \usage{
 get_value(myKey, mylookupvector)
 }
+\arguments{
+\item{myKey}{default is \code{NULL}.}
+
+\item{mylookupvector}{default is \code{NULL}.}
+}
 \value{
 lookup value
 }
@@ -14,8 +19,8 @@ This function returns the  lookup value in a vector
 }
 \seealso{
 Other internal: 
-\code{\link{base}},
 \code{\link{cleanEse}()},
+\code{\link{cleanfields}()},
 \code{\link{convertFieldType}()},
 \code{\link{convertLengthType}()},
 \code{\link{convertLengthUnits}()},
@@ -24,14 +29,10 @@ Other internal:
 \code{\link{convertWeighType}()},
 \code{\link{convertWeightUnits}()},
 \code{\link{convertYesNo}()},
-\code{\link{createInsertIntoObsFields}()},
-\code{\link{createInsertIntoObsGrp}()},
-\code{\link{createInsertIntoSampReq}()},
-\code{\link{createInsertIntoSex}()},
-\code{\link{createInsertIntoStrata}()},
 \code{\link{getEseTables}()},
 \code{\link{getKeyFields}()},
-\code{\link{getTblKey}()}
+\code{\link{getTblKey}()},
+\code{\link{reFormatSpecimen}()}
 }
 \author{
 Pablo Vergara, \email{pablo.vergara@dfo-mpo.gc.ca}

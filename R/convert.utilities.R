@@ -1,5 +1,7 @@
 #' @title get_value
 #' @description This function returns the  lookup value in a vector
+#' @param myKey default is \code{NULL}.
+#' @param mylookupvector default is \code{NULL}.
 #' @return lookup value
 #' @family internal
 #' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
@@ -13,6 +15,7 @@ get_value <- function(myKey, mylookupvector){
 
 #' @title convertYesNo
 #' @description This function returns converted "Y" or "N' to 0 or 1
+#' @param x default is \code{NULL}. This is the string to be processed.
 #' @return converted characters
 #' @family internal
 #' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
@@ -33,6 +36,7 @@ convertYesNo <- function(x){
 
 #' @title convertStrata
 #' @description This function returns converted strata table.  Needed to expand zone 5Z3 and 5Z4 
+#' @param x default is \code{NULL}. This is the string to be processed.
 #' @return converted sex codes
 #' @family internal
 #' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
@@ -64,6 +68,7 @@ convertStrata <- function(x){
 
 #' @title convertSex
 #' @description This function returns converted sex codes
+#' @param x default is \code{NULL}. This is the string to be processed.
 #' @return converted sex codes
 #' @family internal
 #' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
@@ -83,6 +88,7 @@ convertSex <- function(x){
 
 #' @title convertLengthUnits
 #' @description This function returns index values used by andes for given string in ESE
+#' @param x default is \code{NULL}.
 #' @return numeric value representing of index
 #' @family internal
 #' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
@@ -106,6 +112,7 @@ convertLengthUnits <- function(x){
 
 #' @title convertLengthType
 #' @description This function returns index values used by andes for given string in ESE
+#' @param x default is \code{NULL}. This is the string to be processed.
 #' @return numeric value representing of index
 #' @family internal
 #' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
@@ -150,6 +157,7 @@ convertLengthType <- function(x){
 
 #' @title convertWeightUnits
 #' @description This function returns index values used by andes for given string in ESE
+#' @param x default is \code{NULL}. This is the string to be processed.
 #' @return numeric value representing of index
 #' @family internal
 #' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
@@ -174,6 +182,7 @@ convertWeightUnits <- function(x){
 
 #' @title convertWeighType
 #' @description This function returns index values used by andes for given string in ESE
+#' @param x default is \code{NULL}. This is the string to be processed.
 #' @return numeric value representing of index
 #' @family internal
 #' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
@@ -200,6 +209,7 @@ convertWeighType <- function(x){
 
 #' @title convertFieldType
 #' @description This function returns index values used by andes for given string in ESE
+#' @param x default is \code{NULL}. This is the string to be processed.
 #' @return numeric value representing of index
 #' @family internal
 #' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}

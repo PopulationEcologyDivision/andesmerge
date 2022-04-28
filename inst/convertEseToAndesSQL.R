@@ -44,7 +44,7 @@
 #' 
 createInsertIntoSampReq <- function(protocol, rawFile){
   
-  x = read.csv(file=paste0(base,rawFile))
+  x = utils::read.csv(file=paste0(base,rawFile))
   
   x$LENGTH_TYPE = as.numeric(convertLengthType(x$LENGTH_TYPE))
   x$LENGTH_UNITS = as.numeric(convertLengthUnits(x$LENGTH_UNITS))
@@ -88,7 +88,7 @@ createInsertIntoSampReq <- function(protocol, rawFile){
 #' @export
 #' 
 createInsertIntoObsGrp <- function(protocol, rawFile){
-  x = read.csv(file=paste0(base,rawFile))
+  x = utils::read.csv(file=paste0(base,rawFile))
   
   x$ACTIVE = convertYesNo(x$ACTIVE)
   x$STRATIFY_BY_SEX = convertYesNo(x$STRATIFY_BY_SEX)
@@ -134,7 +134,7 @@ createInsertIntoObsGrp <- function(protocol, rawFile){
 #' 
 createInsertIntoObsFields <- function(protocol, rawFile){
   
-  x = read.csv(file=paste0(base,rawFile))
+  x = utils::read.csv(file=paste0(base,rawFile))
   
   x$LV1_OBSERVATION = convertFieldType(x$LV1_OBSERVATION)
   x$ACTIVE  = convertYesNo(x$ACTIVE)
@@ -179,7 +179,7 @@ createInsertIntoObsFields <- function(protocol, rawFile){
 
 createInsertIntoSex <- function(protocol, rawFile){
   
-  x = read.csv(file=paste0(base,rawFile))
+  x = utils::read.csv(file=paste0(base,rawFile))
   
   index = is.na(x$SEX_CODE)
   x = x[!index,]
@@ -225,8 +225,8 @@ createInsertIntoSex <- function(protocol, rawFile){
 createInsertIntoStrata <- function(protocol, rawFile, stratumFile){
 
   # 
-  x = read.csv(file=paste0(base,rawFile))
-  st = read.csv(file=paste0(base,stratumFile))
+  x = utils::read.csv(file=paste0(base,rawFile))
+  st = utils::read.csv(file=paste0(base,stratumFile))
   # HAck here since areas are defined with more precision on ANdes. convert the data frame before processing
   
   st = convertStrata(st)

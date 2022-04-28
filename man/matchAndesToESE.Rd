@@ -4,9 +4,11 @@
 \alias{matchAndesToESE}
 \title{matchAndesToESE}
 \usage{
-matchAndesToESE(dataPath = .andesData$defaultCsvPath, quiet = FALSE)
+matchAndesToESE(dataPath = NULL, quiet = FALSE)
 }
 \arguments{
+\item{dataPath}{default is \code{NULL}.  This is the location of the csv files exported from andes}
+
 \item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
 informational messages}
 }
@@ -24,6 +26,7 @@ Other general_use:
 \code{\link{catchTweaks}()},
 \code{\link{eseExtractor}()},
 \code{\link{loadData}()},
+\code{\link{setExperimentType}()},
 \code{\link{setTweaks}()},
 \code{\link{specimenTweaks}()},
 \code{\link{toOracle}()}

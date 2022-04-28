@@ -6,6 +6,9 @@
 \usage{
 convertWeighType(x)
 }
+\arguments{
+\item{x}{default is \code{NULL}. This is the string to be processed.}
+}
 \value{
 numeric value representing of index
 }
@@ -14,8 +17,8 @@ This function returns index values used by andes for given string in ESE
 }
 \seealso{
 Other internal: 
-\code{\link{base}},
 \code{\link{cleanEse}()},
+\code{\link{cleanfields}()},
 \code{\link{convertFieldType}()},
 \code{\link{convertLengthType}()},
 \code{\link{convertLengthUnits}()},
@@ -23,15 +26,11 @@ Other internal:
 \code{\link{convertStrata}()},
 \code{\link{convertWeightUnits}()},
 \code{\link{convertYesNo}()},
-\code{\link{createInsertIntoObsFields}()},
-\code{\link{createInsertIntoObsGrp}()},
-\code{\link{createInsertIntoSampReq}()},
-\code{\link{createInsertIntoSex}()},
-\code{\link{createInsertIntoStrata}()},
 \code{\link{getEseTables}()},
 \code{\link{getKeyFields}()},
 \code{\link{getTblKey}()},
-\code{\link{get_value}()}
+\code{\link{get_value}()},
+\code{\link{reFormatSpecimen}()}
 }
 \author{
 Pablo Vergara, \email{pablo.vergara@dfo-mpo.gc.ca}

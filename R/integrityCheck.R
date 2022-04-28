@@ -113,7 +113,7 @@ integrityCheck <- function(eseList = NULL, type1Only =FALSE, debug =FALSE, addEr
       if(length(ttt)>0){
         f<-merge(parentTab, ttt, by=compareFields, all.y=T)
         #line below makes sure we're getting actual joins
-        f <- f[complete.cases(f),] 
+        f <- f[stats::complete.cases(f),] 
         if (nrow(f)>0){
           f = f[with(f, order(MISSION, SETNO)), ]
           if (!quiet) message("\t", childTabName,": The following records can not be linked to ",parentTabName," on ",paste0(compareFields, collapse=","),": ")

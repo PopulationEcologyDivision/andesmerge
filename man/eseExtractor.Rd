@@ -45,6 +45,7 @@ Other general_use:
 \code{\link{catchTweaks}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},
+\code{\link{setExperimentType}()},
 \code{\link{setTweaks}()},
 \code{\link{specimenTweaks}()},
 \code{\link{toOracle}()}

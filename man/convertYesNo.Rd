@@ -6,6 +6,9 @@
 \usage{
 convertYesNo(x)
 }
+\arguments{
+\item{x}{default is \code{NULL}. This is the string to be processed.}
+}
 \value{
 converted characters
 }
@@ -14,8 +17,8 @@ This function returns converted "Y" or "N' to 0 or 1
 }
 \seealso{
 Other internal: 
-\code{\link{base}},
 \code{\link{cleanEse}()},
+\code{\link{cleanfields}()},
 \code{\link{convertFieldType}()},
 \code{\link{convertLengthType}()},
 \code{\link{convertLengthUnits}()},
@@ -23,15 +26,11 @@ Other internal:
 \code{\link{convertStrata}()},
 \code{\link{convertWeighType}()},
 \code{\link{convertWeightUnits}()},
-\code{\link{createInsertIntoObsFields}()},
-\code{\link{createInsertIntoObsGrp}()},
-\code{\link{createInsertIntoSampReq}()},
-\code{\link{createInsertIntoSex}()},
-\code{\link{createInsertIntoStrata}()},
 \code{\link{getEseTables}()},
 \code{\link{getKeyFields}()},
 \code{\link{getTblKey}()},
-\code{\link{get_value}()}
+\code{\link{get_value}()},
+\code{\link{reFormatSpecimen}()}
 }
 \author{
 Pablo Vergara, \email{pablo.vergara@dfo-mpo.gc.ca}

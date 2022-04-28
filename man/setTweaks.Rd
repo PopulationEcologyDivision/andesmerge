@@ -27,6 +27,7 @@ Other general_use:
 \code{\link{eseExtractor}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},
+\code{\link{setExperimentType}()},
 \code{\link{specimenTweaks}()},
 \code{\link{toOracle}()}
 }

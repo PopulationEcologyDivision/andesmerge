@@ -14,7 +14,7 @@ This function removes any ESE objects from the R environment
 }
 \seealso{
 Other internal: 
-\code{\link{base}},
+\code{\link{cleanfields}()},
 \code{\link{convertFieldType}()},
 \code{\link{convertLengthType}()},
 \code{\link{convertLengthUnits}()},
@@ -23,15 +23,11 @@ Other internal:
 \code{\link{convertWeighType}()},
 \code{\link{convertWeightUnits}()},
 \code{\link{convertYesNo}()},
-\code{\link{createInsertIntoObsFields}()},
-\code{\link{createInsertIntoObsGrp}()},
-\code{\link{createInsertIntoSampReq}()},
-\code{\link{createInsertIntoSex}()},
-\code{\link{createInsertIntoStrata}()},
 \code{\link{getEseTables}()},
 \code{\link{getKeyFields}()},
 \code{\link{getTblKey}()},
-\code{\link{get_value}()}
+\code{\link{get_value}()},
+\code{\link{reFormatSpecimen}()}
 }
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}
