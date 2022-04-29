@@ -9,21 +9,19 @@
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
 matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
-  #library(stringi)
-  
   # load Andes  CSV files extracted from server at end of survey
-  loadData(dataPath = dataPath)
+  tmp <- loadData(dataPath = dataPath)
   # Object names created from load could change, Change here if needed
-  set      = tmp_set_data
-  catch    = tmp_catch_data
-  basket   = tmp_basket_data
-  obs_type = tmp_obs_types_data
-  specimen = tmp_specimen_data
-  cruise   = tmp_cruise_data
+  set      = tmp$set_data
+  catch    = tmp$catch_data
+  basket   = tmp$basket_data
+  obs_type = tmp$obs_types_data
+  specimen = tmp$specimen_data
+  cruise   = tmp$cruise_data
 
-  rm(list=c("tmp_set_data","tmp_catch_data","tmp_basket_data","tmp_obs_types_data", "tmp_specimen_data","tmp_cruise_data"), envir = .GlobalEnv)
+  rm(tmp)
   ### This was added in response to some missing cursory data - seems like exporting the data too
-  ### early will likely result in this not being as rare an event as we might hop
+  ### early will likely result in this not being as rare an event as we might hope
   if (nrow(set[nchar(set[["experiment_type"]])==0 &
                nchar(set[["start_date"]])==0 &
               nchar(set[["end_date"]])==0,])>0){
@@ -48,10 +46,10 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$cruise$DATA_VERSION <- NA
   x$cruise$PROGRAM_TITLE <- 'Maritimes Bottom Trawl Surveys'
   
-  x$set =  data.frame(matrix(NA, nrow = dim(set)[1], ncol =0 ))
-  x$basket =  data.frame(matrix(NA, nrow = dim(basket)[1], ncol = 0))
-  x$catch =  data.frame(matrix(NA, nrow = dim(catch)[1], ncol = 0))
-  x$specimen =  data.frame(matrix(NA, nrow = dim(specimen)[1], ncol = 0))
+  x$set                          =  data.frame(matrix(NA, nrow = dim(set)[1], ncol =0 ))
+  x$basket                       =  data.frame(matrix(NA, nrow = dim(basket)[1], ncol = 0))
+  x$catch                        =  data.frame(matrix(NA, nrow = dim(catch)[1], ncol = 0))
+  x$specimen                     =  data.frame(matrix(NA, nrow = dim(specimen)[1], ncol = 0))
 
   # Match data for SET table 
   x$set$MISSION                  = missionNumber
@@ -73,7 +71,7 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$set$HOWS                     = set$ship_speed_obtained_code
   x$set$START_DEPTH              = set$start_depth_m/1.8288 # MMM - converting from meters to fathoms
   x$set$END_DEPTH                = set$end_depth_m/1.8288 # MMM - converting from meters to fathoms
-  if (!quiet) message("START_DEPTH, and END_DEPTH were converted from meters to fathoms (i.e. m/1.8288)")
+
   x$set$WIND                     = set$wind_direction_degree 
   x$set$FORCE                    = set$wind_force_code
   x$set$CURNT                    = set$tide_direction_code # need to check if used
@@ -81,7 +79,6 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$set$GEAR                     = as.numeric(stringi::stri_extract_first_regex(set$gear_type, "[0-9]+"))  #assume this is correct (and not gear_type_id)
   x$set$AUX                      = as.numeric(stringi::stri_extract_first_regex(set$auxiliary_equipment, "[0-9]+"))
   x$set$NOTE                     = cleanfields(set$remarks)
-
   x$set$STATION                  = stringi::stri_extract_first_regex(set$new_station, "\\d{3}")
   
   #following need to be reviewed with Maritimes data
@@ -139,20 +136,20 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   tempSpecimen = reFormatSpecimen(specimen)
   x$lv1_obs  =  data.frame(matrix(NA, nrow = dim(tempSpecimen)[1], ncol = 0))
   
-  x$lv1_obs$MISSION = missionNumber
-  x$lv1_obs$SETNO =  tempSpecimen$SETNO
-  x$lv1_obs$SPEC	 = tempSpecimen$SPEC
-  x$lv1_obs$SIZE_CLASS = tempSpecimen$SIZE_CLASS
-  x$lv1_obs$SPECIMEN_ID = tempSpecimen$SPECIMEN_ID
-  x$lv1_obs$LV1_OBSERVATION= tempSpecimen$LV1_OBSERVATION
-  x$lv1_obs$DATA_VALUE	= tempSpecimen$DATA_VALUE
+  x$lv1_obs$MISSION            = missionNumber
+  x$lv1_obs$SETNO              =tempSpecimen$SETNO
+  x$lv1_obs$SPEC	             = tempSpecimen$SPEC
+  x$lv1_obs$SIZE_CLASS         = tempSpecimen$SIZE_CLASS
+  x$lv1_obs$SPECIMEN_ID        = tempSpecimen$SPECIMEN_ID
+  x$lv1_obs$LV1_OBSERVATION    = tempSpecimen$LV1_OBSERVATION
+  x$lv1_obs$DATA_VALUE	       = tempSpecimen$DATA_VALUE
   x$lv1_obs$LV1_OBSERVATION_ID = tempSpecimen$LV1_OBSERVATION_ID
   
-  names(x)[which(names(x) == "cruise")] <- "ESE_MISSIONS"
-  names(x)[which(names(x) == "set")] <- "ESE_SETS"
-  names(x)[which(names(x) == "basket")] <- "ESE_BASKETS"
-  names(x)[which(names(x) == "catch")] <- "ESE_CATCHES"
+  names(x)[which(names(x) == "cruise")]   <- "ESE_MISSIONS"
+  names(x)[which(names(x) == "set")]      <- "ESE_SETS"
+  names(x)[which(names(x) == "basket")]   <- "ESE_BASKETS"
+  names(x)[which(names(x) == "catch")]    <- "ESE_CATCHES"
   names(x)[which(names(x) == "specimen")] <- "ESE_SPECIMENS"
-  names(x)[which(names(x) == "lv1_obs")] <- "ESE_LV1_OBSERVATIONS"
+  names(x)[which(names(x) == "lv1_obs")]  <- "ESE_LV1_OBSERVATIONS"
   return(x) 
 }

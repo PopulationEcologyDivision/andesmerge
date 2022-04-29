@@ -1,5 +1,5 @@
 Package: andesmerge
-Title: stuff
+Title: andesmerge: Maritimes tools for getting data out of ANDES and into our database 
 Version: 2022.01.19
 Authors@R: c(
             person(given = "Pablo",
@@ -10,26 +10,17 @@ Authors@R: c(
            family = "McMahon",
            role = c("aut"),
            email = "Mike.McMahon@dfo-mpo.gc.ca"))
-Description: This package does stuff...
+Description: This package is designed to reformat data from ANDES, and prepare it for Oracle.
+Future work will add QC functions, and ultimately, functions that will load the data directly into 
+the groundfish survey database.
 Depends:
     R (>= 2.10)
 Imports:
-    here,
     dplyr,
-    magrittr,
-    Mar.utils,
     stats,
     stringi,
-	  stringr,
 	  tidyr,
 	  utils
-Enhances: 
-    ROracle,
-    DBI,
-    RODBC,
-    rlang
-Remotes: 
-    Maritimes/Mar.utils
 Encoding: UTF-8
 License: MIT + file LICENSE
 URL: https://github.com/pevweb/andesmerge/

@@ -23,13 +23,11 @@ it is imported to Oracle.
 Other general_use: 
 \code{\link{addSizeClassToCatch}()},
 \code{\link{basketTweaks}()},
-\code{\link{eseExtractor}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{setExperimentType}()},
 \code{\link{setTweaks}()},
-\code{\link{specimenTweaks}()},
-\code{\link{toOracle}()}
+\code{\link{specimenTweaks}()}
 }
 \author{
 Pablo Vergara, \email{Pablo.Vergara@dfo-mpo.gc.ca}

@@ -13,15 +13,16 @@
 loadData <- function(dataPath = NULL, quiet = FALSE){
   #add trailing "/" if necess
   if(substr(dataPath ,(nchar(dataPath)+1)-1,nchar(dataPath)) != "/")dataPath = paste0(dataPath,"/")
-  
-  filenames <- list.files(dataPath, pattern="\\.csv$")
+  filenames <- list.files(dataPath, pattern="tmp_(basket|catch|cruise|obs_types|set|specimen)_data\\.csv$")
   if (length(filenames)<1)stop("No csv files found")
+  res<-list()
   for(i in 1:length(filenames))
   {
     thisFile = filenames[i]
-    thisFileName <- sub('\\.csv$', '', thisFile) 
-
-    assign(thisFileName, utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE), envir = .GlobalEnv)
-    if (!quiet) message("loaded ", dataPath,thisFile)
+    thisFileName <- sub('tmp_', '', sub('\\.csv$', '', thisFile)) 
+    res[[thisFileName]]<- utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE)
+    # assign(thisFileName, utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE), envir = .GlobalEnv)
+    # if (!quiet) message("loaded ", dataPath,thisFile)
   }
+  return(res)
 }

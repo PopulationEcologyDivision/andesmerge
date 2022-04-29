@@ -24,12 +24,10 @@ Other general_use:
 \code{\link{addSizeClassToCatch}()},
 \code{\link{basketTweaks}()},
 \code{\link{catchTweaks}()},
-\code{\link{eseExtractor}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{setExperimentType}()},
-\code{\link{setTweaks}()},
-\code{\link{toOracle}()}
+\code{\link{setTweaks}()}
 }
 \author{
 Pablo Vergara, \email{Pablo.Vergara@dfo-mpo.gc.ca}

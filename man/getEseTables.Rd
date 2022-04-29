@@ -16,17 +16,6 @@ This function returns the names of the ese tables.
 Other internal: 
 \code{\link{cleanEse}()},
 \code{\link{cleanfields}()},
-\code{\link{convertFieldType}()},
-\code{\link{convertLengthType}()},
-\code{\link{convertLengthUnits}()},
-\code{\link{convertSex}()},
-\code{\link{convertStrata}()},
-\code{\link{convertWeighType}()},
-\code{\link{convertWeightUnits}()},
-\code{\link{convertYesNo}()},
-\code{\link{getKeyFields}()},
-\code{\link{getTblKey}()},
-\code{\link{get_value}()},
 \code{\link{reFormatSpecimen}()}
 }
 \author{

@@ -16,18 +16,7 @@ apostrophes and replaces them with normal versions
 \seealso{
 Other internal: 
 \code{\link{cleanEse}()},
-\code{\link{convertFieldType}()},
-\code{\link{convertLengthType}()},
-\code{\link{convertLengthUnits}()},
-\code{\link{convertSex}()},
-\code{\link{convertStrata}()},
-\code{\link{convertWeighType}()},
-\code{\link{convertWeightUnits}()},
-\code{\link{convertYesNo}()},
 \code{\link{getEseTables}()},
-\code{\link{getKeyFields}()},
-\code{\link{getTblKey}()},
-\code{\link{get_value}()},
 \code{\link{reFormatSpecimen}()}
 }
 \author{

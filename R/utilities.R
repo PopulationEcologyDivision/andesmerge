@@ -9,53 +9,6 @@ getEseTables <- function(){
   return(c("ESE_MISSIONS", "ESE_SETS", "ESE_CATCHES", "ESE_BASKETS", "ESE_SPECIMENS", "ESE_LV1_OBSERVATIONS")) 
 }
 
-#' @title getKeyFields
-#' @description This function returns the key fields for any of the ESE tables
-#' @param table default is \code{NULL}.  This is the name of the table for which the key fields are 
-#' desired
-#' @return nothing - just loads data to environment
-#' @family internal
-#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-#' 
-getKeyFields <- function(table=NULL){
-  #for each known table, create a key from fields needed to create unique value
-  #each table will need it's own group of fields to do so
-  keyFields <- switch(table, 
-                      "ESE_MISSIONS" =         c("MISSION"),
-                      "ESE_SETS" =             c("MISSION", "SETNO"),
-                      "ESE_CATCHES" =          c("MISSION", "SETNO", "SPEC"),
-                      "ESE_BASKETS" =          c("MISSION", "SETNO", "SPEC", "SIZE_CLASS"),
-                      "ESE_SPECIMENS" =        c("MISSION", "SETNO", "SPEC", "SIZE_CLASS","SPECIMEN_ID"),
-                      "ESE_LV1_OBSERVATIONS" = c("MISSION", "SETNO", "SPEC", "SIZE_CLASS","SPECIMEN_ID","LV1_OBSERVATION_ID")
-  )
-  return(keyFields)
-}
-
-#' @title getTblKey
-#' @description This function takes a data frame and a vector of field names from that data frame.
-#' It concatenates together all of the combinations of values from those key fields into a vector.  
-#' When appropriate fields are chosen as \code{keyFields}, the result can be used to create a 
-#' primary key for identifying unique rows
-#' @param df default is \code{NULL}.  This is a connection object from Mar.utils::make_oracle_cxn(). 
-#' @param keyFields default is \code{NULL}.  This is a connection object from Mar.utils::make_oracle_cxn(). 
-#' @return nothing - just loads data to environment
-#' @family internal
-#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-getTblKey <- function(df=NULL, keyFields = NULL){
-  #paste together keyFields of submitted data to create vector of unique values
-  if (!all(keyFields %in% names(df))) {
-    #the specified df does not have all of the keyfields
-    return(NA)
-  }
-  if (length(keyFields)>1){
-    uvec <- apply( df[ , keyFields ] , 1 , paste0 , collapse = "_" )
-  }else{ 
-    uvec <- sort(unique(df[,keyFields]))
-  }
-  uvec <- gsub(pattern = " ", replacement = "", x = uvec) 
-  return(uvec)
-}
-
 #' @title cleanEse
 #' @description This function removes any ESE objects from the R environment
 #' @return nothing - just remove data frames from environment
@@ -118,7 +71,7 @@ addSizeClassToCatch <- function(basket, catch, quiet = FALSE){
 #' @param x default is \code{NULL}.  This is a field in a data frame 
 #' @param quiet default is \code{FALSE} Determines whether or not the script should output 
 #' informational messages 
-#' @importFrom magrittr %>%
+#' @importFrom dplyr %>%
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 reFormatSpecimen <- function(x = NULL, quiet = FALSE){ 
@@ -192,7 +145,7 @@ reFormatSpecimen <- function(x = NULL, quiet = FALSE){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 cleanfields <- function(data= NULL){
-  #remove leading trailing whitespace; replace multiple space/tabs with single space
+  #remove leading & trailing whitespace; replace multiple space/tabs with single space
   data <- trimws(gsub(x=data, pattern = ("\\s+"), ' '))
   
   #replace other stuff with nothing
@@ -235,7 +188,7 @@ setExperimentType <- function(x, quiet = FALSE){
   # Possible set result values (from  : andesdb.shared_models_setresult)
   # 1	NORMAL - No damage to gear	
   # 2	NORMAL - Minor damage to gear - Catch unaffected	NORMAL 
-  # 3	FAILED - Major damage to gea
+  # 3	FAILED - Major damage to gear
   # 4	FAILED - Bad depth
   # 5	FAILED - Fishing gears
   # 6	FAILED - Wrong gear operation
@@ -249,14 +202,12 @@ setExperimentType <- function(x, quiet = FALSE){
   if(length(which(index)) > 0)
   {
     x[index,]$experiment_type_id_tweaked = 1
-    if(!quiet){ message("Experiment type set to 1")}
   }
   
   #NORMAL - FAIL
   index = (exp.num %in% valid.exp.num & set.res %in% c(3, 4, 5, 6))
   if(length(which(index)) > 0 ){
     x[index,]$experiment_type_id_tweaked = 3
-    if(!quiet){ message("Experiment type set to 3")}
   }
   
   #NORMAL - HYDROGRAPHY
@@ -264,19 +215,7 @@ setExperimentType <- function(x, quiet = FALSE){
   index = (exp.num == 9 & is.na(set.res))
   if(length(which(index)) > 0 ){
     x[index,]$experiment_type_id_tweaked = 9
-    if(!quiet){ message("Experiment type set to 9")}
   }
-  
   
   return(as.numeric(x$experiment_type_id_tweaked))
 }
-
-##### PATH DEFINITON #####
-
-# default path in repo where CSV files are stored
-#MMM removed these - makes less sense as a package
-# .andesData = list()
-# .andesData$defaultCsvPath <- "inst/sampleData/"
-
-# other paths...
-
