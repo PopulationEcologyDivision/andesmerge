@@ -10,17 +10,22 @@ Authors@R: c(
            family = "McMahon",
            role = c("aut"),
            email = "Mike.McMahon@dfo-mpo.gc.ca"))
-Description: This package is designed to reformat data from ANDES, and prepare it for Oracle.
-Future work will add QC functions, and ultimately, functions that will load the data directly into 
-the groundfish survey database.
+Description: This package is designed to reformat data from ANDES, and prepare it for Oracle. Future work will add QC functions, and ultimately, functions that will load the data directly into the groundfish survey database.
 Depends:
     R (>= 2.10)
 Imports:
     dplyr,
+    Mar.utils,
     stats,
     stringi,
 	  tidyr,
 	  utils
+Enhances: 
+  ROracle,
+  DBI,
+  RODBC
+Remotes: 
+  Maritimes/Mar.utils
 Encoding: UTF-8
 License: MIT + file LICENSE
 URL: https://github.com/pevweb/andesmerge/

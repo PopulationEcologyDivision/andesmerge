@@ -27,7 +27,8 @@ Other general_use:
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{setTweaks}()},
-\code{\link{specimenTweaks}()}
+\code{\link{specimenTweaks}()},
+\code{\link{toOracle}()}
 }
 \author{
 Pablo Vergara, \email{Pablo.Vergara@dfo-mpo.gc.ca}

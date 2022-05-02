@@ -18,20 +18,26 @@ matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
   obs_type = tmp$obs_types_data
   specimen = tmp$specimen_data
   cruise   = tmp$cruise_data
-
+  
   rm(tmp)
+  browser()
+  set1 <- apply(set,       # Array, matrix or data frame
+        1,  # 1: columns, 2: rows, c(1, 2): rows and columns
+        cleanfields
+        )  
+  
   ### This was added in response to some missing cursory data - seems like exporting the data too
   ### early will likely result in this not being as rare an event as we might hope
   if (nrow(set[nchar(set[["experiment_type"]])==0 &
                nchar(set[["start_date"]])==0 &
-              nchar(set[["end_date"]])==0,])>0){
+               nchar(set[["end_date"]])==0,])>0){
     bad <- sort(unique(set[nchar(set[["experiment_type"]])==0 &
-                 nchar(set[["start_date"]])==0 &
-                 nchar(set[["end_date"]])==0,"set_number"]))
+                             nchar(set[["start_date"]])==0 &
+                             nchar(set[["end_date"]])==0,"set_number"]))
     warning("\n!!One or more sets had a bunch of empty fields.  These sets have been dropped to allow 
 the loading to proceed, but should be dealt with before finalizing the load: \nSet(s):", paste0(bad, collapse=","))
     set<-set[!set$set_number %in% bad,]
-     }
+  }
   
   # All tables will need this number
   missionNumber = gsub( "-","",cruise$mission_number)
@@ -50,7 +56,7 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$basket                       =  data.frame(matrix(NA, nrow = dim(basket)[1], ncol = 0))
   x$catch                        =  data.frame(matrix(NA, nrow = dim(catch)[1], ncol = 0))
   x$specimen                     =  data.frame(matrix(NA, nrow = dim(specimen)[1], ncol = 0))
-
+  
   # Match data for SET table 
   x$set$MISSION                  = missionNumber
   x$set$SETNO                    = set$set_number 
@@ -58,7 +64,7 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$set$TIME                     = as.integer(as.character(as.POSIXlt(set$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M'))
   x$set$DUR                      = round(difftime(as.POSIXct(set$end_date, tz="UTC",format='%Y-%m-%d %H:%M:%S'), as.POSIXct(set$start_date, tz="UTC",format='%Y-%m-%d %H:%M:%S'), units = "mins"))
   x$set$ETIME                    = as.integer(as.character(as.POSIXlt(set$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M'))
-
+  
   
   x$set$STRAT                    = stringi::stri_extract_last_regex(set$new_station, "\\d{3}")
   x$set$SLAT                     = round(as.numeric(paste0(set$start_latitude_DD,set$start_latitude_MMmm)),2)
@@ -71,7 +77,7 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$set$HOWS                     = set$ship_speed_obtained_code
   x$set$START_DEPTH              = set$start_depth_m/1.8288 # MMM - converting from meters to fathoms
   x$set$END_DEPTH                = set$end_depth_m/1.8288 # MMM - converting from meters to fathoms
-
+  
   x$set$WIND                     = set$wind_direction_degree 
   x$set$FORCE                    = set$wind_force_code
   x$set$CURNT                    = set$tide_direction_code # need to check if used
@@ -90,7 +96,7 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$set$BOTTOM_TEMPERATURE       = NA # data to come later, not captured during survey
   x$set$BOTTOM_SALINITY          = NA # data to come later, not captured during survey
   x$set$HYDRO                    = NA # data to come later, not captured during survey
- 
+  
   # perform tweaks to base data here
   x$set = setTweaks(x$set)
   
@@ -129,10 +135,10 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$specimen$SPEC        = specimen$species_code
   x$specimen$SIZE_CLASS  = specimen$size_class
   x$specimen$SPECIMEN_ID = specimen$id
-
+  
   x$specimen = specimenTweaks(x$specimen)
   
-    
+  
   tempSpecimen = reFormatSpecimen(specimen)
   x$lv1_obs  =  data.frame(matrix(NA, nrow = dim(tempSpecimen)[1], ncol = 0))
   

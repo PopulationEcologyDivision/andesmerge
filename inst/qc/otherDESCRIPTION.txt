@@ -1,11 +1,7 @@
 Imports:
   here,
-  Mar.utils,
+  
   stringr,
 Enhances: 
-  ROracle,
-  DBI,
-  RODBC,
+
   rlang
-Remotes: 
-  Maritimes/Mar.utils

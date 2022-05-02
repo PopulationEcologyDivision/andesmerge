@@ -29,7 +29,8 @@ Other general_use:
 \code{\link{matchAndesToESE}()},
 \code{\link{setExperimentType}()},
 \code{\link{setTweaks}()},
-\code{\link{specimenTweaks}()}
+\code{\link{specimenTweaks}()},
+\code{\link{toOracle}()}
 }
 \author{
 Pablo Vergara, \email{Pablo.Vergara@dfo-mpo.gc.ca}

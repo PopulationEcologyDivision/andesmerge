@@ -28,7 +28,8 @@ Other general_use:
 \code{\link{matchAndesToESE}()},
 \code{\link{setExperimentType}()},
 \code{\link{setTweaks}()},
-\code{\link{specimenTweaks}()}
+\code{\link{specimenTweaks}()},
+\code{\link{toOracle}()}
 }
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}
