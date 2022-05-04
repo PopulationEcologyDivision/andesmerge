@@ -10,7 +10,7 @@
 #' @export
 matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
   # load Andes  CSV files extracted from server at end of survey
-  tmp <- loadData(dataPath = dataPath)
+  tmp <<- loadData(dataPath = dataPath)
   # Object names created from load could change, Change here if needed
   set      = tmp$set_data
   catch    = tmp$catch_data
@@ -19,8 +19,7 @@ matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
   specimen = tmp$specimen_data
   cruise   = tmp$cruise_data
   
-  rm(tmp)
-  browser()
+  # rm(tmp)
   set1 <- apply(set,       # Array, matrix or data frame
         1,  # 1: columns, 2: rows, c(1, 2): rows and columns
         cleanfields
@@ -43,8 +42,10 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   missionNumber = gsub( "-","",cruise$mission_number)
   
   x = list()
+  #' Match against various fields identified in 
+  #' https://github.com/dfo-gulf-science/andes/blob/master/shared_models/data_fixtures/
   
-  # Match data for cruise table 
+  #' Match data for cruise table 
   x$cruise =   data.frame(matrix(NA, nrow = dim(cruise)[1], ncol = 0))
   x$cruise$MISSION <- missionNumber
   x$cruise$SAMPLING_REQUIREMENT <- cruise$area_of_operation
@@ -56,7 +57,7 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$basket                       =  data.frame(matrix(NA, nrow = dim(basket)[1], ncol = 0))
   x$catch                        =  data.frame(matrix(NA, nrow = dim(catch)[1], ncol = 0))
   x$specimen                     =  data.frame(matrix(NA, nrow = dim(specimen)[1], ncol = 0))
-  
+
   # Match data for SET table 
   x$set$MISSION                  = missionNumber
   x$set$SETNO                    = set$set_number 
@@ -66,21 +67,21 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   x$set$ETIME                    = as.integer(as.character(as.POSIXlt(set$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M'))
   
   
-  x$set$STRAT                    = stringi::stri_extract_last_regex(set$new_station, "\\d{3}")
+  x$set$STRAT                    = set$stratum
   x$set$SLAT                     = round(as.numeric(paste0(set$start_latitude_DD,set$start_latitude_MMmm)),2)
   x$set$ELAT                     = round(as.numeric(paste0(set$end_latitude_DD,set$end_latitude_MMmm)),2)
   x$set$SLONG                    = abs(round(as.numeric(paste0(set$start_longitude_DD,set$start_longitude_MMmm)),2))
   x$set$ELONG                    = abs(round(as.numeric(paste0(set$end_longitude_DD,set$end_longitude_MMmm)),2))
-  x$set$DIST                     = set$distance_towed #MMM - is this nautical miles
+  x$set$DIST                     = set$distance_towed                 #MMM - is this nautical miles
   x$set$HOWD                     = set$distance_towed_obtained_code
-  x$set$SPEED                    = set$ship_speed
+  x$set$SPEED                    = round(set$ship_speed,2)
   x$set$HOWS                     = set$ship_speed_obtained_code
-  x$set$START_DEPTH              = set$start_depth_m/1.8288 # MMM - converting from meters to fathoms
-  x$set$END_DEPTH                = set$end_depth_m/1.8288 # MMM - converting from meters to fathoms
+  x$set$START_DEPTH              = round(set$start_depth_m/1.8288,0)  # MMM - converting from meters to fathoms
+  x$set$END_DEPTH                = round(set$end_depth_m/1.8288,0)    # MMM - converting from meters to fathoms
   
-  x$set$WIND                     = set$wind_direction_degree 
-  x$set$FORCE                    = set$wind_force_code
-  x$set$CURNT                    = set$tide_direction_code # need to check if used
+  x$set$WIND                     = set$wind_direction_degree          # MMM - verified that actual degree is entered 
+  x$set$FORCE                    = convertFORCE(set$wind_force_code)  # MMM - force of "9" is actually NA
+  x$set$CURNT                    = set$tide_direction_code # verified
   x$set$EXPERIMENT_TYPE_CODE     = setExperimentType(set)
   x$set$GEAR                     = as.numeric(stringi::stri_extract_first_regex(set$gear_type, "[0-9]+"))  #assume this is correct (and not gear_type_id)
   x$set$AUX                      = as.numeric(stringi::stri_extract_first_regex(set$auxiliary_equipment, "[0-9]+"))
