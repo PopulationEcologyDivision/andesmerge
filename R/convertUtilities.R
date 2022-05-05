@@ -40,3 +40,42 @@ convertFORCE <- function(x){
   return(x)
 }
 
+#' @title meters2Fathoms
+#' @description This function converts a vector of values from meter to fathoms
+#' @param field default is \code{NULL}. This is the field that should be converted.
+#' @return vector
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
+#' 
+meters2Fathoms <- function(field = NULL) {
+  field <- field/1.8288
+  return(field)
+}
+
+#' @title convertHOWOBT
+#' @description This function returns converted obtained_code codes
+#' @param x default is \code{NULL}. This is the string to be processed.
+#' @return converted FORCE codes
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
+#' 
+convertHOWOBT <- function(x){
+  
+  ESE.vals <- list("1" = 1, # "Ships log or distance program"
+                   "2" = 2, # "Radar bouy"
+                   "3" = 3, # "DECCA bearings"
+                   "4" = 0, # "LORAN bearings or GPS"
+                   "5" = 5, # "DECCA radar"
+                   "6" = 6, # "LORAN radar"
+                   "7" = 7, # "DECCA and LORAN"
+                   "8" = 8, # "Satelite navigation"
+                   "9" = 9) # "No observation / hydrographic station"
+  
+  ESE.vals = unlist(ESE.vals)
+  x = get_value(x, ESE.vals)
+
+  if (any(0 %in% x)) message('All andes entries of "4 - LORAN bearings or GPS" (in either HOWS or HOWD) are interpreted as "0 - GPS" during Maritimes import')
+  return(x)
+}

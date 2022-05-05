@@ -68,20 +68,21 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   
   
   x$set$STRAT                    = set$stratum
-  x$set$SLAT                     = round(as.numeric(paste0(set$start_latitude_DD,set$start_latitude_MMmm)),2)
-  x$set$ELAT                     = round(as.numeric(paste0(set$end_latitude_DD,set$end_latitude_MMmm)),2)
-  x$set$SLONG                    = abs(round(as.numeric(paste0(set$start_longitude_DD,set$start_longitude_MMmm)),2))
-  x$set$ELONG                    = abs(round(as.numeric(paste0(set$end_longitude_DD,set$end_longitude_MMmm)),2))
+
+  x$set$SLAT                     = paste0(set$start_latitude_DD,sprintf("%05.2f",set$start_latitude_MMmm))  #sprintf used to ensure leading zeroes added as necessary.
+  x$set$ELAT                     = paste0(set$end_latitude_DD,sprintf("%05.2f",set$end_latitude_MMmm))
+  x$set$SLONG                    = paste0(set$start_longitude_DD,sprintf("%05.2f",set$start_longitude_MMmm))
+  x$set$ELONG                    = paste0(set$end_longitude_DD,sprintf("%05.2f",set$end_longitude_MMmm))
   x$set$DIST                     = set$distance_towed                 #MMM - is this nautical miles
-  x$set$HOWD                     = set$distance_towed_obtained_code
+  x$set$HOWD                     = convertHOWOBT(set$distance_towed_obtained_code)
   x$set$SPEED                    = round(set$ship_speed,2)
-  x$set$HOWS                     = set$ship_speed_obtained_code
-  x$set$START_DEPTH              = round(set$start_depth_m/1.8288,0)  # MMM - converting from meters to fathoms
-  x$set$END_DEPTH                = round(set$end_depth_m/1.8288,0)    # MMM - converting from meters to fathoms
+  x$set$HOWS                     = convertHOWOBT(set$ship_speed_obtained_code)
+  x$set$START_DEPTH              = round(meters2Fathoms(set$start_depth_m),0)  # MMM - converting from meters to fathoms
+  x$set$END_DEPTH                = round(meters2Fathoms(set$end_depth_m),0)    # MMM - converting from meters to fathoms
   
   x$set$WIND                     = set$wind_direction_degree          # MMM - verified that actual degree is entered 
   x$set$FORCE                    = convertFORCE(set$wind_force_code)  # MMM - force of "9" is actually NA
-  x$set$CURNT                    = set$tide_direction_code # verified
+  x$set$CURNT                    = set$tide_direction_code            # verified
   x$set$EXPERIMENT_TYPE_CODE     = setExperimentType(set)
   x$set$GEAR                     = as.numeric(stringi::stri_extract_first_regex(set$gear_type, "[0-9]+"))  #assume this is correct (and not gear_type_id)
   x$set$AUX                      = as.numeric(stringi::stri_extract_first_regex(set$auxiliary_equipment, "[0-9]+"))
@@ -158,5 +159,14 @@ the loading to proceed, but should be dealt with before finalizing the load: \nS
   names(x)[which(names(x) == "catch")]    <- "ESE_CATCHES"
   names(x)[which(names(x) == "specimen")] <- "ESE_SPECIMENS"
   names(x)[which(names(x) == "lv1_obs")]  <- "ESE_LV1_OBSERVATIONS"
+  
+  attr(GSSPECIES_DRAFT$ENTR, "ora.type") <- "DATE"
+  attr(GSSPECIES_DRAFT$HISTORIC_DATE, "ora.type") <- "DATE"
+  attr(GSSPECIES_DRAFT$FIRST_RECORDED, "ora.type") <- "DATE"
+  GSSPECIES_DRAFT$CODE <- as.integer(GSSPECIES_DRAFT$CODE)
+  GSSPECIES_DRAFT$NMFS <- as.integer(GSSPECIES_DRAFT$NMFS)
+  GSSPECIES_DRAFT$APHIAID <- as.integer(GSSPECIES_DRAFT$APHIAID)
+  GSSPECIES_DRAFT$TSN <- as.integer(GSSPECIES_DRAFT$TSN)
+  
   return(x) 
 }
