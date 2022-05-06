@@ -40,17 +40,30 @@ convertFORCE <- function(x){
   return(x)
 }
 
-#' @title meters2Fathoms
-#' @description This function converts a vector of values from meter to fathoms
+#' @title convertHOWOBT
+#' @description This function returns converted obtained_code codes
+#' @param x default is \code{NULL}. This is the string to be processed.
+#' @return converted FORCE codes
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
+#' 
+#' @title TF2YN
+#' @description This function converts TRUE/FALSE values to Y/N
 #' @param field default is \code{NULL}. This is the field that should be converted.
 #' @return vector
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 #' 
-meters2Fathoms <- function(field = NULL) {
-  field <- field/1.8288
-  return(field)
+TF2YN <- function(x) {
+  ESE.vals <- list("True" = "Y", 
+                   "False" = "N" 
+                   ) 
+  
+  ESE.vals = unlist(ESE.vals)
+  x = get_value(x, ESE.vals)
+  return(x)
 }
 
 #' @title convertHOWOBT

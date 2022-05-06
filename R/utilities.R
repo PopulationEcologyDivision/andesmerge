@@ -19,6 +19,33 @@ cleanEse <- function(){
  rm(list = eseObs, envir = .GlobalEnv)
 }
 
+#' @title meters2Fathoms
+#' @description This function converts a vector of values from meter to fathoms
+#' @param field default is \code{NULL}. This is the field that should be converted.
+#' @return vector
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
+#' 
+meters2Fathoms <- function(field = NULL) {
+  field <- field/1.8288
+  return(field)
+}
+
+
+# trunc_digits <- function(x,digits){e <- 10^digits; trunc(x*e) / e}
+
+#' @title cleanStrata
+#' @description This function takes the strata field, and ensures only the first 3 characters are 
+#' returned#' @param x default is \code{NULL}.  This is a field in a data frame 
+#' @param quiet default is \code{FALSE} Determines whether or not the script should output 
+#' informational messages 
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+cleanStrata <- function(x){
+  x[grepl("z", x, ignore.case = T) & nchar(x)>3] <- substr(x[grepl("z", x, ignore.case = T) & nchar(x)>3],1,3)
+  return(x)
+}
 
 #' @title addSizeClassToCatch
 #' @description This function fills in the catch with the missing size class 2 entries.   
@@ -75,6 +102,8 @@ addSizeClassToCatch <- function(basket, catch, quiet = FALSE){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 reFormatSpecimen <- function(x = NULL, quiet = FALSE){ 
+  if (!require(dplyr)) install.packages('dplyr')
+  library(dplyr)
   # Match data for level 1 observations 
   # Need to turn specimen table from wide format to long in order to have each observation on its own row
   specDets <- c(8,9,13:ncol(x))

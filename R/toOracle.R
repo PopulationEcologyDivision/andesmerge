@@ -40,6 +40,7 @@ toOracle <- function(cxnObj = NULL, source_df= NULL, target_schema = "groundfish
                               name = target_table, date=TRUE,row.names = FALSE, overwrite = doOverwrite, append = doAppend)
       },
       error=function(cond){
+        message(cond)
         return(-1)
       }
     )
@@ -57,6 +58,7 @@ toOracle <- function(cxnObj = NULL, source_df= NULL, target_schema = "groundfish
                        rownames = F)
       },
       error=function(cond){
+        message(cond)
         return(-1)
       }
     )
