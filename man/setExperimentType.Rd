@@ -4,13 +4,10 @@
 \alias{setExperimentType}
 \title{setExperimentType}
 \usage{
-setExperimentType(x, quiet = FALSE)
+setExperimentType(x)
 }
 \arguments{
 \item{x}{set object from ANdes raw data}
-
-\item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
-informational messages}
 }
 \value{
 The experiment code
@@ -24,11 +21,14 @@ Other general_use:
 \code{\link{addSizeClassToCatch}()},
 \code{\link{basketTweaks}()},
 \code{\link{catchTweaks}()},
+\code{\link{formatForOracle}()},
 \code{\link{loadData}()},
+\code{\link{lv1Tweaks}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{setTweaks}()},
 \code{\link{specimenTweaks}()},
-\code{\link{toOracle}()}
+\code{\link{toOracle}()},
+\code{\link{universalTweaks}()}
 }
 \author{
 Pablo Vergara, \email{Pablo.Vergara@dfo-mpo.gc.ca}

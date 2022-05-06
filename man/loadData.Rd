@@ -4,14 +4,11 @@
 \alias{loadData}
 \title{loadData}
 \usage{
-loadData(dataPath = NULL, quiet = FALSE)
+loadData(dataPath = NULL)
 }
 \arguments{
 \item{dataPath}{default is \code{NULL} the folder containing files to be loaded into R.  If left 
 as NULL, csv files in the\code{sampleAndesData} folder will be loaded}
-
-\item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
-informational messages}
 }
 \value{
 nothing - just loads data to environment
@@ -25,11 +22,14 @@ Other general_use:
 \code{\link{addSizeClassToCatch}()},
 \code{\link{basketTweaks}()},
 \code{\link{catchTweaks}()},
+\code{\link{formatForOracle}()},
+\code{\link{lv1Tweaks}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{setExperimentType}()},
 \code{\link{setTweaks}()},
 \code{\link{specimenTweaks}()},
-\code{\link{toOracle}()}
+\code{\link{toOracle}()},
+\code{\link{universalTweaks}()}
 }
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}

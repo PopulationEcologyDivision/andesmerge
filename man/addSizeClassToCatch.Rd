@@ -4,15 +4,12 @@
 \alias{addSizeClassToCatch}
 \title{addSizeClassToCatch}
 \usage{
-addSizeClassToCatch(basket, catch, quiet = FALSE)
+addSizeClassToCatch(basket, catch)
 }
 \arguments{
 \item{basket}{A data frame containing the basket information from Andes}
 
 \item{catch}{A data frame containing the catch information from Andes}
-
-\item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
-informational messages}
 }
 \value{
 the merged catch card
@@ -25,12 +22,15 @@ Andes does not provide a way to add Size class directly, Size classes are entere
 Other general_use: 
 \code{\link{basketTweaks}()},
 \code{\link{catchTweaks}()},
+\code{\link{formatForOracle}()},
 \code{\link{loadData}()},
+\code{\link{lv1Tweaks}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{setExperimentType}()},
 \code{\link{setTweaks}()},
 \code{\link{specimenTweaks}()},
-\code{\link{toOracle}()}
+\code{\link{toOracle}()},
+\code{\link{universalTweaks}()}
 }
 \author{
 Pablo Vergara, \email{Pablo.Vergara@dfo-mpo.gc.ca}

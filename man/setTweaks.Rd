@@ -4,13 +4,10 @@
 \alias{setTweaks}
 \title{setTweaks}
 \usage{
-setTweaks(x = NULL, quiet = FALSE)
+setTweaks(x = NULL)
 }
 \arguments{
 \item{x}{default is \code{NULL}.  Set data frame}
-
-\item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
-informational messages}
 }
 \value{
 a  Set data frame
@@ -24,11 +21,14 @@ Other general_use:
 \code{\link{addSizeClassToCatch}()},
 \code{\link{basketTweaks}()},
 \code{\link{catchTweaks}()},
+\code{\link{formatForOracle}()},
 \code{\link{loadData}()},
+\code{\link{lv1Tweaks}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{setExperimentType}()},
 \code{\link{specimenTweaks}()},
-\code{\link{toOracle}()}
+\code{\link{toOracle}()},
+\code{\link{universalTweaks}()}
 }
 \author{
 Pablo Vergara, \email{Pablo.Vergara@dfo-mpo.gc.ca}

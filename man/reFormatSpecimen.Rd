@@ -4,13 +4,10 @@
 \alias{reFormatSpecimen}
 \title{reFormatSpecimen}
 \usage{
-reFormatSpecimen(x = NULL, quiet = FALSE)
+reFormatSpecimen(x = NULL)
 }
 \arguments{
 \item{x}{default is \code{NULL}.  This is a field in a data frame}
-
-\item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
-informational messages}
 }
 \description{
 This function takes the tempSpecimen object, and populates the DATA_DEC 
@@ -18,9 +15,16 @@ appropriately depending on the values found
 }
 \seealso{
 Other internal: 
+\code{\link{TF2YN}()},
 \code{\link{cleanEse}()},
+\code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
-\code{\link{getEseTables}()}
+\code{\link{convertFORCE}()},
+\code{\link{convertHOWOBT}()},
+\code{\link{getEseTables}()},
+\code{\link{get_value}()},
+\code{\link{meters2Fathoms}()},
+\code{\link{populate_DATA_DESC}()}
 }
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}

@@ -7,7 +7,7 @@
 #' ESE_CATCHES, ESE_BASKETS, ESE_SPECIMENS, ESE_LV1_OBSERVATIONS
 #' @return data frame, but with attr() 
 #' @family general_use
-#' @authorMike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @author Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @note This may 
 #' @export
 formatForOracle <- function(source_df= NULL){

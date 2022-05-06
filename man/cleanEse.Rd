@@ -14,8 +14,15 @@ This function removes any ESE objects from the R environment
 }
 \seealso{
 Other internal: 
+\code{\link{TF2YN}()},
+\code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
+\code{\link{convertFORCE}()},
+\code{\link{convertHOWOBT}()},
 \code{\link{getEseTables}()},
+\code{\link{get_value}()},
+\code{\link{meters2Fathoms}()},
+\code{\link{populate_DATA_DESC}()},
 \code{\link{reFormatSpecimen}()}
 }
 \author{

@@ -4,13 +4,10 @@
 \alias{specimenTweaks}
 \title{specimenTweaks}
 \usage{
-specimenTweaks(x = NULL, quiet = FALSE)
+specimenTweaks(x = NULL)
 }
 \arguments{
 \item{x}{default is \code{NULL}.  Specimen data frame}
-
-\item{quiet}{default is \code{FALSE} Determines whether or not the script should output 
-informational messages}
 }
 \value{
 a Specimen data frame
@@ -24,11 +21,14 @@ Other general_use:
 \code{\link{addSizeClassToCatch}()},
 \code{\link{basketTweaks}()},
 \code{\link{catchTweaks}()},
+\code{\link{formatForOracle}()},
 \code{\link{loadData}()},
+\code{\link{lv1Tweaks}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{setExperimentType}()},
 \code{\link{setTweaks}()},
-\code{\link{toOracle}()}
+\code{\link{toOracle}()},
+\code{\link{universalTweaks}()}
 }
 \author{
 Pablo Vergara, \email{Pablo.Vergara@dfo-mpo.gc.ca}
