@@ -7,54 +7,55 @@
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 universalTweaks <- function(x = NULL){
-  tweaksPerformedOn = NA
-  
-  mission = x$cruise_data$MISSION[1]
-  
-  if (x$cruise_data$MISSION[1] == "CAR2022102"){
-      message("remapping species")
-      x$catch_data[x$catch_data$species_code == 18411,"species_code"] <- 6102
-      x$catch_data[x$catch_data$species_code == 13519,"species_code"] <- 4213
-      x$catch_data[x$catch_data$species_code == 14878,"species_code"] <- 4508
-      x$catch_data[x$catch_data$species_code == 12161,"species_code"] <- 8216
-      x$catch_data[x$catch_data$species_code == 19218,"species_code"] <- 9331
-      x$catch_data[x$catch_data$species_code == 19950,"species_code"] <- 1510
-      x$catch_data[x$catch_data$species_code == 18680,"species_code"] <- 1821
-      x$catch_data[x$catch_data$species_code == 12157,"species_code"] <- 8382
-      x$catch_data[x$catch_data$species_code == 10854,"species_code"] <- 500
-      x$catch_data[x$catch_data$species_code == 18495,"species_code"] <- 6105
-      x$catch_data[x$catch_data$species_code == 12096,"species_code"] <- 8516
-      #get rid of these, since they're known to be wrong and we should never accidentally use them
-      x$catch_data$species <- x$catch_data$species_id <- NULL
-      
-      x$specimen_data[x$specimen_data$species_code == 18411,"species_code"] <- 6102
-      x$specimen_data[x$specimen_data$species_code == 13519,"species_code"] <- 4213
-      x$specimen_data[x$specimen_data$species_code == 14878,"species_code"] <- 4508
-      x$specimen_data[x$specimen_data$species_code == 12161,"species_code"] <- 8216
-      x$specimen_data[x$specimen_data$species_code == 19218,"species_code"] <- 9331
-      x$specimen_data[x$specimen_data$species_code == 19950,"species_code"] <- 1510
-      x$specimen_data[x$specimen_data$species_code == 18680,"species_code"] <- 1821
-      x$specimen_data[x$specimen_data$species_code == 12157,"species_code"] <- 8382
-      x$specimen_data[x$specimen_data$species_code == 10854,"species_code"] <- 500
-      x$specimen_data[x$specimen_data$species_code == 18495,"species_code"] <- 6105
-      x$specimen_data[x$specimen_data$species_code == 12096,"species_code"] <- 8516
-
-      x$basket_data[x$basket_data$species_code == 18411,"species_code"] <- 6102
-      x$basket_data[x$basket_data$species_code == 13519,"species_code"] <- 4213
-      x$basket_data[x$basket_data$species_code == 14878,"species_code"] <- 4508
-      x$basket_data[x$basket_data$species_code == 12161,"species_code"] <- 8216
-      x$basket_data[x$basket_data$species_code == 19218,"species_code"] <- 9331
-      x$basket_data[x$basket_data$species_code == 19950,"species_code"] <- 1510
-      x$basket_data[x$basket_data$species_code == 18680,"species_code"] <- 1821
-      x$basket_data[x$basket_data$species_code == 12157,"species_code"] <- 8382
-      x$basket_data[x$basket_data$species_code == 10854,"species_code"] <- 500
-      x$basket_data[x$basket_data$species_code == 18495,"species_code"] <- 6105
-      x$basket_data[x$basket_data$species_code == 12096,"species_code"] <- 8516
-      
-      tweaksPerformedOn = mission
-  }
-
-  if (!is.na(tweaksPerformedOn)) message("Tweaks were performed on entire dataset for mission ", tweaksPerformedOn)
+  # tweaksPerformedOn = NA
+  # 
+  # mission = x$cruise_data$MISSION[1]
+  # 
+  # if (x$cruise_data$MISSION[1] == "CAR2022102"){
+  #     message("remapping species")
+  #     x$catch_data[x$catch_data$species_code == 18411,"species_code"] <- 6102
+  #     x$catch_data[x$catch_data$species_code == 13519,"species_code"] <- 4213
+  #     x$catch_data[x$catch_data$species_code == 14878,"species_code"] <- 4508
+  #     x$catch_data[x$catch_data$species_code == 12161,"species_code"] <- 8216
+  #     x$catch_data[x$catch_data$species_code == 19218,"species_code"] <- 9331
+  #     x$catch_data[x$catch_data$species_code == 19950,"species_code"] <- 1510
+  #     x$catch_data[x$catch_data$species_code == 18680,"species_code"] <- 1821
+  #     x$catch_data[x$catch_data$species_code == 12157,"species_code"] <- 8382
+  #     x$catch_data[x$catch_data$species_code == 10854,"species_code"] <- 500
+  #     # x$catch_data[x$catch_data$species_code == 18495,"species_code"] <- 6105
+  #     x$catch_data[x$catch_data$species_code == 12096,"species_code"] <- 8516
+  #     #get rid of text species name for overwritten spp, since they're known to be wrong and we 
+  #     #should never accidentally use them
+  #     x$catch_data$species <- x$catch_data$species_id <- NULL
+  #     
+  #     x$specimen_data[x$specimen_data$species_code == 18411,"species_code"] <- 6102
+  #     x$specimen_data[x$specimen_data$species_code == 13519,"species_code"] <- 4213
+  #     x$specimen_data[x$specimen_data$species_code == 14878,"species_code"] <- 4508
+  #     x$specimen_data[x$specimen_data$species_code == 12161,"species_code"] <- 8216
+  #     x$specimen_data[x$specimen_data$species_code == 19218,"species_code"] <- 9331
+  #     x$specimen_data[x$specimen_data$species_code == 19950,"species_code"] <- 1510
+  #     x$specimen_data[x$specimen_data$species_code == 18680,"species_code"] <- 1821
+  #     x$specimen_data[x$specimen_data$species_code == 12157,"species_code"] <- 8382
+  #     x$specimen_data[x$specimen_data$species_code == 10854,"species_code"] <- 500
+  #     # x$specimen_data[x$specimen_data$species_code == 18495,"species_code"] <- 6105
+  #     x$specimen_data[x$specimen_data$species_code == 12096,"species_code"] <- 8516
+  # 
+  #     x$basket_data[x$basket_data$species_code == 18411,"species_code"] <- 6102
+  #     x$basket_data[x$basket_data$species_code == 13519,"species_code"] <- 4213
+  #     x$basket_data[x$basket_data$species_code == 14878,"species_code"] <- 4508
+  #     x$basket_data[x$basket_data$species_code == 12161,"species_code"] <- 8216
+  #     x$basket_data[x$basket_data$species_code == 19218,"species_code"] <- 9331
+  #     x$basket_data[x$basket_data$species_code == 19950,"species_code"] <- 1510
+  #     x$basket_data[x$basket_data$species_code == 18680,"species_code"] <- 1821
+  #     x$basket_data[x$basket_data$species_code == 12157,"species_code"] <- 8382
+  #     x$basket_data[x$basket_data$species_code == 10854,"species_code"] <- 500
+  #     # x$basket_data[x$basket_data$species_code == 18495,"species_code"] <- 6105
+  #     x$basket_data[x$basket_data$species_code == 12096,"species_code"] <- 8516
+  #     
+  #     tweaksPerformedOn = mission
+  # }
+  # 
+  # if (!is.na(tweaksPerformedOn)) message("Tweaks were performed on entire dataset for mission ", tweaksPerformedOn)
   return(x)
 }
 

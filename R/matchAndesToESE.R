@@ -28,7 +28,7 @@ matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
   # All tables will need MISSION - do it all at once
   cruise$MISSION <- set$MISSION <- catch$MISSION <- basket$MISSION <- specimen$MISSION <- lv1_obs$MISSION <- cruise$MISSION
 
-  # If ebrowser()xperiment_type, start_date and end date are all blank, we drop the set
+  # If experiment_type, start_date and end date are all blank, we drop the set
   if (nrow(set[nchar(set[["experiment_type"]])==0 & nchar(set[["start_date"]])==0 & nchar(set[["end_date"]])==0,])>0){
     bad <- sort(unique(set[nchar(set[["experiment_type"]])==0 & nchar(set[["start_date"]])==0 & nchar(set[["end_date"]])==0,"set_number"]))
     warning("\n!!One or more sets had a bunch of empty fields.  These sets have been dropped to allow the loading to proceed, but should be dealt with before finalizing the load: \nSet(s):", paste0(bad, collapse=","))
@@ -102,6 +102,7 @@ matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
   x$basket$SIZE_CLASS     = basket$size_class
   x$basket$BASKET_WEIGHT  = basket$basket_wt_kg
   x$basket$SAMPLED        = TF2YN(basket$sampled)
+  x$basket$catch_id       = basket$catch_id
   
   # perform tweaks to base data here
   x$basket = basketTweaks(x$basket)
@@ -117,7 +118,9 @@ matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
   x$catch$UNWEIGHED_BASKETS = catch$unweighed_baskets
   x$catch$NUMBER_CAUGHT     = catch$specimen_count
   x$catch = addSizeClassToCatch(x$basket,x$catch)       # add correct size_class as needed 
-  
+  browser()
+  x$catch$is_parent         = catch$is_parent
+  x$catch$parent_catch_id   = catch$parent_catch_id
   # perform tweaks to base data here
   x$catch = catchTweaks(x$catch)
   
@@ -148,6 +151,9 @@ matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
   x$lv1_obs <- populate_DATA_DESC(x$lv1_obs)
    
   x$lv1_obs = lv1Tweaks(x$lv1_obs)
+  
+  browser()
+  test <- applySubsampling(catch = x$catch[x$catch$is_parent,], basket = )
   
   names(x)[which(names(x) == "cruise")]   <- "ESE_MISSIONS"
   names(x)[which(names(x) == "set")]      <- "ESE_SETS"

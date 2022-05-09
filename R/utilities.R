@@ -255,3 +255,8 @@ setExperimentType <- function(x){
   
   return(as.numeric(x$experiment_type_id_tweaked))
 }
+
+applySubsampling <- function(catch=NULL, basket = NULL){
+
+  browser()  
+}
