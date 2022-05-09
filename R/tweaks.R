@@ -1,4 +1,4 @@
-#' @title universalTweaks
+#' @title tweakUniversal
 #' @description This function will perform tweaks on data from Andes that exists in multiple 
 #' exported csv files  
 #' @param x default is \code{NULL}.  This is a list of all of the objects from the csv files
@@ -6,7 +6,7 @@
 #' @family general_use
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
-universalTweaks <- function(x = NULL){
+tweakUniversal <- function(x = NULL){
   # tweaksPerformedOn = NA
   # 
   # mission = x$cruise_data$MISSION[1]
@@ -59,7 +59,7 @@ universalTweaks <- function(x = NULL){
   return(x)
 }
 
-#' @title basketTweaks
+#' @title tweakBaskets
 #' @description This function will perform tweaks to data coming from ANdes before 
 #' it is imported to Oracle.  
 #' @param x default is \code{NULL}.  Basket data frame
@@ -67,7 +67,7 @@ universalTweaks <- function(x = NULL){
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
-basketTweaks <- function(x = NULL){
+tweakBaskets <- function(x = NULL){
   tweaksPerformedOn = NA
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   mission = x$MISSION[1]
@@ -84,7 +84,7 @@ basketTweaks <- function(x = NULL){
   return(x)
 }
 
-#' @title catchTweaks
+#' @title tweakCatches
 #' @description This function will perform tweaks to data coming from ANdes before 
 #' it is imported to Oracle.  
 #' @param x default is \code{NULL}.  catch data frame
@@ -92,7 +92,7 @@ basketTweaks <- function(x = NULL){
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
-catchTweaks <- function(x = NULL){
+tweakCatches <- function(x = NULL){
   tweaksPerformedOn = NA
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   mission = x$MISSION[1]
@@ -105,7 +105,7 @@ catchTweaks <- function(x = NULL){
   return(x)
 }
 
-#' @title specimenTweaks
+#' @title tweakSpecimens
 #' @description This function will perform tweaks to data coming from ANdes before 
 #' it is imported to Oracle.  
 #' @param x default is \code{NULL}.  Specimen data frame
@@ -113,7 +113,7 @@ catchTweaks <- function(x = NULL){
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
-specimenTweaks <- function(x = NULL){
+tweakSpecimens <- function(x = NULL){
   tweaksPerformedOn = NA
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   mission = x$MISSION[1]
@@ -126,7 +126,7 @@ specimenTweaks <- function(x = NULL){
   return(x)
 }
 
-#' @title lv1Tweaks
+#' @title tweakLv1
 #' @description This function will perform tweaks to data coming from ANdes before 
 #' it is imported to Oracle.  
 #' @param x default is \code{NULL}.  LV1_OBSERVATIONS data frame
@@ -134,7 +134,7 @@ specimenTweaks <- function(x = NULL){
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
-lv1Tweaks <- function(x = NULL){
+tweakLv1 <- function(x = NULL){
   tweaksPerformedOn = NA
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   mission = x$MISSION[1]
@@ -147,7 +147,7 @@ lv1Tweaks <- function(x = NULL){
   return(x)
 }
 
-#' @title setTweaks
+#' @title tweakSets
 #' @description This function will perform tweaks to data coming from ANdes before 
 #' it is imported to Oracle.  
 #' @param x default is \code{NULL}.  Set data frame
@@ -155,7 +155,7 @@ lv1Tweaks <- function(x = NULL){
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
-setTweaks <- function(x = NULL){
+tweakSets <- function(x = NULL){
   tweaksPerformedOn = NA
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   mission = x$MISSION[1]

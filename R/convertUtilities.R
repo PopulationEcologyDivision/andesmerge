@@ -48,23 +48,6 @@ convertFORCE <- function(x){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 #' 
-#' @title TF2YN
-#' @description This function converts TRUE/FALSE values to Y/N
-#' @param field default is \code{NULL}. This is the field that should be converted.
-#' @return vector
-#' @family internal
-#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-#' @export
-#' 
-TF2YN <- function(x) {
-  ESE.vals <- list("True" = "Y", 
-                   "False" = "N" 
-                   ) 
-  
-  ESE.vals = unlist(ESE.vals)
-  x = get_value(x, ESE.vals)
-  return(x)
-}
 
 #' @title convertHOWOBT
 #' @description This function returns converted obtained_code codes

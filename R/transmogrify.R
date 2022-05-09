@@ -1,0 +1,107 @@
+transmogrifyMissions  <- function(df = NULL){
+  df$MISSION <- gsub( "-","",df$mission_number)
+  colnames(df)[colnames(df)=="area_of_operation"] <- "SAMPLING_REQUIREMENT"
+  colnames(df)[colnames(df)=="description"]       <- "NOTE"
+  
+  df$PROGRAM_TITLE         = 'Maritimes Bottom Trawl Surveys'
+  df$DATA_VERSION          = utils::packageDescription('andesmerge')$Version
+  df$NOTE                  = cleanfields(df$NOTE)
+  df$mission_number <- NULL
+  
+  #match expected field order
+  df <- df[,c("MISSION", "SAMPLING_REQUIREMENT", "NOTE", "DATA_VERSION", "PROGRAM_TITLE")]
+  return(df)
+}
+transmogrifySets      <- function(df = NULL){
+  colnames(df)[colnames(df)=="set_number"] <- "SETNO"
+  df$START_DATE               = format.Date(strftime(as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")), format = "%d%m%Y")
+  df$START_TIME               = as.integer(as.character(as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M'))
+  df$END_DATE                 = format.Date(strftime(as.POSIXlt(df$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")), format = "%d%m%Y")
+  df$END_TIME                 = as.integer(as.character(as.POSIXlt(df$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M'))
+  df$STRAT                    = cleanStrata(df$stratum)
+  df$SLAT                     = paste0(df$start_latitude_DD,sprintf("%05.2f",df$start_latitude_MMmm))  #sprintf used to ensure leading zeroes added as necessary.
+  df$SLONG                    = paste0(df$start_longitude_DD,sprintf("%05.2f",df$start_longitude_MMmm))
+  df$ELAT                     = paste0(df$end_latitude_DD,sprintf("%05.2f",df$end_latitude_MMmm))
+  df$ELONG                    = paste0(df$end_longitude_DD,sprintf("%05.2f",df$end_longitude_MMmm))
+  df$AREA                     = NA # MMM - used, but not sure what it would map to yet
+  df$DIST                     = df$distance_towed                 #MMM - is this nautical miles
+  df$HOWD                     = convertHOWOBT(df$distance_towed_obtained_code)
+  df$SPEED                    = round(df$ship_speed,2)
+  df$HOWS                     = convertHOWOBT(df$ship_speed_obtained_code)
+  df$DMIN                     = NA # = df$dmin/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
+  df$DMAX                     = NA # = df$dmax/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
+  df$START_DEPTH              = round(meters2Fathoms(df$start_depth_m),0)
+  df$END_DEPTH                = round(meters2Fathoms(df$end_depth_m),0)
+  df$WIND                     = df$wind_direction_degree          # MMM - verified that actual degree is entered 
+  df$FORCE                    = convertFORCE(df$wind_force_code)  # MMM - force of "9" is actually NA
+  df$CURNT                    = df$tide_direction_code            # verified
+  df$EXPERIMENT_TYPE_CODE     = setExperimentType(df)
+  df$GEAR                     = as.numeric(stringi::stri_extract_first_regex(df$gear_type, "[0-9]+"))  #assume this is correct (and not gear_type_id)
+  df$AUX                      = as.numeric(stringi::stri_extract_first_regex(df$auxiliary_equipment, "[0-9]+"))
+  df$WARPOUT                  = df$port_warp
+  df$NOTE                     = cleanfields(df$remarks)
+  df$SURFACE_TEMPERATURE      = NA # data to come later, not captured during survey
+  df$BOTTOM_TEMPERATURE       = NA # data to come later, not captured during survey
+  df$BOTTOM_SALINITY          = NA # data to come later, not captured during survey
+  df$HYDRO                    = NA # data to come later, not captured during survey
+  df$STATION                  = stringi::stri_extract_first_regex(df$new_station, "\\d{3}")
+  df$BOTTOM_TYPE_CODE         = NA
+  df$BOTTOM_TEMP_DEVICE_CODE  = NA
+  df$WAVE_HEIGHT_CODE         = NA
+  df$LIGHT_LEVEL_CODE         = NA
+  df$GEAR_MONITOR_DEVICE_CODE = NA
+  
+  #match expected field order
+  df <- df[,c("MISSION","START_DATE","START_TIME","END_DATE","END_TIME","STRAT","SLAT","SLONG","ELAT","ELONG",
+              "AREA","DIST","HOWD","SPEED","HOWS","DMIN","DMAX","START_DEPTH","END_DEPTH","WIND",
+              "FORCE","CURNT","EXPERIMENT_TYPE_CODE","GEAR","AUX","WARPOUT","NOTE",
+              "SURFACE_TEMPERATURE","BOTTOM_TEMPERATURE","BOTTOM_SALINITY","HYDRO","STATION",
+              "BOTTOM_TYPE_CODE","BOTTOM_TEMP_DEVICE_CODE","WAVE_HEIGHT_CODE","LIGHT_LEVEL_CODE",
+              "GEAR_MONITOR_DEVICE_CODE")]
+  return(df)
+}
+transmogrifyBaskets   <- function(df = NULL){
+  df$sampled <- tolower(df$sampled)
+  df$sampled <- ifelse(df$sampled == "true", T, ifelse(df$sampled == "false", F, NA))
+  colnames(df)[colnames(df)=="set_number"]    <- "SETNO"
+  colnames(df)[colnames(df)=="species_code"]  <- "SPEC"  
+  colnames(df)[colnames(df)=="size_class"]    <- "SIZE_CLASS"
+  colnames(df)[colnames(df)=="basket_wt_kg"]  <- "BASKET_WEIGHT"  
+  colnames(df)[colnames(df)=="sampled"]       <- "SAMPLED"
+  
+  #match expected field order
+  df <- df[,c("MISSION","SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED","catch_id")]
+  
+  return(df)
+}
+transmogrifyCatches   <- function(df = NULL){
+  colnames(df)[colnames(df)=="set_number"]        <- "SETNO"
+  colnames(df)[colnames(df)=="species_code"]      <- "SPEC"
+  colnames(df)[colnames(df)=="notes"]             <- "NOTE"
+  colnames(df)[colnames(df)=="unweighed_baskets"] <- "UNWEIGHED_BASKETS"
+  colnames(df)[colnames(df)=="specimen_count"]    <- "NUMBER_CAUGHT"
+  df$SIZE_CLASS        = 999
+  message("need to add size class here")
+  #' size_class info only available in the basket - put the default size
+  # x$catch = addSizeClassToCatch(x$basket,x$catch)       # add correct size_class as needed 
+  
+  #match expected field order
+  df <- df[,c("MISSION","SETNO", "SPEC", "SIZE_CLASS", "NOTE", "UNWEIGHED_BASKETS", "NUMBER_CAUGHT",
+              "is_parent", "parent_catch_id")]
+  return(df) 
+}
+transmogrifySpecimens <- function(df = NULL){
+
+
+  return(df)
+}
+transmogrifyLV1_OBS   <- function(df = NULL){
+  if(nrow(df[nchar(df$DATA_VALUE)>50,])>0){
+    message("One or more of the values for LV1_OBSERVATIONS$DATA_VALUE will be truncated to 50 characters to fit in the db")
+    df$DATA_VALUE	       = substr(df$DATA_VALUE, 1, 50) #Oracle table only allows length of 50
+  }
+
+  df <- populate_DATA_DESC(df)
+  
+  return(df) 
+}
