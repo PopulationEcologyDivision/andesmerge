@@ -4,7 +4,7 @@
 #' @param dataPath default is \code{NULL}.  This is the location of the csv files exported from andes
 #' @return a list with all objects needed to load to Oracle
 #' @family general_use
-#' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
 
@@ -12,9 +12,9 @@ matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
   
   tmp <- loadData(dataPath = dataPath)
   
-  #' keepFieldsXxx  - extracts required/usable fields from andes data
-  #' tansmogrifyXxx - translate andes fields into formats/units, etc as used by ESE tables 
-  #' tweakXxx       - mission-specific modifications to the various ESE objects
+  # keepFieldsXxx  - extracts required/usable fields from andes data
+  # tansmogrifyXxx - translate andes fields into formats/units, etc as used by ESE tables 
+  # tweakXxx       - mission-specific modifications to the various ESE objects
  
   ESE_MISSIONS         <- keepFieldsMissions(tmp$cruise_data)  
   ESE_MISSIONS         <- transmogrifyMissions(ESE_MISSIONS)
@@ -32,10 +32,10 @@ matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
   ESE_CATCHES          <- transmogrifyCatches(ESE_CATCHES)
   ESE_CATCHES          <- tweakCatches(ESE_CATCHES)
   
-  #' both specimen and lv1 observations are kept together in specimen_data, so they are initially
-  #' handled together
-      specimensRaw         <- keepFieldsSpecimens(tmp$specimen_data, mission)
-      specimenList         <- reFormatSpecimen(specimensRaw)
+  # both specimen and lv1 observations are kept together in specimen_data, so they are
+  # initially handled together
+  specimensRaw         <- keepFieldsSpecimens(tmp$specimen_data, mission)
+  specimenList         <- reFormatSpecimen(specimensRaw)
   
   ESE_SPECIMENS        <- specimenList$specimen
   ESE_SPECIMENS        <- transmogrifySpecimens(ESE_SPECIMENS)
@@ -45,7 +45,7 @@ matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
   ESE_LV1_OBSERVATIONS <- transmogrifyLV1_OBS(ESE_LV1_OBSERVATIONS)
   ESE_LV1_OBSERVATIONS <- tweakLv1(ESE_LV1_OBSERVATIONS)
   
-  rm(list=c("specimensRaw","specimenList"))
+  rm(list=c("tmp", "specimensRaw","specimenList"))
 
   x <- list()
   x$ESE_MISSIONS         <- ESE_MISSIONS 

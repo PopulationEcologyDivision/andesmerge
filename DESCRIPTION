@@ -1,6 +1,6 @@
 Package: andesmerge
-Title: andesmerge: Maritimes tools for getting data out of ANDES and into our database 
-Version: 2022.01.19
+Title: andesmerge: Maritimes tools for getting data out of ANDES and into the Maritimes groundfish database 
+Version: 2022.05.10
 Authors@R: c(
             person(given = "Pablo",
             family = "Vergara",

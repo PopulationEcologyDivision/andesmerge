@@ -105,7 +105,7 @@ reFormatSpecimen <- function(x = NULL){
   y <- list()
   y$specimen <- x[,c("SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID")]
   
-  if (!require(dplyr)) install.packages('dplyr')
+  if (!require(dplyr)) utils::install.packages('dplyr')
   library(dplyr)
   # Match data for level 1 observations 
   # Need to turn specimen table from wide format to long in order to have each observation on its own row

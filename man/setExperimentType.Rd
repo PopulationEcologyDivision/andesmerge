@@ -19,16 +19,16 @@ This function sets the proper experiment type to match existing data structures 
 \seealso{
 Other general_use: 
 \code{\link{addSizeClassToCatch}()},
-\code{\link{basketTweaks}()},
-\code{\link{catchTweaks}()},
 \code{\link{formatForOracle}()},
 \code{\link{loadData}()},
-\code{\link{lv1Tweaks}()},
 \code{\link{matchAndesToESE}()},
-\code{\link{setTweaks}()},
-\code{\link{specimenTweaks}()},
 \code{\link{toOracle}()},
-\code{\link{universalTweaks}()}
+\code{\link{tweakBaskets}()},
+\code{\link{tweakCatches}()},
+\code{\link{tweakLv1}()},
+\code{\link{tweakSets}()},
+\code{\link{tweakSpecimens}()},
+\code{\link{tweakUniversal}()}
 }
 \author{
 Pablo Vergara, \email{Pablo.Vergara@dfo-mpo.gc.ca}

@@ -1,3 +1,10 @@
+#' @title transmogrifyMissions
+#' @description This function takes the fields from the andes cruise_data, and does the various 
+#' processing necessary to make them equivalent to the formats used in the ESE_MISSIONS table
+#' @param df default is \code{NULL}.  This is the data frame containing the usable fields from the 
+#' cruise_data 
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyMissions  <- function(df = NULL){
   df$MISSION <- gsub( "-","",df$mission_number)
   colnames(df)[colnames(df)=="area_of_operation"] <- "SAMPLING_REQUIREMENT"
@@ -12,6 +19,13 @@ transmogrifyMissions  <- function(df = NULL){
   df <- df[,c("MISSION", "SAMPLING_REQUIREMENT", "NOTE", "DATA_VERSION", "PROGRAM_TITLE")]
   return(df)
 }
+#' @title transmogrifySets
+#' @description This function takes the fields from the andes set_data, and does the various 
+#' processing necessary to make them equivalent to the formats used in the ESE_SETS table
+#' @param df default is \code{NULL}.  This is the data frame containing the usable fields from the 
+#' set_data 
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifySets      <- function(df = NULL){
   colnames(df)[colnames(df)=="set_number"] <- "SETNO"
   df$START_DATE               = format.Date(strftime(as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")), format = "%d%m%Y")
@@ -60,6 +74,13 @@ transmogrifySets      <- function(df = NULL){
               "GEAR_MONITOR_DEVICE_CODE")]
   return(df)
 }
+#' @title transmogrifyBaskets
+#' @description This function takes the fields from the andes basket_data, and does the various 
+#' processing necessary to make them equivalent to the formats used in the ESE_BASKETS table
+#' @param df default is \code{NULL}.  This is the data frame containing the usable fields from the 
+#' basket_data 
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyBaskets   <- function(df = NULL){
   df$sampled <- tolower(df$sampled)
   df$sampled <- ifelse(df$sampled == "true", T, ifelse(df$sampled == "false", F, NA))
@@ -74,6 +95,13 @@ transmogrifyBaskets   <- function(df = NULL){
   
   return(df)
 }
+#' @title transmogrifyCatches
+#' @description This function takes the fields from the andes catch_data, and does the various 
+#' processing necessary to make them equivalent to the formats used in the ESE_CATCHES table
+#' @param df default is \code{NULL}.  This is the data frame containing the usable fields from the 
+#' catch_data 
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyCatches   <- function(df = NULL){
   colnames(df)[colnames(df)=="set_number"]        <- "SETNO"
   colnames(df)[colnames(df)=="species_code"]      <- "SPEC"
@@ -90,11 +118,27 @@ transmogrifyCatches   <- function(df = NULL){
               "is_parent", "parent_catch_id")]
   return(df) 
 }
+#' @title transmogrifySpecimens
+#' @description This function takes the fields from the andes specimen_data, and does the various 
+#' processing necessary to make them equivalent to the formats used in the ESE_SPECIMENS table.  
+#' @param df default is \code{NULL}.  This is the data frame containing the usable fields from the 
+#' specimen_data. Note that both ESE_SPECIMENS and ESE_LV1_OBSERVATIONS are derived from the andes 
+#' specimen_data. 
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifySpecimens <- function(df = NULL){
 
 
   return(df)
 }
+#' @title transmogrifyLV1_OBS
+#' @description This function takes the fields from the andes specimen_data, and does the various 
+#' processing necessary to make them equivalent to the formats used in the ESE_LV1_OBSERVATIONS table
+#' @param df default is \code{NULL}.  This is the data frame containing the usable fields from the 
+#' specimen_data. Note that both ESE_SPECIMENS and ESE_LV1_OBSERVATIONS are derived from the andes 
+#' specimen_data. 
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyLV1_OBS   <- function(df = NULL){
   if(nrow(df[nchar(df$DATA_VALUE)>50,])>0){
     message("One or more of the values for LV1_OBSERVATIONS$DATA_VALUE will be truncated to 50 characters to fit in the db")

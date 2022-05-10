@@ -19,16 +19,26 @@ This function returns the  lookup value in a vector
 }
 \seealso{
 Other internal: 
-\code{\link{TF2YN}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
 \code{\link{convertFORCE}()},
 \code{\link{convertHOWOBT}()},
 \code{\link{getEseTables}()},
+\code{\link{keepFieldsBaskets}()},
+\code{\link{keepFieldsCatches}()},
+\code{\link{keepFieldsMissions}()},
+\code{\link{keepFieldsSets}()},
+\code{\link{keepFieldsSpecimens}()},
 \code{\link{meters2Fathoms}()},
 \code{\link{populate_DATA_DESC}()},
-\code{\link{reFormatSpecimen}()}
+\code{\link{reFormatSpecimen}()},
+\code{\link{transmogrifyBaskets}()},
+\code{\link{transmogrifyCatches}()},
+\code{\link{transmogrifyLV1_OBS}()},
+\code{\link{transmogrifyMissions}()},
+\code{\link{transmogrifySets}()},
+\code{\link{transmogrifySpecimens}()}
 }
 \author{
 Pablo Vergara, \email{pablo.vergara@dfo-mpo.gc.ca}

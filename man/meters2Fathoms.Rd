@@ -17,7 +17,6 @@ This function converts a vector of values from meter to fathoms
 }
 \seealso{
 Other internal: 
-\code{\link{TF2YN}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
@@ -25,8 +24,19 @@ Other internal:
 \code{\link{convertHOWOBT}()},
 \code{\link{getEseTables}()},
 \code{\link{get_value}()},
+\code{\link{keepFieldsBaskets}()},
+\code{\link{keepFieldsCatches}()},
+\code{\link{keepFieldsMissions}()},
+\code{\link{keepFieldsSets}()},
+\code{\link{keepFieldsSpecimens}()},
 \code{\link{populate_DATA_DESC}()},
-\code{\link{reFormatSpecimen}()}
+\code{\link{reFormatSpecimen}()},
+\code{\link{transmogrifyBaskets}()},
+\code{\link{transmogrifyCatches}()},
+\code{\link{transmogrifyLV1_OBS}()},
+\code{\link{transmogrifyMissions}()},
+\code{\link{transmogrifySets}()},
+\code{\link{transmogrifySpecimens}()}
 }
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}

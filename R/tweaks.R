@@ -7,8 +7,7 @@
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 tweakUniversal <- function(x = NULL){
-  # tweaksPerformedOn = NA
-  # 
+
   # mission = x$cruise_data$MISSION[1]
   # 
   # if (x$cruise_data$MISSION[1] == "CAR2022102"){
@@ -51,24 +50,20 @@ tweakUniversal <- function(x = NULL){
   #     x$basket_data[x$basket_data$species_code == 10854,"species_code"] <- 500
   #     # x$basket_data[x$basket_data$species_code == 18495,"species_code"] <- 6105
   #     x$basket_data[x$basket_data$species_code == 12096,"species_code"] <- 8516
-  #     
-  #     tweaksPerformedOn = mission
   # }
   # 
-  # if (!is.na(tweaksPerformedOn)) message("Tweaks were performed on entire dataset for mission ", tweaksPerformedOn)
   return(x)
 }
 
 #' @title tweakBaskets
-#' @description This function will perform tweaks to data coming from ANdes before 
+#' @description This function will perform tweaks to data coming from andes before 
 #' it is imported to Oracle.  
-#' @param x default is \code{NULL}.  Basket data frame
-#' @return a basket data frame
+#' @param x default is \code{NULL}.  This is the ESE_BASKET data frame
+#' @return a data frame for loading into 
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
 tweakBaskets <- function(x = NULL){
-  tweaksPerformedOn = NA
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   mission = x$MISSION[1]
   
@@ -77,86 +72,77 @@ tweakBaskets <- function(x = NULL){
     message("remapping species")
     index = x$SIZE_CLASS == 3 & x$SPEC == 23
     x[index,]$SIZE_CLASS = 2
-    tweaksPerformedOn = mission
   }
 
-  if (!is.na(tweaksPerformedOn)) message("Tweaks were performed on Basket data for mission ", tweaksPerformedOn)
-  return(x)
+ return(x)
 }
 
 #' @title tweakCatches
-#' @description This function will perform tweaks to data coming from ANdes before 
+#' @description This function will perform tweaks to data coming from andes before 
 #' it is imported to Oracle.  
-#' @param x default is \code{NULL}.  catch data frame
-#' @return a catch data frame
+#' @param x default is \code{NULL}.   This is the ESE_CATCHES data frame
+#' @return a data frame for loading into ESE_CATCHES
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
 tweakCatches <- function(x = NULL){
-  tweaksPerformedOn = NA
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   mission = x$MISSION[1]
   
   # if(mission == "CJC2021222"){
-  #   tweaksPerformedOn = mission
+  #   
   # }
   
-  if (!is.na(tweaksPerformedOn)) message("Tweaks were performed on Catch data for mission ", tweaksPerformedOn)
   return(x)
 }
 
 #' @title tweakSpecimens
-#' @description This function will perform tweaks to data coming from ANdes before 
+#' @description This function will perform tweaks to data coming from andes before 
 #' it is imported to Oracle.  
-#' @param x default is \code{NULL}.  Specimen data frame
-#' @return a Specimen data frame
+#' @param x default is \code{NULL}. This is the ESE_BASKETS data frame
+#' @return a data frame for loading into ESE_BASKETS
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
 tweakSpecimens <- function(x = NULL){
-  tweaksPerformedOn = NA
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   mission = x$MISSION[1]
   
   # if(mission == "CJC2021222"){
-  #   tweaksPerformedOn = mission
+  #   
   # }
 
-  if (!is.na(tweaksPerformedOn)) message("Tweaks were performed on Specimen data for mission ", tweaksPerformedOn)
   return(x)
 }
 
 #' @title tweakLv1
-#' @description This function will perform tweaks to data coming from ANdes before 
+#' @description This function will perform tweaks to data coming from andes before 
 #' it is imported to Oracle.  
-#' @param x default is \code{NULL}.  LV1_OBSERVATIONS data frame
-#' @return a Specimen data frame
+#' @param x default is \code{NULL}.  This is the ESE_LV1_OBSERVATIONS data frame.
+#' @return a data frame for loading into ESE_LV1_OBSERVATIONS
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
 tweakLv1 <- function(x = NULL){
-  tweaksPerformedOn = NA
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   mission = x$MISSION[1]
   
   # if(mission == "CJC2021222"){
-  #   tweaksPerformedOn = mission
+  #   
   # }
   
-  if (!is.na(tweaksPerformedOn)) message("Tweaks were performed on LV1_OBSERVATIONS data for mission ", tweaksPerformedOn)
   return(x)
 }
 
 #' @title tweakSets
-#' @description This function will perform tweaks to data coming from ANdes before 
+#' @description This function will perform tweaks to data coming from andes before 
 #' it is imported to Oracle.  
-#' @param x default is \code{NULL}.  Set data frame
-#' @return a  Set data frame
+#' @param x default is \code{NULL}.  This is the ESE_SETS data frame.
+#' @return a data frame for loading into ESE_SETS
 #' @family general_use
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
 tweakSets <- function(x = NULL){
-  tweaksPerformedOn = NA
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   mission = x$MISSION[1]
   
@@ -164,10 +150,8 @@ tweakSets <- function(x = NULL){
     message("recoding gear from 23 to 15")
     #NEST trawl is not 23, but 15 - change here; expect this will be corrected in the future
     x[x$GEAR==23,"GEAR"] <- 15
-    tweaksPerformedOn = mission
   }
 
-  if (!is.na(tweaksPerformedOn)) message("Tweaks were performed on Set data for mission ", tweaksPerformedOn)
   return(x)
 }
 

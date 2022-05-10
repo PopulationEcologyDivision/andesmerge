@@ -42,16 +42,16 @@ records of the new objects will not replace any existing records.
 \seealso{
 Other general_use: 
 \code{\link{addSizeClassToCatch}()},
-\code{\link{basketTweaks}()},
-\code{\link{catchTweaks}()},
 \code{\link{formatForOracle}()},
 \code{\link{loadData}()},
-\code{\link{lv1Tweaks}()},
 \code{\link{matchAndesToESE}()},
 \code{\link{setExperimentType}()},
-\code{\link{setTweaks}()},
-\code{\link{specimenTweaks}()},
-\code{\link{universalTweaks}()}
+\code{\link{tweakBaskets}()},
+\code{\link{tweakCatches}()},
+\code{\link{tweakLv1}()},
+\code{\link{tweakSets}()},
+\code{\link{tweakSpecimens}()},
+\code{\link{tweakUniversal}()}
 }
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}
