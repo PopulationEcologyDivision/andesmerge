@@ -7,7 +7,7 @@
 matchAndesToESE(dataPath = NULL, quiet = FALSE)
 }
 \arguments{
-\item{dataPath}{default is \code{NULL}.  This is the location of the csv files exported from andes}
+\item{dataPath}{default is \code{NULL}. This is the location of the csv files exported from andes}
 }
 \value{
 a list with all objects needed to load to Oracle
@@ -18,7 +18,6 @@ be loaded into Oracle.
 }
 \seealso{
 Other general_use: 
-\code{\link{addSizeClassToCatch}()},
 \code{\link{formatForOracle}()},
 \code{\link{loadData}()},
 \code{\link{setExperimentType}()},

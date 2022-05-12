@@ -6,17 +6,17 @@
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyMissions  <- function(df = NULL){
+  theMsg <- NA
   df$MISSION <- gsub( "-","",df$mission_number)
   colnames(df)[colnames(df)=="area_of_operation"] <- "SAMPLING_REQUIREMENT"
   colnames(df)[colnames(df)=="description"]       <- "NOTE"
   
   df$PROGRAM_TITLE         = 'Maritimes Bottom Trawl Surveys'
-  df$DATA_VERSION          = utils::packageDescription('andesmerge')$Version
+  df$DATA_VERSION          = gsub("\\.","", utils::packageDescription('andesmerge')$Version)
   df$NOTE                  = cleanfields(df$NOTE)
   df$mission_number <- NULL
   
-  #match expected field order
-  df <- df[,c("MISSION", "SAMPLING_REQUIREMENT", "NOTE", "DATA_VERSION", "PROGRAM_TITLE")]
+  if (!is.na(theMsg)) message("MISSIONS (General): \n\t", theMsg,"\n")
   return(df)
 }
 #' @title transmogrifySets
@@ -27,6 +27,9 @@ transmogrifyMissions  <- function(df = NULL){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifySets      <- function(df = NULL){
+  theMsg <- NA
+  if (any(4 %in% c(df$ship_speed_obtained_code,df$distance_towed_obtained_code))) theMsg <- 'Assuming entries of "4 - LORAN bearings or GPS" for HOWD/HOWS should be  "0 - GPS"'
+  
   colnames(df)[colnames(df)=="set_number"] <- "SETNO"
   df$START_DATE               = format.Date(strftime(as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")), format = "%d%m%Y")
   df$START_TIME               = as.integer(as.character(as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M'))
@@ -65,13 +68,7 @@ transmogrifySets      <- function(df = NULL){
   df$LIGHT_LEVEL_CODE         = NA
   df$GEAR_MONITOR_DEVICE_CODE = NA
   
-  #match expected field order
-  df <- df[,c("MISSION","START_DATE","START_TIME","END_DATE","END_TIME","STRAT","SLAT","SLONG","ELAT","ELONG",
-              "AREA","DIST","HOWD","SPEED","HOWS","DMIN","DMAX","START_DEPTH","END_DEPTH","WIND",
-              "FORCE","CURNT","EXPERIMENT_TYPE_CODE","GEAR","AUX","WARPOUT","NOTE",
-              "SURFACE_TEMPERATURE","BOTTOM_TEMPERATURE","BOTTOM_SALINITY","HYDRO","STATION",
-              "BOTTOM_TYPE_CODE","BOTTOM_TEMP_DEVICE_CODE","WAVE_HEIGHT_CODE","LIGHT_LEVEL_CODE",
-              "GEAR_MONITOR_DEVICE_CODE")]
+  if (!is.na(theMsg)) message("SETS (General): \n\t", theMsg,"\n")
   return(df)
 }
 #' @title transmogrifyBaskets
@@ -82,8 +79,10 @@ transmogrifySets      <- function(df = NULL){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyBaskets   <- function(df = NULL){
-  df$sampled <- tolower(df$sampled)
-  df$sampled <- ifelse(df$sampled == "true", T, ifelse(df$sampled == "false", F, NA))
+  theMsg <- NA
+  df$sampled <-charToBoolean(df$sampled)
+  # df$sampled <- tolower(df$sampled)
+  # df$sampled <- ifelse(df$sampled == "true", T, ifelse(df$sampled == "false", F, NA))
   colnames(df)[colnames(df)=="set_number"]    <- "SETNO"
   colnames(df)[colnames(df)=="species_code"]  <- "SPEC"  
   colnames(df)[colnames(df)=="size_class"]    <- "SIZE_CLASS"
@@ -91,8 +90,8 @@ transmogrifyBaskets   <- function(df = NULL){
   colnames(df)[colnames(df)=="sampled"]       <- "SAMPLED"
   
   #match expected field order
-  df <- df[,c("MISSION","SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED","catch_id")]
-  
+  df <- df[,c("MISSION","SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED", "id", "catch_id")]
+  if (!is.na(theMsg)) message("BASKETS (General): \n\t", theMsg,"\n")
   return(df)
 }
 #' @title transmogrifyCatches
@@ -103,19 +102,22 @@ transmogrifyBaskets   <- function(df = NULL){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyCatches   <- function(df = NULL){
+  theMsg <- NA
   colnames(df)[colnames(df)=="set_number"]        <- "SETNO"
   colnames(df)[colnames(df)=="species_code"]      <- "SPEC"
   colnames(df)[colnames(df)=="notes"]             <- "NOTE"
   colnames(df)[colnames(df)=="unweighed_baskets"] <- "UNWEIGHED_BASKETS"
   colnames(df)[colnames(df)=="specimen_count"]    <- "NUMBER_CAUGHT"
-  df$SIZE_CLASS        = 999
-  message("need to add size class here")
+  df$is_parent <-charToBoolean(df$is_parent)
+  # df$SIZE_CLASS        = 999
+  # message("need to add size class here")
   #' size_class info only available in the basket - put the default size
   # x$catch = addSizeClassToCatch(x$basket,x$catch)       # add correct size_class as needed 
   
   #match expected field order
-  df <- df[,c("MISSION","SETNO", "SPEC", "SIZE_CLASS", "NOTE", "UNWEIGHED_BASKETS", "NUMBER_CAUGHT",
-              "is_parent", "parent_catch_id")]
+  df <- df[,c("MISSION","SETNO", "SPEC", "NOTE", "UNWEIGHED_BASKETS", "NUMBER_CAUGHT",
+              "id", "is_parent", "parent_catch_id")]
+  if (!is.na(theMsg)) message("CATCH (general): \n\t", theMsg,"\n")
   return(df) 
 }
 #' @title transmogrifySpecimens
@@ -127,8 +129,9 @@ transmogrifyCatches   <- function(df = NULL){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifySpecimens <- function(df = NULL){
-
-
+  theMsg <- NA
+  
+  if (!is.na(theMsg)) message("SPECIMENS (general): \n\t", theMsg,"\n")
   return(df)
 }
 #' @title transmogrifyLV1_OBS
@@ -140,12 +143,15 @@ transmogrifySpecimens <- function(df = NULL){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyLV1_OBS   <- function(df = NULL){
+  theMsg <- NA
+  
   if(nrow(df[nchar(df$DATA_VALUE)>50,])>0){
-    message("One or more of the values for LV1_OBSERVATIONS$DATA_VALUE will be truncated to 50 characters to fit in the db")
+    theMsg <- "At least one value for LV1_OBSERVATIONS$DATA_VALUE must be truncated to 50 characters"
     df$DATA_VALUE	       = substr(df$DATA_VALUE, 1, 50) #Oracle table only allows length of 50
   }
-
+  
   df <- populate_DATA_DESC(df)
   
+  if (!is.na(theMsg)) message("LV1_OBS (general): \n\t", theMsg,"\n")
   return(df) 
 }

@@ -17,6 +17,8 @@ This function returns converted FORCE codes
 }
 \seealso{
 Other internal: 
+\code{\link{applySubsampling}()},
+\code{\link{charToBoolean}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},

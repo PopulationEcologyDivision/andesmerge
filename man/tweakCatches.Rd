@@ -18,7 +18,6 @@ it is imported to Oracle.
 }
 \seealso{
 Other general_use: 
-\code{\link{addSizeClassToCatch}()},
 \code{\link{formatForOracle}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},

@@ -17,6 +17,8 @@ This function converts a vector of values from meter to fathoms
 }
 \seealso{
 Other internal: 
+\code{\link{applySubsampling}()},
+\code{\link{charToBoolean}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},

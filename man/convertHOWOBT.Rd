@@ -11,38 +11,14 @@ convertHOWOBT(x)
 }
 \value{
 converted FORCE codes
-
-converted FORCE codes
 }
 \description{
-This function returns converted obtained_code codes
-
 This function returns converted obtained_code codes
 }
 \seealso{
 Other internal: 
-\code{\link{cleanEse}()},
-\code{\link{cleanStrata}()},
-\code{\link{cleanfields}()},
-\code{\link{convertFORCE}()},
-\code{\link{getEseTables}()},
-\code{\link{get_value}()},
-\code{\link{keepFieldsBaskets}()},
-\code{\link{keepFieldsCatches}()},
-\code{\link{keepFieldsMissions}()},
-\code{\link{keepFieldsSets}()},
-\code{\link{keepFieldsSpecimens}()},
-\code{\link{meters2Fathoms}()},
-\code{\link{populate_DATA_DESC}()},
-\code{\link{reFormatSpecimen}()},
-\code{\link{transmogrifyBaskets}()},
-\code{\link{transmogrifyCatches}()},
-\code{\link{transmogrifyLV1_OBS}()},
-\code{\link{transmogrifyMissions}()},
-\code{\link{transmogrifySets}()},
-\code{\link{transmogrifySpecimens}()}
-
-Other internal: 
+\code{\link{applySubsampling}()},
+\code{\link{charToBoolean}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
@@ -65,8 +41,6 @@ Other internal:
 \code{\link{transmogrifySpecimens}()}
 }
 \author{
-Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}
-
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}
 }
 \concept{internal}

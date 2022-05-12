@@ -12,6 +12,8 @@ returned#' @param x default is \code{NULL}.  This is a field in a data frame
 }
 \seealso{
 Other internal: 
+\code{\link{applySubsampling}()},
+\code{\link{charToBoolean}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanfields}()},
 \code{\link{convertFORCE}()},

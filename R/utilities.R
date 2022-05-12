@@ -15,8 +15,8 @@ getEseTables <- function(){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 cleanEse <- function(){
- eseObs <- getEseTables()
- rm(list = eseObs, envir = .GlobalEnv)
+  eseObs <- getEseTables()
+  rm(list = eseObs, envir = .GlobalEnv)
 }
 
 #' @title meters2Fathoms
@@ -32,9 +32,6 @@ meters2Fathoms <- function(field = NULL) {
   return(field)
 }
 
-
-# trunc_digits <- function(x,digits){e <- 10^digits; trunc(x*e) / e}
-
 #' @title cleanStrata
 #' @description This function takes the strata field, and ensures only the first 3 characters are 
 #' returned#' @param x default is \code{NULL}.  This is a field in a data frame 
@@ -45,52 +42,9 @@ cleanStrata <- function(x){
   return(x)
 }
 
-#' @title addSizeClassToCatch
-#' @description This function fills in the catch with the missing size class 2 entries.   
-#' Andes does not provide a way to add Size class directly, Size classes are entered via the basket form.
-#' @param basket A data frame containing the basket information from Andes
-#' @param catch A data frame containing the catch information from Andes
-#' @return the merged catch card
-#' @family general_use
-#' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
-#' @export
-addSizeClassToCatch <- function(basket, catch){
-  
-  # find all Size class 2 entries in basket to add to catch
-  index =  basket$SIZE_CLASS == 2
-  
-  if(length(which(index)) == 0){
-    message("No Size Class 2 entries in Basket, nothing to do")
-    return(catch)
-  } 
-  
-  # Create a generic catch row
-  temp = catch[1,]
-  
-  for(i in 1:length(which(index)))
-  {
-    temp$SETNO  = basket[index,][i,]$SETNO
-    temp$SPEC = basket[index,][i,]$SPEC
-    temp$NOTE = "New entry of Size Class 2 created from Basket information"
-    temp$UNWEIGHED_BASKETS = NA
-    temp$SIZE_CLASS = 2
-    
-    # We only want to create one entry in the catch card. Sometimes we will have more than one basket with size class 2, 
-    index2 = catch$SETNO == temp$SETNO & catch$SPEC == temp$SPEC & catch$SIZE_CLASS == 2
-    if(length(which(index2)) > 0){
-      message(paste0("Class Size 2 was already entered for set#: ",temp$SETNO, " , species: ", temp$SPEC))
-    }else{
-      catch = rbind(catch, temp)
-    }
-  }
-  
-  # return the catch card
-  return(catch)
-}
-
 #' @title reFormatSpecimen
-#' @description This function takes the tempSpecimen object, and populates the DATA_DEC 
-#' appropriately depending on the values found
+#' @description This function takes the tempSpecimen object, reformats it from wide to long, 
+#' dropping all NA/empty data.
 #' @param x default is \code{NULL}.  This is a field in a data frame 
 #' @importFrom dplyr %>%
 #' @family internal
@@ -101,42 +55,37 @@ reFormatSpecimen <- function(x = NULL){
   colnames(x)[colnames(x)=="species_code"]  <- "SPEC"
   colnames(x)[colnames(x)=="size_class"]    <- "SIZE_CLASS"
   colnames(x)[colnames(x)=="id"]            <- "SPECIMEN_ID"
-  
   y <- list()
-  y$specimen <- x[,c("SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID")]
+  y$specimen <- x[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID")]
   
   if (!require(dplyr)) utils::install.packages('dplyr')
   library(dplyr)
   # Match data for level 1 observations 
   # Need to turn specimen table from wide format to long in order to have each observation on its own row
-
-  specDets <- c(8,9,13:ncol(x))
-  x_1 <- tidyr::gather(x, variable, value, dplyr::all_of(specDets))
-  x_1<-x_1[,c("SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID", "variable", "value")]
-  colnames(x_1)[colnames(x_1)=="variable"] <- "LV1_OBSERVATION"
-  colnames(x_1)[colnames(x_1)=="value"] <- "DATA_VALUE"
-  
+  specDets <- names(x[, !names(x) %in% c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID","basket_id")])
+  x <- x %>% dplyr::mutate_all(as.character) %>% tidyr::pivot_longer(dplyr::all_of(specDets), names_to = "variable", values_to = "value") %>% as.data.frame()
+  colnames(x)[colnames(x)=="variable"] <- "LV1_OBSERVATION"
+  colnames(x)[colnames(x)=="value"] <- "DATA_VALUE"  
   # remove 1) all NA values, 2) empty cells (i.e. ""), 3) cases of 1 character entries
-  x_1 = x_1[!is.na(x_1$DATA_VALUE) & nchar(x_1$DATA_VALUE)>1,]
-  
-  x_1[,"DATA_VALUE"]<-cleanfields(x_1[,"DATA_VALUE"])
-  x_1[,"LV1_OBSERVATION"]     <-cleanfields(x_1[,"LV1_OBSERVATION"])
+  x <- x[!is.na(x$DATA_VALUE) & nchar(x$DATA_VALUE)>0,]
+  x[,"DATA_VALUE"]      <-cleanfields(x[,"DATA_VALUE"])
+  x[,"LV1_OBSERVATION"] <-cleanfields(x[,"LV1_OBSERVATION"])
   # periods were introduced in the data frame names - remove them 
-  x_1$LV1_OBSERVATION = gsub("\\."," ", x_1$LV1_OBSERVATION)    
-  x_1$LV1_OBSERVATION = gsub("_"," ", x_1$LV1_OBSERVATION)
+  x$LV1_OBSERVATION = gsub("\\."," ", x$LV1_OBSERVATION)    
+  x$LV1_OBSERVATION = gsub("_"," ", x$LV1_OBSERVATION)
   #the following two values show up that cannot be matched against obstypes
-  x_1$LV1_OBSERVATION[x_1$LV1_OBSERVATION=="comment"]<-"comments"
-  x_1$LV1_OBSERVATION[x_1$LV1_OBSERVATION=="maturity maritimes"]<-"Maturity"
-  x_1$LV1_OBSERVATION =  stringi::stri_trans_totitle(x_1$LV1_OBSERVATION)
+  x$LV1_OBSERVATION[x$LV1_OBSERVATION=="comment"]<-"comments"
+  x$LV1_OBSERVATION[x$LV1_OBSERVATION=="maturity maritimes"]<-"maturity"
+  x$LV1_OBSERVATION =  stringi::stri_trans_totitle(x$LV1_OBSERVATION)
   
   #add LV1_OBSERVATION_ID by grouping by Specimen_id, and then numbering all measurements within the group
-  x_1 <- x_1 %>%
-    dplyr::group_by(SETNO, SPEC, SIZE_CLASS, SPECIMEN_ID) %>%
+  x <- x %>%
+    dplyr::group_by(MISSION,SETNO, SPEC, SIZE_CLASS, SPECIMEN_ID) %>%
     dplyr::arrange(LV1_OBSERVATION, .by_group = TRUE) %>% 
     dplyr::mutate(LV1_OBSERVATION_ID =dplyr::row_number()) %>%
     as.data.frame()
-  
-  y$LV1_OBSERVATION <- x_1
+  x$basket_id <- NULL
+  y$LV1_OBSERVATION <- x
   return(y)
 }
 
@@ -202,7 +151,7 @@ cleanfields <- function(data= NULL){
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
 setExperimentType <- function(x){
- 
+  
   #exp.num =  x$experiment_type_id
   exp.num =  as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", x$experiment_type))
   set.res =  x$set_result_id
@@ -255,7 +204,93 @@ setExperimentType <- function(x){
   return(as.numeric(x$experiment_type_id_tweaked))
 }
 
-applySubsampling <- function(catch=NULL, basket = NULL){
+#' @title charToBoolean
+#' @description This function converts the values of "True" and "False" output by andes into their
+#' boolean R equivalents
+#' @param x default is \code{NULL}.  This is a vector of values.  Case-insensitive, and anything
+#' other than "true" or "false" will become NA 
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+charToBoolean <- function(x = NULL){
+  x <- tolower(x)
+  x <- ifelse(x == "true", T, ifelse(x == "false", F, NA))
+  return(x)
+}
 
-  browser()  
+#' @title applySubsampling
+#' @description This function does stuff
+#' @param catch default is \code{NULL}.  
+#' @param basket default is \code{NULL}.  
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+applySubsampling <- function(catch=NULL, basket = NULL){
+  message("Subsampling Mixed catches:\n")
+  theMsg <- NA
+  #Each mixed catch record should have a "sampled" basket where every species within was 
+  #identified and weighed.  We then take the proportional weights determined for the sampled 
+  #basket, and apply them to all of the other unsampled (but weighed) baskets.  
+  
+  #find the mixed catch parent records
+  bumpableCatchParents   <- catch[catch$is_parent == T,]
+  
+  if (nrow(bumpableCatchParents)<1){
+    message("(No mixed catches found - skipping subsampling)")
+    x <- list()
+    x$basket <- basket
+    x$catch <- catch
+    if (!is.na(theMsg)) message(theMsg)
+    return(x)
+  }
+  parentIDs <- bumpableCatchParents$id
+  
+  for (i in 1:length(parentIDs)){
+    
+    knownMixedCatch        <- catch[catch$parent_catch_id %in% parentIDs[i],]
+    knownReferenceBaskets  <- basket[basket$catch_id %in% knownMixedCatch$id,]
+    basketsSampled         <- basket[basket$catch_id %in% parentIDs[i] & basket$SAMPLED,]
+    basketsUnsampled       <- basket[basket$catch_id %in% parentIDs[i] & !basket$SAMPLED,]
+    if(nrow(basketsUnsampled)==0){
+      #turns out nothing is unsampled, and a catch records exists for each spp delete the catch record
+      message("\tThe following CATCH record was flagged as a mixed-basket 'parent', but had no 
+      \tunsampled child record. 'is_parent ' was set to FALSE")
+      print(catch[which(catch$id %in% parentIDs[i]),])
+      
+      catch[which(catch$id %in% parentIDs[i]),"is_parent"] <- FALSE
+      
+      next
+    }
+    bumpedBaskets                    <- knownReferenceBaskets
+    bumpedBaskets$PROPORTION         <- round(bumpedBaskets$BASKET_WEIGHT/sum(bumpedBaskets$BASKET_WEIGHT),5)
+    bumpedBaskets$id                 <- basketsUnsampled$id
+    bumpedBaskets$catch_id           <- basketsUnsampled$catch_id
+    bumpedBaskets$BASKET_WEIGHT_orig <- basketsUnsampled$BASKET_WEIGHT
+    bumpedBaskets$BASKET_WEIGHT      <- NA
+    bumpedBaskets$BASKET_WEIGHT      <- round(bumpedBaskets$BASKET_WEIGHT_orig*bumpedBaskets$PROPORTION,3)
+    
+    #add the new, bumped baskets
+    #delete the catch record
+    message("\n\tThe following 'mixed catch' records from CATCH and BASKET were replaced with records 
+    \twith the correct species codes. ")
+    message("\tCatch:")
+    print(catch[(catch$id %in% parentIDs[i]),])
+    catch  <- catch[-which(catch$id %in% parentIDs[i]),]
+    message("\tBaskets")
+    print(basket[which(basket$catch_id %in% parentIDs[i]),])
+    basket <- basket[-which(basket$catch_id %in% parentIDs[i]),]
+    
+    message("\tThe following BASKET records were added - their weights were calculated using 
+    \tthe proportions determined from the SAMPLED basket")
+    print(bumpedBaskets)
+    bumpedBaskets$PROPORTION <- NULL
+    bumpedBaskets$BASKET_WEIGHT_orig <- NULL
+    #add the new, bumped baskets
+    basket <- rbind(basket, bumpedBaskets)
+  }
+  basket$id <- basket$catch_id <- NULL
+  catch$id <- catch$is_parent <- catch$parent_catch_id <- NULL
+  x <- list()
+  x$basket <- basket
+  x$catch <- catch
+  if (!is.na(theMsg)) message(theMsg)
+  return(x)
 }

@@ -48,17 +48,7 @@ convertFORCE <- function(x){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 #' 
-
-#' @title convertHOWOBT
-#' @description This function returns converted obtained_code codes
-#' @param x default is \code{NULL}. This is the string to be processed.
-#' @return converted FORCE codes
-#' @family internal
-#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-#' @export
-#' 
 convertHOWOBT <- function(x){
-  
   ESE.vals <- list("1" = 1, # "Ships log or distance program"
                    "2" = 2, # "Radar bouy"
                    "3" = 3, # "DECCA bearings"
@@ -72,6 +62,5 @@ convertHOWOBT <- function(x){
   ESE.vals = unlist(ESE.vals)
   x = get_value(x, ESE.vals)
 
-  if (any(0 %in% x)) message('All andes entries of "4 - LORAN bearings or GPS" (in either HOWS or HOWD) are interpreted as "0 - GPS" during Maritimes import')
-  return(x)
+ return(x)
 }

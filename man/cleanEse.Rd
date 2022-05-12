@@ -14,6 +14,8 @@ This function removes any ESE objects from the R environment
 }
 \seealso{
 Other internal: 
+\code{\link{applySubsampling}()},
+\code{\link{charToBoolean}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
 \code{\link{convertFORCE}()},

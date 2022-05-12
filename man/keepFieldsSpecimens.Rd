@@ -8,6 +8,8 @@ keepFieldsSpecimens(df = NULL, mission = NULL)
 }
 \arguments{
 \item{df}{default is \code{NULL}.  This is the andes specimen_data data frame}
+
+\item{mission}{default is \code{NULL}. This is the cleaned mission id (e.g. CAR2022102)}
 }
 \description{
 This function subsets the andes specimen_data, retaining only the fields usable by 
@@ -15,6 +17,8 @@ both the ESE_SPECIMENS and ESE_LV1_OBSERVATIONS table
 }
 \seealso{
 Other internal: 
+\code{\link{applySubsampling}()},
+\code{\link{charToBoolean}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},

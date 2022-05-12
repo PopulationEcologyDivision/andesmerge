@@ -8,6 +8,8 @@ keepFieldsCatches(df = NULL, mission = NULL)
 }
 \arguments{
 \item{df}{default is \code{NULL}.  This is the andes catch_data data frame}
+
+\item{mission}{default is \code{NULL}. This is the cleaned mission id (e.g. CAR2022102)}
 }
 \description{
 This function subsets the andes catches_data, retaining only the fields usable by 
@@ -15,6 +17,8 @@ the ESE_CATCHES table
 }
 \seealso{
 Other internal: 
+\code{\link{applySubsampling}()},
+\code{\link{charToBoolean}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},

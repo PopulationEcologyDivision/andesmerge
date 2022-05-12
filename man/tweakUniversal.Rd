@@ -4,10 +4,12 @@
 \alias{tweakUniversal}
 \title{tweakUniversal}
 \usage{
-tweakUniversal(x = NULL)
+tweakUniversal(x = NULL, mission = NULL)
 }
 \arguments{
 \item{x}{default is \code{NULL}.  This is a list of all of the objects from the csv files}
+
+\item{mission}{default is \code{NULL}. This is the cleaned mission id (e.g. CAR2022102)}
 }
 \value{
 list
@@ -18,7 +20,6 @@ exported csv files
 }
 \seealso{
 Other general_use: 
-\code{\link{addSizeClassToCatch}()},
 \code{\link{formatForOracle}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},

@@ -14,6 +14,7 @@ keepFieldsMissions <- function(df = NULL){
 #' @description This function subsets the andes sets_data, retaining only the fields usable by the 
 #' ESE_SETS table
 #' @param df default is \code{NULL}.  This is the andes set_data data frame  
+#' @param mission default is \code{NULL}. This is the cleaned mission id (e.g. CAR2022102)
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 keepFieldsSets <- function(df = NULL, mission=NULL){
@@ -52,6 +53,7 @@ keepFieldsSets <- function(df = NULL, mission=NULL){
 #' @description This function subsets the andes catches_data, retaining only the fields usable by 
 #' the ESE_CATCHES table
 #' @param df default is \code{NULL}.  This is the andes catch_data data frame  
+#' @param mission default is \code{NULL}. This is the cleaned mission id (e.g. CAR2022102)
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 keepFieldsCatches <- function(df = NULL, mission=NULL){
@@ -60,6 +62,7 @@ keepFieldsCatches <- function(df = NULL, mission=NULL){
               "notes",
               "unweighed_baskets",
               "specimen_count",
+              "id",
               "is_parent",
               "parent_catch_id")]
   df <- data.frame(MISSION = mission, df)
@@ -68,7 +71,8 @@ keepFieldsCatches <- function(df = NULL, mission=NULL){
 #' @title keepFieldsBaskets
 #' @description This function subsets the andes baskets_data, retaining only the fields usable by 
 #' the ESE_BASKETS table
-#' @param df default is \code{NULL}.  This is the andes basket_data data frame  
+#' @param df default is \code{NULL}.  This is the andes basket_data data frame 
+#' @param mission default is \code{NULL}. This is the cleaned mission id (e.g. CAR2022102) 
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 keepFieldsBaskets <- function(df = NULL, mission=NULL){
@@ -76,6 +80,7 @@ keepFieldsBaskets <- function(df = NULL, mission=NULL){
               "species_code",
               "size_class",
               "basket_wt_kg",
+              "id",
               "catch_id",
               "sampled")]
   df <- data.frame(MISSION = mission, df)
@@ -85,6 +90,7 @@ keepFieldsBaskets <- function(df = NULL, mission=NULL){
 #' @description This function subsets the andes specimen_data, retaining only the fields usable by 
 #' both the ESE_SPECIMENS and ESE_LV1_OBSERVATIONS table
 #' @param df default is \code{NULL}.  This is the andes specimen_data data frame  
+#' @param mission default is \code{NULL}. This is the cleaned mission id (e.g. CAR2022102)
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 keepFieldsSpecimens <- function(df = NULL, mission=NULL){

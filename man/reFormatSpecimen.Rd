@@ -10,11 +10,13 @@ reFormatSpecimen(x = NULL)
 \item{x}{default is \code{NULL}.  This is a field in a data frame}
 }
 \description{
-This function takes the tempSpecimen object, and populates the DATA_DEC 
-appropriately depending on the values found
+This function takes the tempSpecimen object, reformats it from wide to long, 
+dropping all NA/empty data.
 }
 \seealso{
 Other internal: 
+\code{\link{applySubsampling}()},
+\code{\link{charToBoolean}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},

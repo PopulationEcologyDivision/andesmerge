@@ -41,7 +41,6 @@ records of the new objects will not replace any existing records.
 }
 \seealso{
 Other general_use: 
-\code{\link{addSizeClassToCatch}()},
 \code{\link{formatForOracle}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},

@@ -18,7 +18,6 @@ This function sets the proper experiment type to match existing data structures 
 }
 \seealso{
 Other general_use: 
-\code{\link{addSizeClassToCatch}()},
 \code{\link{formatForOracle}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},
