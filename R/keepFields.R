@@ -40,6 +40,7 @@ keepFieldsSets <- function(df = NULL, mission=NULL){
               "wind_force_code",
               "tide_direction_code",
               "experiment_type",
+              "set_result_id",
               "gear_type",
               "auxiliary_equipment",
               "port_warp",

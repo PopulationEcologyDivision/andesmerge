@@ -3,5 +3,5 @@
 .RData
 .Ruserdata
 .Rproj
-inst/
+inst/Unused
 !example.R

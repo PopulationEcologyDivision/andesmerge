@@ -149,7 +149,6 @@ cleanfields <- function(data= NULL){
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
 setExperimentType <- function(x){
-  
   #exp.num =  x$experiment_type_id
   exp.num =  as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", x$experiment_type))
   set.res =  x$set_result_id
