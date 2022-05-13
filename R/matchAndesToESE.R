@@ -46,8 +46,9 @@ matchAndesToESE <- function(dataPath = NULL){
   # both specimen and lv1 observations are kept together in specimen_data, so they are
   # initially handled together
   specimensRaw           <- keepFieldsSpecimens(tmp$specimen_data, mission)
+  specimensRaw           <- tweakSpecimensRaw(specimensRaw)
   specimenList           <- reFormatSpecimen(specimensRaw)
-    
+
   ESE_SPECIMENS          <- specimenList$specimen
   ESE_SPECIMENS          <- transmogrifySpecimens(ESE_SPECIMENS)
   ESE_SPECIMENS          <- tweakSpecimens(ESE_SPECIMENS)

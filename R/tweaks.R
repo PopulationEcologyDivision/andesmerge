@@ -94,6 +94,44 @@ tweakCatches <- function(x = NULL){
   return(x)
 }
 
+#' @title tweakSpecimensRaw
+#' @description This function will perform tweaks to data coming from andes before 
+#' it is imported to Oracle.  specimen_data gets converted into both ESE_SPECIMENS and 
+#' ESE_LV1_OBSERVATIONS, so many tweaks should be performed here to ensure that changes are 
+#' reflected in both output tables.  Also, changing here will ensure sequential LV1_OBSERVATION_ID 
+#' values 
+#' @param x default is \code{NULL}. This is the raw "specimen_data" data frame
+#' @return a data frame for loading into ESE_BASKETS
+#' @family general_use
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
+tweakSpecimensRaw <- function(x = NULL){
+  if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
+  theMsg <- NA
+  browser()
+  # if(x$MISSION[1] == "CAR2022102"){
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving Fish Numbers from Mackerel records\n")
+  #   x <- x[!(x$SPEC == 70 & x$LV1_OBSERVATION == "Fish Number"),]
+  #   
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving comments created solely to generate labels\n")
+  #   commentsDrop <- c(".", "1", "edrftgujik", "fdgj", "fgjh", "rdfyg", "srdtfygvuh")
+  #   x <- x[-which(x$LV1_OBSERVATION == "Comments" & x$DATA_VALUE %in% commentsDrop),]
+  #   
+  #   
+  #   warning("tweaks at this level will change the LV1_OBSERVATION_ID")
+  # }
+  # Set 44, spec 1191, specimen id 14496 – length entered as 0.23
+  # o This appears to be an error entry and should be deleted. (Basket weight for 1191 in this set 
+  #is approx. the expected weight for the 34 cm skate entered)
+  # Set 26, spec 14, specimen id 9332 – weight entered as 0.005
+  # o Weight in kg but weight should be in g. Change to 5
+  # browser()
+  # x[x$SPECIMEN_ID==14496,]
+  warning("implement these!")
+  if (!is.na(theMsg)) message("Tweaking specimen_data: ", theMsg)
+  return(x)
+}
+
 #' @title tweakSpecimens
 #' @description This function will perform tweaks to data coming from andes before 
 #' it is imported to Oracle.  
@@ -105,6 +143,7 @@ tweakCatches <- function(x = NULL){
 tweakSpecimens <- function(x = NULL){
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   theMsg <- NA
+  
   
   if (!is.na(theMsg)) message("Tweaking SPECIMENS: ", theMsg)
   return(x)
@@ -130,6 +169,8 @@ tweakLv1 <- function(x = NULL){
     commentsDrop <- c(".", "1", "edrftgujik", "fdgj", "fgjh", "rdfyg", "srdtfygvuh")
     x <- x[-which(x$LV1_OBSERVATION == "Comments" & x$DATA_VALUE %in% commentsDrop),]
     
+
+    warning("tweaks at this level will change the LV1_OBSERVATION_ID")
   }
   
   if (!is.na(theMsg)) message("Tweaking LV1: \n", theMsg,"\n")
@@ -152,6 +193,20 @@ tweakSets <- function(x = NULL){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRecoding gear from 23 to 15\n")
     #NEST trawl is not 23, but 15 - change here; expect this will be corrected in the future
     x[x$GEAR==23,"GEAR"] <- 15
+    
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 16: Correct tow distance\n")
+    x[x$SETNO==16,"DIST "] <- 0.978
+    
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 48: Correct ELONG no -ve\n")
+    x[x$SETNO==48,"ELONG"] <- as.numeric(x[x$SETNO==48,"ELONG"])*-1
+    
+    warning("Set 4: end longitude coordinates are 0 (both DD and MMmm)")
+    # Set 9 – End time shows 1741 but note indicates that it should be 1739
+    # Set 41 – End time shows 0056 but note indicates that it should be 0054
+    
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSets 9 & 41: Correct ETIME\n")
+    x[x$SETNO==9,"END_TIME"] <- 1739
+    x[x$SETNO==41,"END_TIME"] <- 0054
   }
   
   if (!is.na(theMsg)) message("Tweaking SETS: \n", theMsg)
