@@ -20,11 +20,10 @@ exported csv files
 }
 \seealso{
 Other general_use: 
-\code{\link{formatForOracle}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},
+\code{\link{replaceESEData}()},
 \code{\link{setExperimentType}()},
-\code{\link{toOracle}()},
 \code{\link{tweakBaskets}()},
 \code{\link{tweakCatches}()},
 \code{\link{tweakLv1}()},

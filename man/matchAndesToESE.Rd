@@ -4,7 +4,7 @@
 \alias{matchAndesToESE}
 \title{matchAndesToESE}
 \usage{
-matchAndesToESE(dataPath = NULL, quiet = FALSE)
+matchAndesToESE(dataPath = NULL)
 }
 \arguments{
 \item{dataPath}{default is \code{NULL}. This is the location of the csv files exported from andes}
@@ -18,10 +18,9 @@ be loaded into Oracle.
 }
 \seealso{
 Other general_use: 
-\code{\link{formatForOracle}()},
 \code{\link{loadData}()},
+\code{\link{replaceESEData}()},
 \code{\link{setExperimentType}()},
-\code{\link{toOracle}()},
 \code{\link{tweakBaskets}()},
 \code{\link{tweakCatches}()},
 \code{\link{tweakLv1}()},

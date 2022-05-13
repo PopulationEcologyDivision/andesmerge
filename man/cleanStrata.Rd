@@ -6,9 +6,12 @@
 \usage{
 cleanStrata(x)
 }
+\arguments{
+\item{x}{default is \code{NULL}.  This is a field in a data frame}
+}
 \description{
 This function takes the strata field, and ensures only the first 3 characters are 
-returned#' @param x default is \code{NULL}.  This is a field in a data frame
+returned
 }
 \seealso{
 Other internal: 

@@ -18,11 +18,10 @@ it is imported to Oracle.
 }
 \seealso{
 Other general_use: 
-\code{\link{formatForOracle}()},
 \code{\link{loadData}()},
 \code{\link{matchAndesToESE}()},
+\code{\link{replaceESEData}()},
 \code{\link{setExperimentType}()},
-\code{\link{toOracle}()},
 \code{\link{tweakCatches}()},
 \code{\link{tweakLv1}()},
 \code{\link{tweakSets}()},

@@ -6,7 +6,7 @@
 #' @family general_use
 #' @author Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
-matchAndesToESE <- function(dataPath = NULL, quiet = FALSE){
+matchAndesToESE <- function(dataPath = NULL){
   
   # load Andes CSV files extracted from server at end of survey 
   tmp                    <- loadData(dataPath = dataPath)

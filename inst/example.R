@@ -3,11 +3,10 @@ tt<-matchAndesToESE(dataPath = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Gro
 
 
 cxn <- Mar.utils::make_oracle_cxn(fn.oracle.username = groundfish.username,fn.oracle.password = groundfish.password, fn.oracle.dsn = "PTRAN", usepkg = 'roracle')
-toOracle(cxnObj = cxn, source_df = tt$ESE_MISSIONS, target_schema = "groundfish", target_table = "ANDESE_MISSIONS", createReplaceTarget = F)
-toOracle(cxnObj = cxn, source_df = tt$ESE_SETS, target_schema = "groundfish", target_table = "ANDESE_SETS", createReplaceTarget = F)
-toOracle(cxnObj = cxn, source_df = tt$ESE_BASKETS, target_schema = "groundfish", target_table = "ANDESE_BASKETS", createReplaceTarget = F)
-toOracle(cxnObj = cxn, source_df = tt$ESE_CATCHES, target_schema = "groundfish", target_table = "ANDESE_CATCHES", createReplaceTarget = F)
-toOracle(cxnObj = cxn, source_df = tt$ESE_SPECIMENS, target_schema = "groundfish", target_table = "ANDESE_SPECIMENS", createReplaceTarget = F)
-toOracle(cxnObj = cxn, source_df = tt$ESE_LV1_OBSERVATIONS, target_schema = "groundfish", target_table = "ANDESE_LV1_OBSERVATIONS", createReplaceTarget = F)
-
+replaceESEData(cxnObj = cxn, source_df = tt$ESE_MISSIONS, target_schema = "groundfish", target_table = "ANDESE_MISSIONS")
+replaceESEData(cxnObj = cxn, source_df = tt$ESE_SETS, target_schema = "groundfish", target_table = "ANDESE_SETS")
+replaceESEData(cxnObj = cxn, source_df = tt$ESE_BASKETS, target_schema = "groundfish", target_table = "ANDESE_BASKETS")
+replaceESEData(cxnObj = cxn, source_df = tt$ESE_CATCHES, target_schema = "groundfish", target_table = "ANDESE_CATCHES")
+replaceESEData(cxnObj = cxn, source_df = tt$ESE_SPECIMENS, target_schema = "groundfish", target_table = "ANDESE_SPECIMENS")
+replaceESEData(cxnObj = cxn, source_df = tt$ESE_LV1_OBSERVATIONS, target_schema = "groundfish", target_table = "ANDESE_LV1_OBSERVATIONS")
 

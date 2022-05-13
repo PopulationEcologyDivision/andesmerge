@@ -19,10 +19,9 @@ environment.  The object names will be identical to the original file names.
 }
 \seealso{
 Other general_use: 
-\code{\link{formatForOracle}()},
 \code{\link{matchAndesToESE}()},
+\code{\link{replaceESEData}()},
 \code{\link{setExperimentType}()},
-\code{\link{toOracle}()},
 \code{\link{tweakBaskets}()},
 \code{\link{tweakCatches}()},
 \code{\link{tweakLv1}()},

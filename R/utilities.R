@@ -34,7 +34,8 @@ meters2Fathoms <- function(field = NULL) {
 
 #' @title cleanStrata
 #' @description This function takes the strata field, and ensures only the first 3 characters are 
-#' returned#' @param x default is \code{NULL}.  This is a field in a data frame 
+#' returned
+#' @param x default is \code{NULL}.  This is a field in a data frame 
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 cleanStrata <- function(x){
