@@ -3,5 +3,5 @@
 .RData
 .Ruserdata
 .Rproj
-*.MIKE
-ignore/
+inst/
+!example.R
