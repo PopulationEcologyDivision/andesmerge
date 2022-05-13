@@ -58,9 +58,6 @@ reFormatSpecimen <- function(x = NULL){
   colnames(x)[colnames(x)=="id"]            <- "SPECIMEN_ID"
   y <- list()
   y$specimen <- x[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID")]
-  
-  if (!require(dplyr)) utils::install.packages('dplyr')
-  library(dplyr)
   # Match data for level 1 observations 
   # Need to turn specimen table from wide format to long in order to have each observation on its own row
   specDets <- names(x[, !names(x) %in% c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID","basket_id")])
