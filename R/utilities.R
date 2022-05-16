@@ -201,16 +201,22 @@ setExperimentType <- function(x){
   return(as.numeric(x$experiment_type_id_tweaked))
 }
 
-#' @title charToBoolean
-#' @description This function converts the values of "True" and "False" output by andes into their
-#' boolean R equivalents
+#' @title charToBinary
+#' @description This function converts the values of "True" and "False" output by andes into either
+#' TRUE/FALSE or Y/N
 #' @param x default is \code{NULL}.  This is a vector of values.  Case-insensitive, and anything
 #' other than "true" or "false" will become NA 
+#' @param bool default is \code{TRUE}. By default, this function turns values into TRUE/FALSE, but 
+#' if \code{bool} is F, it will output "Y" and "N" (for "yes" and "no")
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-charToBoolean <- function(x = NULL){
+charToBinary <- function(x = NULL, bool=T){
   x <- tolower(x)
-  x <- ifelse(x == "true", T, ifelse(x == "false", F, NA))
+  if (bool){
+    x <- ifelse(x == "true", T, ifelse(x == "false", F, NA))
+  }else{
+    x <- ifelse(x == "true", "Y", ifelse(x == "false", "N", NA))
+  }
   return(x)
 }
 
@@ -239,7 +245,7 @@ applySubsampling <- function(catch=NULL, basket = NULL){
     return(x)
   }
   parentIDs <- bumpableCatchParents$id
-  
+
   for (i in 1:length(parentIDs)){
     
     knownMixedCatch        <- catch[catch$parent_catch_id %in% parentIDs[i],]

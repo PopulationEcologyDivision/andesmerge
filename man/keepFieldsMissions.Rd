@@ -16,7 +16,7 @@ ESE_MISSIONS table
 \seealso{
 Other internal: 
 \code{\link{applySubsampling}()},
-\code{\link{charToBoolean}()},
+\code{\link{charToBinary}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},

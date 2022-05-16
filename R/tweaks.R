@@ -74,6 +74,11 @@ tweakBaskets <- function(x = NULL){
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   theMsg <- NA
   
+  if(x$MISSION[1] == "CAR2022102"){
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tCorrecting two baskets which were incorrectly flagged as being sampled\n")
+    x[x$SETNO == 13 & x$SPEC == 2100 & x$id ==  630,"SAMPLED"]<-F
+    x[x$SETNO == 61 & x$SPEC == 8100 & x$id == 1918,"SAMPLED"]<-F
+  }
   if (!is.na(theMsg)) message("Tweaking BASKET: ", theMsg)
   return(x)
 }
@@ -108,72 +113,34 @@ tweakCatches <- function(x = NULL){
 tweakSpecimensRaw <- function(x = NULL){
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   theMsg <- NA
-  browser()
-  # if(x$MISSION[1] == "CAR2022102"){
-  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving Fish Numbers from Mackerel records\n")
-  #   x <- x[!(x$SPEC == 70 & x$LV1_OBSERVATION == "Fish Number"),]
-  #   
-  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving comments created solely to generate labels\n")
-  #   commentsDrop <- c(".", "1", "edrftgujik", "fdgj", "fgjh", "rdfyg", "srdtfygvuh")
-  #   x <- x[-which(x$LV1_OBSERVATION == "Comments" & x$DATA_VALUE %in% commentsDrop),]
-  #   
-  #   
-  #   warning("tweaks at this level will change the LV1_OBSERVATION_ID")
-  # }
-  # Set 44, spec 1191, specimen id 14496 – length entered as 0.23
-  # o This appears to be an error entry and should be deleted. (Basket weight for 1191 in this set 
-  #is approx. the expected weight for the 34 cm skate entered)
-  # Set 26, spec 14, specimen id 9332 – weight entered as 0.005
-  # o Weight in kg but weight should be in g. Change to 5
-  # browser()
-  # x[x$SPECIMEN_ID==14496,]
-  warning("implement these!")
-  if (!is.na(theMsg)) message("Tweaking specimen_data: ", theMsg)
-  return(x)
-}
-
-#' @title tweakSpecimens
-#' @description This function will perform tweaks to data coming from andes before 
-#' it is imported to Oracle.  
-#' @param x default is \code{NULL}. This is the ESE_BASKETS data frame
-#' @return a data frame for loading into ESE_BASKETS
-#' @family general_use
-#' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
-#' @export
-tweakSpecimens <- function(x = NULL){
-  if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
-  theMsg <- NA
   
-  
-  if (!is.na(theMsg)) message("Tweaking SPECIMENS: ", theMsg)
-  return(x)
-}
-
-#' @title tweakLv1
-#' @description This function will perform tweaks to data coming from andes before 
-#' it is imported to Oracle.  
-#' @param x default is \code{NULL}.  This is the ESE_LV1_OBSERVATIONS data frame.
-#' @return a data frame for loading into ESE_LV1_OBSERVATIONS
-#' @family general_use
-#' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
-#' @export
-tweakLv1 <- function(x = NULL){
-  if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
-  theMsg <- NA
+  theMsg <- paste0(theMsg[!is.na(theMsg)], "\tBerried female crabs and lobsters recoded to 3\n")
+  x[which(x$sex==2 & (x$crab.female.eggs == 1 | x$lobster.female.eggs==1)), "sex"] <-3
+  if(nrow(x[which(x$sex==1 & (x$crab.female.eggs == 1 | x$lobster.female.eggs==1)), ]))warning("Berried Males detected")
   
   if(x$MISSION[1] == "CAR2022102"){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving Fish Numbers from Mackerel records\n")
-    x <- x[!(x$SPEC == 70 & x$LV1_OBSERVATION == "Fish Number"),]
+    x[x$species_code == 70,"fish_number"] <- NA
     
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving comments created solely to generate labels\n")
     commentsDrop <- c(".", "1", "edrftgujik", "fdgj", "fgjh", "rdfyg", "srdtfygvuh")
-    x <- x[-which(x$LV1_OBSERVATION == "Comments" & x$DATA_VALUE %in% commentsDrop),]
-    
-
-    warning("tweaks at this level will change the LV1_OBSERVATION_ID")
-  }
+    x[x$comment %in% commentsDrop,"comment"]<- NA
+    x[x$comments %in% commentsDrop,"comments"]<- NA
   
-  if (!is.na(theMsg)) message("Tweaking LV1: \n", theMsg,"\n")
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 44/Spec 1191/Specimen id 14496: Removing incorrect length\n")
+    x[x$id == 14496,"length"] <- NA
+    
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 26/Spec   14/Specimen id  9332: Weight corrected to grams\n")
+    x[x$id == 9332,"weight"] <- x[x$id == 9332,"weight"]*1000 
+    
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 49/Spec   11/Specimen id  16236: No useful info entered - deleted\n")
+    x <- x[-which(x$id == 16236),]
+    
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSpec 60: Several sets list weight as less than <0.5g - the smallest precision available.  Bump all of these up to 0.5g\n")
+    x[which(x$species_code == 60 & x$weight <0.5),"weight"] <- 0.5
+    
+  }
+  if (!is.na(theMsg)) message("Tweaking specimen_data: \n", theMsg)
   return(x)
 }
 
@@ -207,6 +174,80 @@ tweakSets <- function(x = NULL){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSets 9 & 41: Correct ETIME\n")
     x[x$SETNO==9,"END_TIME"] <- 1739
     x[x$SETNO==41,"END_TIME"] <- 0054
+    
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tManually add area for each set\n")
+    x[x$SETNO ==  "1", "AREA"] <- "523"
+    x[x$SETNO ==  "2", "AREA"] <- "524"
+    x[x$SETNO ==  "3", "AREA"] <- "524"
+    x[x$SETNO ==  "4", "AREA"] <- "524"
+    x[x$SETNO ==  "5", "AREA"] <- "524"
+    x[x$SETNO ==  "6", "AREA"] <- "524"
+    x[x$SETNO ==  "7", "AREA"] <- "524"
+    x[x$SETNO ==  "8", "AREA"] <- "524"
+    x[x$SETNO ==  "9", "AREA"] <- "524"
+    x[x$SETNO == "10", "AREA"] <- "524"
+    x[x$SETNO == "11", "AREA"] <- "523"
+    x[x$SETNO == "12", "AREA"] <- "523"
+    x[x$SETNO == "13", "AREA"] <- "523"
+    x[x$SETNO == "14", "AREA"] <- "523"
+    x[x$SETNO == "15", "AREA"] <- "523"
+    x[x$SETNO == "16", "AREA"] <- "523"
+    x[x$SETNO == "17", "AREA"] <- "523"
+    x[x$SETNO == "18", "AREA"] <- "523"
+    x[x$SETNO == "19", "AREA"] <- "523"
+    x[x$SETNO == "20", "AREA"] <- "523"
+    x[x$SETNO == "21", "AREA"] <- "523"
+    x[x$SETNO == "22", "AREA"] <- "523"
+    x[x$SETNO == "23", "AREA"] <- "523"
+    x[x$SETNO == "24", "AREA"] <- "523"
+    x[x$SETNO == "25", "AREA"] <- "523"
+    x[x$SETNO == "26", "AREA"] <- "523"
+    x[x$SETNO == "27", "AREA"] <- "523"
+    x[x$SETNO == "28", "AREA"] <- "523"
+    x[x$SETNO == "29", "AREA"] <- "523"
+    x[x$SETNO == "30", "AREA"] <- "523"
+    x[x$SETNO == "31", "AREA"] <- "523"
+    x[x$SETNO == "32", "AREA"] <- "524"
+    x[x$SETNO == "33", "AREA"] <- "524"
+    x[x$SETNO == "34", "AREA"] <- "524"
+    x[x$SETNO == "35", "AREA"] <- "524"
+    x[x$SETNO == "36", "AREA"] <- "524"
+    x[x$SETNO == "37", "AREA"] <- "524"
+    x[x$SETNO == "38", "AREA"] <- "524"
+    x[x$SETNO == "39", "AREA"] <- "524"
+    x[x$SETNO == "40", "AREA"] <- "524"
+    x[x$SETNO == "41", "AREA"] <- "524"
+    x[x$SETNO == "42", "AREA"] <- "524"
+    x[x$SETNO == "43", "AREA"] <- "524"
+    x[x$SETNO == "44", "AREA"] <- "523"
+    x[x$SETNO == "45", "AREA"] <- "524"
+    x[x$SETNO == "46", "AREA"] <- "524"
+    x[x$SETNO == "47", "AREA"] <- "524"
+    x[x$SETNO == "48", "AREA"] <- "524"
+    x[x$SETNO == "49", "AREA"] <- "524"
+    x[x$SETNO == "50", "AREA"] <- "523"
+    x[x$SETNO == "51", "AREA"] <- "523"
+    x[x$SETNO == "52", "AREA"] <- "523"
+    x[x$SETNO == "53", "AREA"] <- "523"
+    x[x$SETNO == "54", "AREA"] <- "523"
+    x[x$SETNO == "55", "AREA"] <- "523"
+    x[x$SETNO == "56", "AREA"] <- "523"
+    x[x$SETNO == "57", "AREA"] <- "524"
+    x[x$SETNO == "58", "AREA"] <- "524"
+    x[x$SETNO == "59", "AREA"] <- "524"
+    x[x$SETNO == "60", "AREA"] <- "524"
+    x[x$SETNO == "61", "AREA"] <- "524"
+    x[x$SETNO == "62", "AREA"] <- "524"
+    x[x$SETNO == "63", "AREA"] <- "524"
+    x[x$SETNO == "64", "AREA"] <- "524"
+    x[x$SETNO == "65", "AREA"] <- "524"
+    x[x$SETNO == "66", "AREA"] <- "524"
+    x[x$SETNO == "67", "AREA"] <- "524"
+    x[x$SETNO == "68", "AREA"] <- "523"
+    x[x$SETNO == "69", "AREA"] <- "523"
+    x[x$SETNO == "70", "AREA"] <- "523"
+    x[x$SETNO == "71", "AREA"] <- "523"
+    x[x$SETNO == "72", "AREA"] <- "467"
   }
   
   if (!is.na(theMsg)) message("Tweaking SETS: \n", theMsg)

@@ -17,7 +17,7 @@ processing necessary to make them equivalent to the formats used in the ESE_CATC
 \seealso{
 Other internal: 
 \code{\link{applySubsampling}()},
-\code{\link{charToBoolean}()},
+\code{\link{charToBinary}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
@@ -41,6 +41,5 @@ Other internal:
 }
 \author{
 Mike McMahon, \email{Mike.McMahon@dfo-mpo.gc.ca}
-size_class info only available in the basket - put the default size
 }
 \concept{internal}

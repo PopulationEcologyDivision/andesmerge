@@ -80,7 +80,7 @@ transmogrifySets      <- function(df = NULL){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyBaskets   <- function(df = NULL){
   theMsg <- NA
-  df$sampled <-charToBoolean(df$sampled)
+  df$sampled <-charToBinary(df$sampled, bool=T)
   # df$sampled <- tolower(df$sampled)
   # df$sampled <- ifelse(df$sampled == "true", T, ifelse(df$sampled == "false", F, NA))
   colnames(df)[colnames(df)=="set_number"]    <- "SETNO"
@@ -88,7 +88,6 @@ transmogrifyBaskets   <- function(df = NULL){
   colnames(df)[colnames(df)=="size_class"]    <- "SIZE_CLASS"
   colnames(df)[colnames(df)=="basket_wt_kg"]  <- "BASKET_WEIGHT"  
   colnames(df)[colnames(df)=="sampled"]       <- "SAMPLED"
-  
   #match expected field order
   df <- df[,c("MISSION","SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED", "id", "catch_id")]
   if (!is.na(theMsg)) message("BASKETS (General): \n\t", theMsg,"\n")
@@ -108,12 +107,7 @@ transmogrifyCatches   <- function(df = NULL){
   colnames(df)[colnames(df)=="notes"]             <- "NOTE"
   colnames(df)[colnames(df)=="unweighed_baskets"] <- "UNWEIGHED_BASKETS"
   colnames(df)[colnames(df)=="specimen_count"]    <- "NUMBER_CAUGHT"
-  df$is_parent <-charToBoolean(df$is_parent)
-  # df$SIZE_CLASS        = 999
-  # message("need to add size class here")
-  #' size_class info only available in the basket - put the default size
-  # x$catch = addSizeClassToCatch(x$basket,x$catch)       # add correct size_class as needed 
-  
+  df$is_parent <-charToBinary(df$is_parent, bool=T)
   #match expected field order
   df <- df[,c("MISSION","SETNO", "SPEC", "NOTE", "UNWEIGHED_BASKETS", "NUMBER_CAUGHT",
               "id", "is_parent", "parent_catch_id")]

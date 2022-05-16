@@ -15,7 +15,7 @@ This function returns the names of the ese tables.
 \seealso{
 Other internal: 
 \code{\link{applySubsampling}()},
-\code{\link{charToBoolean}()},
+\code{\link{charToBinary}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},

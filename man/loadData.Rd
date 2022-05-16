@@ -24,9 +24,8 @@ Other general_use:
 \code{\link{setExperimentType}()},
 \code{\link{tweakBaskets}()},
 \code{\link{tweakCatches}()},
-\code{\link{tweakLv1}()},
 \code{\link{tweakSets}()},
-\code{\link{tweakSpecimens}()},
+\code{\link{tweakSpecimensRaw}()},
 \code{\link{tweakUniversal}()}
 }
 \author{

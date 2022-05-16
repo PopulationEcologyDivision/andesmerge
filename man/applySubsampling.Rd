@@ -16,7 +16,7 @@ This function does stuff
 }
 \seealso{
 Other internal: 
-\code{\link{charToBoolean}()},
+\code{\link{charToBinary}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},

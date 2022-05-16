@@ -26,11 +26,11 @@ matchAndesToESE <- function(dataPath = NULL){
   ESE_SETS               <- keepFieldsSets(tmp$set_data, mission)
   ESE_SETS               <- transmogrifySets(ESE_SETS)
   ESE_SETS               <- tweakSets(ESE_SETS)
-    
+  
   ESE_BASKETS            <- keepFieldsBaskets(tmp$basket_data, mission)
   ESE_BASKETS            <- transmogrifyBaskets(ESE_BASKETS)
   ESE_BASKETS            <- tweakBaskets(ESE_BASKETS)
-         
+
   ESE_CATCHES            <- keepFieldsCatches(tmp$catch_data, mission)
   ESE_CATCHES            <- transmogrifyCatches(ESE_CATCHES)
   ESE_CATCHES            <- tweakCatches(ESE_CATCHES)
@@ -51,16 +51,15 @@ matchAndesToESE <- function(dataPath = NULL){
 
   ESE_SPECIMENS          <- specimenList$specimen
   ESE_SPECIMENS          <- transmogrifySpecimens(ESE_SPECIMENS)
-  ESE_SPECIMENS          <- tweakSpecimens(ESE_SPECIMENS)
-    
+
   ESE_LV1_OBSERVATIONS   <- specimenList$LV1_OBSERVATION
   ESE_LV1_OBSERVATIONS   <- transmogrifyLV1_OBS(ESE_LV1_OBSERVATIONS)
-  ESE_LV1_OBSERVATIONS   <- tweakLv1(ESE_LV1_OBSERVATIONS)
   rm(list=c("tmp", "specimensRaw", "specimenList"))
-  
+
   subsampled             <- applySubsampling(catch = ESE_CATCHES, basket = ESE_BASKETS)
   ESE_CATCHES            <- subsampled$catch
   ESE_BASKETS            <- subsampled$basket
+  ESE_BASKETS$SAMPLED <-charToBinary( ESE_BASKETS$SAMPLED, bool=F)
   
   #ensure fields names are identical to what the tables expect
   #some uncessary, but for consistency they're all here.
