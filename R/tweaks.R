@@ -79,7 +79,7 @@ tweakBaskets <- function(x = NULL){
     x[x$SETNO == 13 & x$SPEC == 2100 & x$id ==  630,"SAMPLED"]<-F
     x[x$SETNO == 61 & x$SPEC == 8100 & x$id == 1918,"SAMPLED"]<-F
   }
-  if (!is.na(theMsg)) message("Tweaking BASKET: ", theMsg)
+  if (!is.na(theMsg)) message("Tweaking BASKET: \n", theMsg)
   return(x)
 }
 

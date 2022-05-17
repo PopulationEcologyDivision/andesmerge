@@ -56,7 +56,7 @@ matchAndesToESE <- function(dataPath = NULL){
   ESE_LV1_OBSERVATIONS   <- transmogrifyLV1_OBS(ESE_LV1_OBSERVATIONS)
   rm(list=c("tmp", "specimensRaw", "specimenList"))
 
-  subsampled             <- applySubsampling(catch = ESE_CATCHES, basket = ESE_BASKETS)
+  subsampled             <- reDistributeMixedCatch(catch = ESE_CATCHES, basket = ESE_BASKETS)
   ESE_CATCHES            <- subsampled$catch
   ESE_BASKETS            <- subsampled$basket
   ESE_BASKETS$SAMPLED <-charToBinary( ESE_BASKETS$SAMPLED, bool=F)
