@@ -14,7 +14,6 @@ This function removes any ESE objects from the R environment
 }
 \seealso{
 Other internal: 
-\code{\link{applySubsampling}()},
 \code{\link{charToBinary}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
@@ -29,6 +28,7 @@ Other internal:
 \code{\link{keepFieldsSpecimens}()},
 \code{\link{meters2Fathoms}()},
 \code{\link{populate_DATA_DESC}()},
+\code{\link{reDistributeMixedCatch}()},
 \code{\link{reFormatSpecimen}()},
 \code{\link{transmogrifyBaskets}()},
 \code{\link{transmogrifyCatches}()},

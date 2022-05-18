@@ -19,7 +19,6 @@ This function returns the  lookup value in a vector
 }
 \seealso{
 Other internal: 
-\code{\link{applySubsampling}()},
 \code{\link{charToBinary}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
@@ -34,6 +33,7 @@ Other internal:
 \code{\link{keepFieldsSpecimens}()},
 \code{\link{meters2Fathoms}()},
 \code{\link{populate_DATA_DESC}()},
+\code{\link{reDistributeMixedCatch}()},
 \code{\link{reFormatSpecimen}()},
 \code{\link{transmogrifyBaskets}()},
 \code{\link{transmogrifyCatches}()},

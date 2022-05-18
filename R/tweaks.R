@@ -157,25 +157,27 @@ tweakSets <- function(x = NULL){
   theMsg <- NA
   
   if(x$MISSION[1] == "CAR2022102"){
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRecoding gear from 23 to 15\n")
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRecoded GEAR from 23 to 15\n")
     #NEST trawl is not 23, but 15 - change here; expect this will be corrected in the future
     x[x$GEAR==23,"GEAR"] <- 15
     
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 16: Correct tow distance\n")
-    x[x$SETNO==16,"DIST "] <- 0.978
-    
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 48: Correct ELONG no -ve\n")
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 16: Corrected DIST\n")
+    x[x$SETNO==16,"DIST"] <- 0.978
+    # Mission CAR2022102, Set 16 - DIST showing as -10.98, should be 0.98
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 16: Corrected START_DEPTH\n")
+    x[x$SETNO==16,"START_DEPTH"] <- 92
+
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 48: Corrected ELONG no -ve\n")
     x[x$SETNO==48,"ELONG"] <- as.numeric(x[x$SETNO==48,"ELONG"])*-1
     
-    warning("Set 4: end longitude coordinates are 0 (both DD and MMmm)")
-    # Set 9 – End time shows 1741 but note indicates that it should be 1739
-    # Set 41 – End time shows 0056 but note indicates that it should be 0054
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 4: Corrected missing ELONG\n")
+    x[x$SETNO==4,"ELONG"] <- -6620.64599
     
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSets 9 & 41: Correct ETIME\n")
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSets 9 & 41: Corrected ETIME\n")
     x[x$SETNO==9,"END_TIME"] <- 1739
     x[x$SETNO==41,"END_TIME"] <- 0054
     
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tManually add area for each set\n")
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tManually added area for each set\n")
     x[x$SETNO ==  "1", "AREA"] <- "523"
     x[x$SETNO ==  "2", "AREA"] <- "524"
     x[x$SETNO ==  "3", "AREA"] <- "524"

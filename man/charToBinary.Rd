@@ -19,7 +19,6 @@ TRUE/FALSE or Y/N
 }
 \seealso{
 Other internal: 
-\code{\link{applySubsampling}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
@@ -34,6 +33,7 @@ Other internal:
 \code{\link{keepFieldsSpecimens}()},
 \code{\link{meters2Fathoms}()},
 \code{\link{populate_DATA_DESC}()},
+\code{\link{reDistributeMixedCatch}()},
 \code{\link{reFormatSpecimen}()},
 \code{\link{transmogrifyBaskets}()},
 \code{\link{transmogrifyCatches}()},

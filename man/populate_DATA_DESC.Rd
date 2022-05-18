@@ -15,7 +15,6 @@ appropriately depending on the values found
 }
 \seealso{
 Other internal: 
-\code{\link{applySubsampling}()},
 \code{\link{charToBinary}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
@@ -30,6 +29,7 @@ Other internal:
 \code{\link{keepFieldsSets}()},
 \code{\link{keepFieldsSpecimens}()},
 \code{\link{meters2Fathoms}()},
+\code{\link{reDistributeMixedCatch}()},
 \code{\link{reFormatSpecimen}()},
 \code{\link{transmogrifyBaskets}()},
 \code{\link{transmogrifyCatches}()},

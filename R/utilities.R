@@ -228,7 +228,7 @@ charToBinary <- function(x = NULL, bool=T){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 reDistributeMixedCatch <- function(catch=NULL, basket = NULL){
   x <- list()
-message("'Bumping up' mixed catches:\n")
+message("Mixed catches:")
 theMsg <- NA
 allMixedCatch        <- catch[(catch$is_parent | !is.na(catch$parent_catch_id)),]
 parentIDs            <- unique(allMixedCatch[!is.na(allMixedCatch$parent_catch_id),"parent_catch_id"])
@@ -242,7 +242,6 @@ if (length(parentIDs)<1){
 }
 for (i in 1:length(parentIDs)){
   mixedBaskets                     <- basket[basket$catch_id == parentIDs[i],]
-  if (i>1)browser()
   if (nrow(mixedBaskets[!mixedBaskets$SAMPLED,])==0 && nrow(allMixedCatch[allMixedCatch$id %in% parentIDs[i],])>0){
       message("\tThe following CATCH record was flagged as having mixed catch child records, but none were found.  It was deleted.")
       print(allMixedCatch[allMixedCatch$id %in% parentIDs[i],])
@@ -251,7 +250,7 @@ for (i in 1:length(parentIDs)){
     }else if (nrow(mixedBaskets[!mixedBaskets$SAMPLED,])>1){
       warning("check that reDistributeMixedCatch() handles this many mixed baskets properly")
     }
-  
+ 
   sampB <- basket[basket$catch_id %in% allMixedCatch[allMixedCatch$parent_catch_id %in% parentIDs[i],"id"],]
   colnames(sampB)[colnames(sampB)=="id"] <- "basket_id"
   colnames(sampB)[colnames(sampB)=="catch_id"] <- "basket_catch_id"
@@ -262,36 +261,65 @@ for (i in 1:length(parentIDs)){
   colnames(unsampB)[colnames(unsampB)=="id"] <- "basket_id"
   colnames(unsampB)[colnames(unsampB)=="catch_id"] <- "basket_catch_id"
   unsampled <- merge(unsampC, unsampB, all.y=T)
-  
-  browser()
-  ratioBaskets                     <- basket[basket$catch_id %in% allMixedCatch[allMixedCatch$parent_catch_id %in% parentIDs[i],"id"],]
-  ratioBaskets$PROPORTION          <- round(ratioBaskets$BASKET_WEIGHT/sum(ratioBaskets$BASKET_WEIGHT),5)
-  ratioBaskets$id                  <- mixedBaskets[!mixedBaskets$SAMPLED,"id"]
-  ratioBaskets$catch_id            <- mixedBaskets[!mixedBaskets$SAMPLED,"catch_id"]
-  ratioBaskets$BASKET_WEIGHT_orig  <- mixedBaskets[!mixedBaskets$SAMPLED,"BASKET_WEIGHT"]
-  ratioBaskets$BASKET_WEIGHT       <- NA
-  ratioBaskets$BASKET_WEIGHT       <- round(ratioBaskets$BASKET_WEIGHT_orig*ratioBaskets$PROPORTION,3)
+  newRecs <- sampled
+  newRecs$id <- unsampled$id
+  newRecs$parent_catch_id <- unsampled$parent_catch_id
 
-  message("\n\tThe following 'mixed catch' records from CATCH and BASKET were replaced with records 
-    \twith the correct species codes. ")
-  message("\tCatch:")
-  print(allMixedCatch[allMixedCatch$id %in% parentIDs[i],])
+  newRecs$PROP_WT           <- round(newRecs$BASKET_WEIGHT/sum(newRecs$BASKET_WEIGHT),5)
+  newRecs$WT_EACH           <- round(newRecs$BASKET_WEIGHT/newRecs$NUMBER_CAUGHT,5)
+  colnames(newRecs)[colnames(newRecs)=="NUMBER_CAUGHT"] <- "NUM_smpld"
+  colnames(newRecs)[colnames(newRecs)=="BASKET_WEIGHT"] <- "BW_smpld"
+
+  newRecs$Parent_unsampled <- unsampled$BASKET_WEIGHT
+  newRecs$NUM <- NA
+  newRecs$BW_calc       <- round(newRecs$Parent_unsampled*newRecs$PROP_WT,3)
+  newRecs$NUM_calc      <- round(newRecs$BW_calc/newRecs$WT_EACH,0)
+  newRecs$Parent_sampled<- mixedBaskets[mixedBaskets$SAMPLED,"BASKET_WEIGHT"]
+
+  oldCatch <- allMixedCatch[allMixedCatch$id %in% parentIDs[i],]
   catch  <- catch[-which(catch$id %in% parentIDs[i]),]
-  message("\n\tMixed CATCH records that had their values 'bumped up' using proportions from other 
-          \tbaskets will have any existing values for 'NUMBER_CAUGHT' overwritten with NA")
-  catch[catch$parent_catch_id %in% parentIDs[i],"NUMBER_CAUGHT"] <- NA
-  
-  message("\tBaskets:")
-  print(basket[ which(basket$catch_id %in% parentIDs[i]),])
+  oldBaskets <- basket[ which(basket$catch_id %in% parentIDs[i]),]
   basket <- basket[-which(basket$catch_id %in% parentIDs[i]),]
   
-  message("\tThe following BASKET records were added - their weights were calculated using 
-    \tthe proportions determined from the SAMPLED basket")
-  print(ratioBaskets)
-  ratioBaskets$PROPORTION <- NULL
-  ratioBaskets$BASKET_WEIGHT_orig <- NULL
+  newRecs$NUM_new <- newRecs$NUM_calc + newRecs$NUM_smpld
+  evidenceTable <- newRecs[,c("MISSION", "SETNO", "SPEC", "Parent_sampled", "Parent_unsampled", "BW_smpld", "PROP_WT", "NUM_smpld", "WT_EACH", "BW_calc", "NUM_calc", "NUM_new")]
+
   
-  basket <- rbind(basket, ratioBaskets)
+  newRecs$PROP_WT <- newRecs$WT_EACH <- newRecs$Parent_unsampled <- newRecs$Parent_sampled <- newRecs$BW_smpld <- newRecs$NUM_calc <- newRecs$NUM_smpld <- newRecs$NUM <- newRecs$id <- NULL
+  
+  colnames(newRecs)[colnames(newRecs)=="BW_calc"] <- "BASKET_WEIGHT"
+  colnames(newRecs)[colnames(newRecs)=="NUM_new"] <- "NUMBER_CAUGHT"
+  newCatch  <- newRecs[,c("MISSION", "SETNO", "SPEC", "basket_catch_id","NOTE", "UNWEIGHED_BASKETS", "NUMBER_CAUGHT", "is_parent", "parent_catch_id", "SIZE_CLASS")]
+  colnames(newCatch)[colnames(newCatch)=="basket_catch_id"] <- "id"
+  catch <- catch[-which(catch$id %in% newCatch$id),]
+  newBaskets <- newRecs[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED", "basket_id", "basket_catch_id")]
+  colnames(newBaskets)[colnames(newBaskets)=="basket_id"] <- "id"
+  colnames(newBaskets)[colnames(newBaskets)=="basket_catch_id"] <- "catch_id"
+  newBaskets$id <- oldBaskets[!oldBaskets$SAMPLED,"id"]
+  sampledBaskets <- sampled[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED", "basket_id", "basket_catch_id")] 
+  colnames(sampledBaskets)[colnames(sampledBaskets)=="basket_id"] <- "id"
+  colnames(sampledBaskets)[colnames(sampledBaskets)=="basket_catch_id"] <- "catch_id"
+  message("##########")
+  message("Bumping up unsampled mixed catch data:")
+  message("CATCH records:")
+  message("\tDeleted records:")
+  print(oldCatch)
+  message("\tInitial, existing, sampled Catch records:")
+  print(sampC)
+  message("\tReplacement Catch records (NUM_CAUGHT now includes estimates from unsampled baskets):")
+  print(newCatch)
+  message("BASKET records:")
+  message("\tDeleted Basket records:")
+  print(oldBaskets)
+  message("\tExisting, sampled Basket records:")
+  print(sampledBaskets)
+  message("\tReplacement Basket records:")
+  print(newBaskets)
+  message("\n\tThe data below can be used to check the calculation of the bumped up values")
+  print(evidenceTable)
+  message("##########")
+  basket <- rbind(basket, newBaskets)
+  catch <- rbind(catch, newCatch)
 }
 basket$id <- basket$catch_id <- NULL
 catch$id <- catch$is_parent <- catch$parent_catch_id <- NULL
@@ -301,79 +329,3 @@ if (!is.na(theMsg)) message(theMsg)
 return(x)
 #######
   }
-
-applySubsamplingOG <- function(catch=NULL, basket = NULL){
-  message("Subsampling Mixed catches:\n")
-  theMsg <- NA
-  #Each mixed catch record should have a "sampled" basket where every species within was 
-  #identified and weighed.  We then take the proportional weights determined for the sampled 
-  #basket, and apply them to all of the other unsampled (but weighed) baskets.  
-  
-
-  bumpableCatchParents   <- catch[catch$is_parent == T,]
-  
-  if (nrow(bumpableCatchParents)<1){
-    message("(No mixed catches found - skipping subsampling)")
-    x <- list()
-    x$basket <- basket
-    x$catch <- catch
-    if (!is.na(theMsg)) message(theMsg)
-    return(x)
-  }
-  parentIDs <- bumpableCatchParents$id
-
-  for (i in 1:length(parentIDs)){
-    
-    knownMixedCatch        <- catch[catch$parent_catch_id %in% parentIDs[i],]
-    knownReferenceBaskets  <- basket[basket$catch_id %in% knownMixedCatch$id,]
-    basketsSampled         <- basket[basket$catch_id %in% parentIDs[i] & basket$SAMPLED,]
-    basketsUnsampled       <- basket[basket$catch_id %in% parentIDs[i] & !basket$SAMPLED,]
-    if(nrow(basketsUnsampled)==0 & !(9991 %in% knownMixedCatch$SPEC)){
-        #all baskets sampled, and none of child baskets are 9991 - sampled at sea
-      browser()
-      #("!!HERE!!")
-    }else if(nrow(basketsUnsampled)==0){
-      #all baskets sample, and a catch records exists for each spp delete the catch record
-      message("\tThe following CATCH record was flagged as a mixed-basket 'parent', but had no 
-      \tunsampled child record. 'is_parent ' was set to FALSE")
-      print(catch[which(catch$id %in% parentIDs[i]),])
-      
-      catch[which(catch$id %in% parentIDs[i]),"is_parent"] <- FALSE
-      
-      next
-    }
-    bumpedBaskets                    <- knownReferenceBaskets
-    bumpedBaskets$PROPORTION         <- round(bumpedBaskets$BASKET_WEIGHT/sum(bumpedBaskets$BASKET_WEIGHT),5)
-    bumpedBaskets$id                 <- basketsUnsampled$id
-    bumpedBaskets$catch_id           <- basketsUnsampled$catch_id
-    bumpedBaskets$BASKET_WEIGHT_orig <- basketsUnsampled$BASKET_WEIGHT
-    bumpedBaskets$BASKET_WEIGHT      <- NA
-    bumpedBaskets$BASKET_WEIGHT      <- round(bumpedBaskets$BASKET_WEIGHT_orig*bumpedBaskets$PROPORTION,3)
-    
-    #add the new, bumped baskets
-    #delete the catch record
-    message("\n\tThe following 'mixed catch' records from CATCH and BASKET were replaced with records 
-    \twith the correct species codes. ")
-    message("\tCatch:")
-    print(catch[(catch$id %in% parentIDs[i]),])
-    catch  <- catch[-which(catch$id %in% parentIDs[i]),]
-    message("\tBaskets")
-    print(basket[which(basket$catch_id %in% parentIDs[i]),])
-    basket <- basket[-which(basket$catch_id %in% parentIDs[i]),]
-    
-    message("\tThe following BASKET records were added - their weights were calculated using 
-    \tthe proportions determined from the SAMPLED basket")
-    print(bumpedBaskets)
-    bumpedBaskets$PROPORTION <- NULL
-    bumpedBaskets$BASKET_WEIGHT_orig <- NULL
-    #add the new, bumped baskets
-    basket <- rbind(basket, bumpedBaskets)
-  }
-  basket$id <- basket$catch_id <- NULL
-  catch$id <- catch$is_parent <- catch$parent_catch_id <- NULL
-  x <- list()
-  x$basket <- basket
-  x$catch <- catch
-  if (!is.na(theMsg)) message(theMsg)
-  return(x)
-}
