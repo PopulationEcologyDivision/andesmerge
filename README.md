@@ -47,18 +47,24 @@ cxn <- Mar.utils::make_oracle_cxn(fn.oracle.username = groundfish.username,
                                   fn.oracle.password = groundfish.password, 
                                   fn.oracle.dsn = "PTRAN", 
                                   usepkg = 'roracle')
-replaceESEData(cxnObj = cxn, target_schema = "groundfish", target_table = "ANDESE_MISSIONS",
-              source_df = thedata$ESE_MISSIONS)
-replaceESEData(cxnObj = cxn, target_schema = "groundfish", target_table = "ANDESE_SETS", 
-              source_df = thedata$ESE_SETS)
-replaceESEData(cxnObj = cxn, target_schema = "groundfish", target_table = "ANDESE_BASKETS", 
-              source_df = thedata$ESE_BASKETS)
-replaceESEData(cxnObj = cxn, target_schema = "groundfish", target_table = "ANDESE_CATCHES", 
-              source_df = thedata$ESE_CATCHES)
-replaceESEData(cxnObj = cxn, target_schema = "groundfish", target_table = "ANDESE_SPECIMENS", 
-              source_df = thedata$ESE_SPECIMENS)
-replaceESEData(cxnObj = cxn, target_schema = "groundfish", target_table = "ANDESE_LV1_OBSERVATIONS", 
-              source_df = thedata$ESE_LV1_OBSERVATIONS)
+loadESEData(cxnObj = cxn, source_df = tt$ESE_MISSIONS, target_table = "ANDESE_MISSIONS")
+loadESEData(cxnObj = cxn, source_df = tt$ESE_SETS, target_table = "ANDESE_SETS")
+loadESEData(cxnObj = cxn, source_df = tt$ESE_BASKETS, target_table = "ANDESE_BASKETS")
+loadESEData(cxnObj = cxn, source_df = tt$ESE_CATCHES, target_table = "ANDESE_CATCHES")
+loadESEData(cxnObj = cxn, source_df = tt$ESE_SPECIMENS, target_table = "ANDESE_SPECIMENS")
+loadESEData(cxnObj = cxn, source_df = tt$ESE_LV1_OBSERVATIONS, target_table = "ANDESE_LV1_OBSERVATIONS")
 ```
+
+Once all QC is done, and we are ready to load the new data into production, we can do the following:
+```r
+loadESEData(cxnObj = cxn, source_df = tt$ESE_MISSIONS, target_table = "ESE_MISSIONS", confirmOverwrite = T)
+loadESEData(cxnObj = cxn, source_df = tt$ESE_SETS, target_table = "ESE_SETS", confirmOverwrite = T)
+loadESEData(cxnObj = cxn, source_df = tt$ESE_BASKETS, target_table = "ESE_BASKETS", confirmOverwrite = T)
+loadESEData(cxnObj = cxn, source_df = tt$ESE_CATCHES, target_table = "ESE_CATCHES", confirmOverwrite = T)
+loadESEData(cxnObj = cxn, source_df = tt$ESE_SPECIMENS, target_table = "ESE_SPECIMENS", confirmOverwrite = T)
+loadESEData(cxnObj = cxn, source_df = tt$ESE_LV1_OBSERVATIONS, target_table = "ESE_LV1_OBSERVATIONS", confirmOverwrite = T)
+```
+After that step, the Groundfish loader tool can be run, loading the ESER tables to production like normal.
+
 
 As of 2022.05.17, we do QC within these new ANDESE_* objects inside of Oracle.  Any QC issues are relayed back to this repository as [github 'issues'](https://github.com/PopulationEcologyDivision/andesmerge/issues), and are corrected using the [`tweaks.R`](https://github.com/PopulationEcologyDivision/andesmerge/blob/main/R/tweaks.R) file.  When convenient, the functions above are re-run, with the tweaks fixing the issues.  Once satisfied, the data will be loaded into the production tables in the same way it would have been done for the original ESE output.
