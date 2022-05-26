@@ -98,8 +98,7 @@ keepFieldsSpecimens <- function(df = NULL, mission=NULL){
   df <- df[,!names(df) %in% c("mission_number",
                               "size_class_display", 
                               "creation_date", 
-                              "guessed_weight",
-                              "basket")]
+                              "guessed_weight")]
   df <- data.frame(MISSION = mission, df)
   return(df)
 }

@@ -23,6 +23,8 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     x$catch_data[x$catch_data$species_code == 12157,"species_code"] <- 8382
     x$catch_data[x$catch_data$species_code == 10854,"species_code"] <- 500
     x$catch_data[x$catch_data$species_code == 12096,"species_code"] <- 8516
+    
+    x$catch_data[x$catch_data$species_code == 9003,"species_code"] <- 1224
     # x$catch_data[x$catch_data$species_code == 18495,"species_code"] <- 6105
     
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemapping species in the specimen_data\n")  
@@ -49,6 +51,8 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     x$basket_data[x$basket_data$species_code == 12157,"species_code"] <- 8382
     x$basket_data[x$basket_data$species_code == 10854,"species_code"] <- 500
     x$basket_data[x$basket_data$species_code == 12096,"species_code"] <- 8516
+    
+    x$basket_data[x$basket_data$species_code == 9003,"species_code"] <- 1224
     # x$basket_data[x$basket_data$species_code == 18495,"species_code"] <- 6105
     
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tHandling 'spp 18495'.  Basket 1 was spp 6102; Basket 2 was spp 6126 - need an additional catch record\n") 
@@ -73,7 +77,6 @@ tweakUniversal <- function(x = NULL, mission=NULL){
 tweakBaskets <- function(x = NULL){
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   theMsg <- NA
-  
   if(x$MISSION[1] == "CAR2022102"){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tCorrecting two baskets which were incorrectly flagged as being sampled\n")
     x[x$SETNO == 13 & x$SPEC == 2100 & x$id ==  630,"SAMPLED"]<-F
@@ -126,7 +129,7 @@ tweakSpecimensRaw <- function(x = NULL){
     commentsDrop <- c(".", "1", "edrftgujik", "fdgj", "fgjh", "rdfyg", "srdtfygvuh")
     x[x$comment %in% commentsDrop,"comment"]<- NA
     x[x$comments %in% commentsDrop,"comments"]<- NA
-  
+    
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 44/Spec 1191/Specimen id 14496: Removing incorrect length\n")
     x[x$id == 14496,"length"] <- NA
     
@@ -166,7 +169,7 @@ tweakSets <- function(x = NULL){
     # Mission CAR2022102, Set 16 - DIST showing as -10.98, should be 0.98
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 16: Corrected START_DEPTH\n")
     x[x$SETNO==16,"START_DEPTH"] <- 92
-
+    
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 48: Corrected ELONG no -ve\n")
     x[x$SETNO==48,"ELONG"] <- as.numeric(x[x$SETNO==48,"ELONG"])*-1
     
@@ -174,8 +177,8 @@ tweakSets <- function(x = NULL){
     x[x$SETNO==4,"ELONG"] <- -6620.64599
     
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSets 9 & 41: Corrected ETIME\n")
-    x[x$SETNO==9,"END_TIME"] <- 1739
-    x[x$SETNO==41,"END_TIME"] <- 0054
+    x[x$SETNO==9,"END_TIME"] <- "1739"
+    x[x$SETNO==41,"END_TIME"] <- "0054"
     
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tManually added area for each set\n")
     x[x$SETNO ==  "1", "AREA"] <- "523"
@@ -256,3 +259,68 @@ tweakSets <- function(x = NULL){
   return(x)
 }
 
+#' @title tweakBasketsPostProcessing
+#' @description This function can do final changes to the basket data once all of the various basket/
+#' catch handling and re-allocation of mixed catches is complete.  This processing can include using 
+#' measured weights to change basket weights, so both basket and lv1 objects are necessary as 
+#' parameters.
+#' @param basket default is \code{NULL}.  
+#' @param lv1 default is \code{NULL}.  
+#' @return an updated version of ESE_BASKETS
+#' @family general_use
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
+tweakBasketsPostProcessing <- function(basket=NULL, lv1 = NULL){
+  if(length(unique(basket$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
+  if(basket$MISSION[1] == "CAR2022102"){
+    message("Tweaking final BASKET weights: \n")
+    badBasksSampled<- basket[basket$BASKET_WEIGHT<0.0005 & basket$SAMPLED,"id"]
+    badBasksUnsampled<- basket[basket$BASKET_WEIGHT<0.0005 & !basket$SAMPLED,"id"]
+    if (length(badBasksUnsampled)>0 | length(badBasksSampled)>0) message("\tMinimum measurable basket weight is 0.0005 kg\n")
+    if (length(badBasksUnsampled)>0){
+      message("\tUnsampled baskets reporting a weight lower than the minimum were bumped up to 0.0005 kg\n")
+      basket[basket$BASKET_WEIGHT<0.0005 & !basket$SAMPLED,"BASKET_WEIGHT"] <- 0.0005
+    }
+    if (length(badBasksSampled)>0){
+      message("\tSampled baskets reporting a weight lower than the minimum were bumped up using recorded speciment weights\n\n")
+      for (i in 1:length(badBasksSampled)){
+        thisBasketSampled <- basket[basket$id %in% badBasksSampled[i],]
+        thisBasketSampledSpecimensWeight <- as.numeric(lv1[lv1$basket_id %in% badBasksSampled[i] & lv1$LV1_OBSERVATION == "Weight","DATA_VALUE"])
+        message("\t\tHandling")
+        print(basket[basket$id %in% thisBasketSampled$id,])
+        if (length(thisBasketSampledSpecimensWeight)>0){
+          #wts in lv1 are in grams, but baskets are kg, convert below
+          basket[basket$id %in% thisBasketSampled$id,"BASKET_WEIGHT"] <- sum(thisBasketSampledSpecimensWeight/1000)
+          message("\t\t\t<done>") 
+        }else{
+          basket[basket$id %in% thisBasketSampled$id,"BASKET_WEIGHT"] <- 0.0005
+          message("\t\t\t<No sampled weights could be found - forcing 0.0005 kg>")
+        }
+        
+      }
+    }
+  }
+  
+  return(basket)
+}
+
+
+#' @title tweakLv1
+#' @description This function will perform tweaks to the lv1_observations data coming from andes before 
+#' it is imported to Oracle.  
+#' @param x default is \code{NULL}.  This is the ESE_LV1_OBSERVATIONS data frame
+#' @return an updated version of ESE_LV1_OBSERVATIONS
+#' @family general_use
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
+tweakLv1 <- function(x = NULL){
+  if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
+  theMsg <- NA
+
+  if(x$MISSION[1] == "CAR2022102"){
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tHerring otoliths taken post-survey - manually adding that information\n")
+    x[x$SPEC == 60 & x$LV1_OBSERVATION == "Collect Specimen" & x$DATA_VALUE =="1" ,c("LV1_OBSERVATION","DATA_DESC")]     <- as.data.frame(t(as.matrix(c("Age Material Type","Otolith Taken"))))
+  }
+  if (!is.na(theMsg)) message("Tweaking LV1_OBSERVATIONS: \n", theMsg)
+  return(x)
+}

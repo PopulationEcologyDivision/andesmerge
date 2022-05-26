@@ -30,7 +30,7 @@ Other internal:
 \code{\link{keepFieldsSpecimens}()},
 \code{\link{meters2Fathoms}()},
 \code{\link{populate_DATA_DESC}()},
-\code{\link{reDistributeMixedCatch}()},
+\code{\link{redistributeMixedCatch}()},
 \code{\link{transmogrifyBaskets}()},
 \code{\link{transmogrifyCatches}()},
 \code{\link{transmogrifyLV1_OBS}()},

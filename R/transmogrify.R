@@ -32,9 +32,9 @@ transmogrifySets      <- function(df = NULL){
   
   colnames(df)[colnames(df)=="set_number"] <- "SETNO"
   df$START_DATE               = format.Date(strftime(as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")), format = "%d%m%Y")
-  df$START_TIME               = as.integer(as.character(as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M'))
+  df$START_TIME               = as.character(as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M')
   df$END_DATE                 = format.Date(strftime(as.POSIXlt(df$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")), format = "%d%m%Y")
-  df$END_TIME                 = as.integer(as.character(as.POSIXlt(df$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M'))
+  df$END_TIME                 = as.character(as.POSIXlt(df$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M')
   df$STRAT                    = cleanStrata(df$stratum)
   df$SLAT                     = paste0(df$start_latitude_DD,sprintf("%05.2f",df$start_latitude_MMmm))  #sprintf used to ensure leading zeroes added as necessary.
   df$SLONG                    = paste0(df$start_longitude_DD,sprintf("%05.2f",df$start_longitude_MMmm))
@@ -138,12 +138,11 @@ transmogrifySpecimens <- function(df = NULL){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyLV1_OBS   <- function(df = NULL){
   theMsg <- NA
-  
   if(nrow(df[nchar(df$DATA_VALUE)>50,])>0){
     theMsg <- "At least one value for LV1_OBSERVATIONS$DATA_VALUE must be truncated to 50 characters"
     df$DATA_VALUE	       = substr(df$DATA_VALUE, 1, 50) #Oracle table only allows length of 50
   }
-  
+
   df <- populate_DATA_DESC(df)
   
   if (!is.na(theMsg)) message("LV1_OBS (general): \n\t", theMsg,"\n")

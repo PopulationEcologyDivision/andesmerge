@@ -18,11 +18,14 @@ be loaded into Oracle.
 }
 \seealso{
 Other general_use: 
+\code{\link{colTypeConverter}()},
 \code{\link{loadData}()},
-\code{\link{replaceESEData}()},
+\code{\link{loadESEData}()},
 \code{\link{setExperimentType}()},
+\code{\link{tweakBasketsPostProcessing}()},
 \code{\link{tweakBaskets}()},
 \code{\link{tweakCatches}()},
+\code{\link{tweakLv1}()},
 \code{\link{tweakSets}()},
 \code{\link{tweakSpecimensRaw}()},
 \code{\link{tweakUniversal}()}

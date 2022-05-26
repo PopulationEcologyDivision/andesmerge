@@ -35,13 +35,15 @@ matchAndesToESE <- function(dataPath = NULL){
   ESE_CATCHES            <- transmogrifyCatches(ESE_CATCHES)
   ESE_CATCHES            <- tweakCatches(ESE_CATCHES)
   
-  #get the SIZE_CLASS from the basket data
   ESE_CATCHES            <- merge(ESE_CATCHES, 
-                                  unique(ESE_BASKETS[,c("MISSION", "SETNO", "SPEC", "catch_id", 
-                                                        "SIZE_CLASS")]), 
+                                  unique(ESE_BASKETS[,c("MISSION", "SETNO", "SPEC", "catch_id", "SIZE_CLASS")]), 
                                   all.x = T, 
                                   by.x=c("MISSION", "SETNO", "SPEC", "id"), 
                                   by.y = c("MISSION", "SETNO", "SPEC", "catch_id")) 
+  
+  subsampled             <- redistributeMixedCatch(catch = ESE_CATCHES, basket = ESE_BASKETS)
+  ESE_CATCHES            <- subsampled$catch
+  ESE_BASKETS            <- subsampled$basket
   
   # both specimen and lv1 observations are kept together in specimen_data, so they are
   # initially handled together
@@ -56,11 +58,12 @@ matchAndesToESE <- function(dataPath = NULL){
   ESE_LV1_OBSERVATIONS   <- transmogrifyLV1_OBS(ESE_LV1_OBSERVATIONS)
   rm(list=c("tmp", "specimensRaw", "specimenList"))
 
-  subsampled             <- reDistributeMixedCatch(catch = ESE_CATCHES, basket = ESE_BASKETS)
-  ESE_CATCHES            <- subsampled$catch
-  ESE_BASKETS            <- subsampled$basket
-  ESE_BASKETS$SAMPLED <-charToBinary( ESE_BASKETS$SAMPLED, bool=F)
-  
+  ESE_LV1_OBSERVATIONS   <- tweakLv1(x = ESE_LV1_OBSERVATIONS)
+
+  ESE_BASKETS           <- tweakBasketsPostProcessing(basket = ESE_BASKETS, lv1 = ESE_LV1_OBSERVATIONS)
+
+  ESE_BASKETS$SAMPLED    <-charToBinary(ESE_BASKETS$SAMPLED, bool=F)
+
   #ensure fields names are identical to what the tables expect
   #some uncessary, but for consistency they're all here.
   ESE_MISSIONS           <- ESE_MISSIONS[,c("MISSION", "SAMPLING_REQUIREMENT", "NOTE", 
@@ -83,6 +86,11 @@ matchAndesToESE <- function(dataPath = NULL){
   ESE_LV1_OBSERVATIONS   <- ESE_LV1_OBSERVATIONS[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS",
                                                   "SPECIMEN_ID", "LV1_OBSERVATION_ID", 
                                                   "LV1_OBSERVATION", "DATA_VALUE", "DATA_DESC")]
+  
+
+  
+  ESE_LV1_OBSERVATIONS <- colTypeConverter(df = ESE_LV1_OBSERVATIONS)
+
   x <- list()
   x$ESE_MISSIONS         <- ESE_MISSIONS 
   x$ESE_SETS             <- ESE_SETS

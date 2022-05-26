@@ -20,12 +20,15 @@ exported csv files
 }
 \seealso{
 Other general_use: 
+\code{\link{colTypeConverter}()},
 \code{\link{loadData}()},
+\code{\link{loadESEData}()},
 \code{\link{matchAndesToESE}()},
-\code{\link{replaceESEData}()},
 \code{\link{setExperimentType}()},
+\code{\link{tweakBasketsPostProcessing}()},
 \code{\link{tweakBaskets}()},
 \code{\link{tweakCatches}()},
+\code{\link{tweakLv1}()},
 \code{\link{tweakSets}()},
 \code{\link{tweakSpecimensRaw}()}
 }

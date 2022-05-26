@@ -1,3 +1,70 @@
+#' @title get_value
+#' @description This function returns the  lookup value in a vector
+#' @param myKey default is \code{NULL}.
+#' @param mylookupvector default is \code{NULL}.
+#' @return lookup value
+#' @family internal
+#' @author  Pablo Vergara, \email{pablo.vergara@@dfo-mpo.gc.ca}
+#' @export
+#' 
+get_value <- function(myKey, mylookupvector){
+  myvalue = mylookupvector[myKey]
+  myvalue = unname(myvalue)
+  return(myvalue)
+}
+
+#' @title convertFORCE
+#' @description This function returns converted FORCE codes
+#' @param x default is \code{NULL}. This is the string to be processed.
+#' @return converted FORCE codes
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
+#' 
+convertFORCE <- function(x){
+  
+  ESE.vals <- list("0" = 0,
+                   "1" = 1,
+                   "2" = 2,
+                   "3" = 3,
+                   "4" = 4,
+                   "5" = 5,
+                   "6" = 6,
+                   "7" = 7,
+                   "8" = 8,
+                   "9" = NA)
+  
+  ESE.vals = unlist(ESE.vals)
+  x = get_value(x, ESE.vals)
+  
+  return(x)
+}
+
+#' @title convertHOWOBT
+#' @description This function returns converted obtained_code codes
+#' @param x default is \code{NULL}. This is the string to be processed.
+#' @return converted FORCE codes
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
+#' 
+convertHOWOBT <- function(x){
+  ESE.vals <- list("1" = 1, # "Ships log or distance program"
+                   "2" = 2, # "Radar bouy"
+                   "3" = 3, # "DECCA bearings"
+                   "4" = 0, # "LORAN bearings or GPS"
+                   "5" = 5, # "DECCA radar"
+                   "6" = 6, # "LORAN radar"
+                   "7" = 7, # "DECCA and LORAN"
+                   "8" = 8, # "Satelite navigation"
+                   "9" = 9) # "No observation / hydrographic station"
+  
+  ESE.vals = unlist(ESE.vals)
+  x = get_value(x, ESE.vals)
+  
+  return(x)
+}
+
 #' @title getEseTables
 #' @description This function returns the names of the ese tables.
 #' @return character vector of the 6 core ESE tables
@@ -51,19 +118,30 @@ cleanStrata <- function(x){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 reFormatSpecimen <- function(x = NULL){ 
-  
   colnames(x)[colnames(x)=="set_number"]    <- "SETNO"
   colnames(x)[colnames(x)=="species_code"]  <- "SPEC"
   colnames(x)[colnames(x)=="size_class"]    <- "SIZE_CLASS"
   colnames(x)[colnames(x)=="id"]            <- "SPECIMEN_ID"
   y <- list()
-  y$specimen <- x[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID")]
+  y$specimen <- x[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID", "basket_id")]
+  
   # Match data for level 1 observations 
   # Need to turn specimen table from wide format to long in order to have each observation on its own row
-  specDets <- names(x[, !names(x) %in% c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID","basket_id")])
+  x$basket_id <- x$basket <- NULL
+  specDets <- names(x[, !names(x) %in% c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID")])
   x <- x %>% dplyr::mutate_all(as.character) %>% tidyr::pivot_longer(dplyr::all_of(specDets), names_to = "variable", values_to = "value") %>% as.data.frame()
   colnames(x)[colnames(x)=="variable"] <- "LV1_OBSERVATION"
   colnames(x)[colnames(x)=="value"] <- "DATA_VALUE"  
+  
+  #remove records where the value is 0 for collect.specimen/collect.otoliths
+  #these have no impact
+  if (nrow(x[which(x$LV1_OBSERVATION == "collect.specimen" & x$DATA_VALUE == 0),])>0){
+    x <- x[-which(x$LV1_OBSERVATION == "collect.specimen" & x$DATA_VALUE == 0),]
+  }
+  if (nrow(x[which(x$LV1_OBSERVATION == "collect.otoliths" & x$DATA_VALUE == 0),])>0){
+    x <- x[-which(x$LV1_OBSERVATION == "collect.otoliths" & x$DATA_VALUE == 0),]
+  }
+  
   # remove 1) all NA values, 2) empty cells (i.e. ""), 3) cases of 1 character entries
   x <- x[!is.na(x$DATA_VALUE) & nchar(x$DATA_VALUE)>0,]
   x[,"DATA_VALUE"]      <-cleanfields(x[,"DATA_VALUE"])
@@ -82,7 +160,7 @@ reFormatSpecimen <- function(x = NULL){
     dplyr::arrange(LV1_OBSERVATION, .by_group = TRUE) %>% 
     dplyr::mutate(LV1_OBSERVATION_ID =dplyr::row_number()) %>%
     as.data.frame()
-  x$basket_id <- NULL
+  x <- merge(x, y$specimen, all.x=T)
   y$LV1_OBSERVATION <- x
   return(y)
 }
@@ -94,33 +172,35 @@ reFormatSpecimen <- function(x = NULL){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 populate_DATA_DESC <- function(x){
+  x[x$LV1_OBSERVATION == "Otolith Taken"& x$DATA_VALUE =="1" ,c("LV1_OBSERVATION","DATA_DESC")]     <- as.data.frame(t(as.matrix(c("Age Material Type","Otolith Taken"))))
+  
   x$DATA_DESC <- NA
-  x[x$LV1_OBSERVATION == "Collect Otoliths" & x$DATA_VALUE ==0 ,c("LV1_OBSERVATION","DATA_DESC")] <- c("Otolith not taken", "Age Material Type")
-  x[x$LV1_OBSERVATION == "Collect Otoliths" & x$DATA_VALUE ==1 ,c("LV1_OBSERVATION","DATA_DESC")] <- c("Otolith Taken","Age Material Type")
-  x[grepl(x$LV1_OBSERVATION, pattern = "Collect .*", ignore.case = T) & x$DATA_VALUE ==0 ,c("DATA_DESC")] <- c("Not collected")
-  x[grepl(x$LV1_OBSERVATION, pattern = "Collect .*", ignore.case = T) & x$DATA_VALUE ==1 ,c("DATA_DESC")] <- c("Collected")
-  x[x$LV1_OBSERVATION == "Sex" & x$DATA_VALUE ==0 ,c("DATA_DESC")] <- c("Undetermined") 
-  x[x$LV1_OBSERVATION == "Sex" & x$DATA_VALUE ==1 ,c("DATA_DESC")] <- c("Male")
-  x[x$LV1_OBSERVATION == "Sex" & x$DATA_VALUE ==2 ,c("DATA_DESC")] <- c("Female")
-  x[x$LV1_OBSERVATION == "Sex" & x$DATA_VALUE ==3 ,c("DATA_DESC")] <- c("Berried or Hermaphrodite")
-  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE ==0 ,c("DATA_DESC")] <- c("Empty; No food contents")
-  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE ==1 ,c("DATA_DESC")] <- c("Less than 1/4 full")
-  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE ==2 ,c("DATA_DESC")] <- c("1/4 to 1/2 full")
-  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE ==3 ,c("DATA_DESC")] <- c("1/2 to 3/4 full")
-  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE ==4 ,c("DATA_DESC")] <- c("3/4 to full")
-  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE ==5 ,c("DATA_DESC")] <- c("Everted")
-  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE ==6 ,c("DATA_DESC")] <- c("Regurgitated")
-  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE ==7 ,c("DATA_DESC")] <- c(NA)
+  x[grepl(x$LV1_OBSERVATION, pattern = "Collect .*", ignore.case = T) & x$DATA_VALUE =="0" ,c("DATA_DESC")] <- c("Not collected")
+  x[grepl(x$LV1_OBSERVATION, pattern = "Collect .*", ignore.case = T) & x$DATA_VALUE =="1" ,c("DATA_DESC")] <- c("Collected")
+  x[x$LV1_OBSERVATION == "Collect Otoliths" & x$DATA_VALUE =="1" ,c("LV1_OBSERVATION","DATA_DESC")] <- as.data.frame(t(as.matrix(c("Age Material Type","Otolith Taken"))))
+  x[x$LV1_OBSERVATION == "Otolith Taken"& x$DATA_VALUE =="1" ,c("LV1_OBSERVATION","DATA_DESC")]     <- as.data.frame(t(as.matrix(c("Age Material Type","Otolith Taken"))))
+  x[x$LV1_OBSERVATION == "Sex" & x$DATA_VALUE =="0" ,c("DATA_DESC")] <- c("Undetermined") 
+  x[x$LV1_OBSERVATION == "Sex" & x$DATA_VALUE =="1" ,c("DATA_DESC")] <- c("Male")
+  x[x$LV1_OBSERVATION == "Sex" & x$DATA_VALUE =="2" ,c("DATA_DESC")] <- c("Female")
+  x[x$LV1_OBSERVATION == "Sex" & x$DATA_VALUE =="3" ,c("DATA_DESC")] <- c("Berried or Hermaphrodite")
+  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE =="0" ,c("DATA_DESC")] <- c("Empty; No food contents")
+  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE =="1" ,c("DATA_DESC")] <- c("Less than 1/4 full")
+  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE =="2" ,c("DATA_DESC")] <- c("1/4 to 1/2 full")
+  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE =="3" ,c("DATA_DESC")] <- c("1/2 to 3/4 full")
+  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE =="4" ,c("DATA_DESC")] <- c("3/4 to full")
+  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE =="5" ,c("DATA_DESC")] <- c("Everted")
+  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE =="6" ,c("DATA_DESC")] <- c("Regurgitated")
+  x[x$LV1_OBSERVATION == "Stomach Fullness" & x$DATA_VALUE =="7" ,c("DATA_DESC")] <- c(NA)
   x[x$LV1_OBSERVATION == "Stomach Fullness" & tolower(x$DATA_VALUE) =="swf" ,c("DATA_DESC")] <- c("Saved Whole Frozen")
-  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == 0,c("DATA_DESC")] <- c("Undetermined")
-  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == 1,c("DATA_DESC")] <- c("Immature")
-  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == 2,c("DATA_DESC")] <- c("Ripening 1")
-  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == 3,c("DATA_DESC")] <- c("Ripening 2")
-  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == 4,c("DATA_DESC")] <- c("Ripe (Mature)")
-  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == 5,c("DATA_DESC")] <- c("Spawning (Running)")
-  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == 6,c("DATA_DESC")] <- c("Spent")
-  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == 7,c("DATA_DESC")] <- c("Recovering")
-  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == 8,c("DATA_DESC")] <- c("Resting")
+  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == "0",c("DATA_DESC")] <- c("Undetermined")
+  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == "1",c("DATA_DESC")] <- c("Immature")
+  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == "2",c("DATA_DESC")] <- c("Ripening 1")
+  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == "3",c("DATA_DESC")] <- c("Ripening 2")
+  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == "4",c("DATA_DESC")] <- c("Ripe (Mature)")
+  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == "5",c("DATA_DESC")] <- c("Spawning (Running)")
+  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == "6",c("DATA_DESC")] <- c("Spent")
+  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == "7",c("DATA_DESC")] <- c("Recovering")
+  x[x$LV1_OBSERVATION == "Maturity" & x$DATA_VALUE == "8",c("DATA_DESC")] <- c("Resting")
   return(x)
 }
 #' @title cleanfields
@@ -220,112 +300,41 @@ charToBinary <- function(x = NULL, bool=T){
   return(x)
 }
 
-#' @title reDistributeMixedCatch
-#' @description This function does stuff
-#' @param catch default is \code{NULL}.  
-#' @param basket default is \code{NULL}.  
-#' @family internal
+#' @title colTypeConverter
+#' @description This function takes a dataframe and tries to convert the various columns into the 
+#' appropriate type according to their contents
+#' @param df default is \code{NULL} the dataframe that needs column types changed
+#' @return the same df, but with attributes
+#' @family general_use
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-reDistributeMixedCatch <- function(catch=NULL, basket = NULL){
-  x <- list()
-message("Mixed catches:")
-theMsg <- NA
-allMixedCatch        <- catch[(catch$is_parent | !is.na(catch$parent_catch_id)),]
-parentIDs            <- unique(allMixedCatch[!is.na(allMixedCatch$parent_catch_id),"parent_catch_id"])
-
-if (length(parentIDs)<1){
-  message("(No mixed catches found - skipping subsampling)")
-  x$basket <- basket
-  x$catch <- catch
-  if (!is.na(theMsg)) message(theMsg)
-  return(x)
+#' @export
+colTypeConverter <- function(df = NULL){
+  df[] <- lapply(df, function(x) utils::type.convert(as.character(x), as.is = TRUE))
+  return(df)
 }
-for (i in 1:length(parentIDs)){
-  mixedBaskets                     <- basket[basket$catch_id == parentIDs[i],]
-  if (nrow(mixedBaskets[!mixedBaskets$SAMPLED,])==0 && nrow(allMixedCatch[allMixedCatch$id %in% parentIDs[i],])>0){
-      message("\tThe following CATCH record was flagged as having mixed catch child records, but none were found.  It was deleted.")
-      print(allMixedCatch[allMixedCatch$id %in% parentIDs[i],])
-      catch <- catch[-which(catch$id %in% parentIDs[i]),]
-      next
-    }else if (nrow(mixedBaskets[!mixedBaskets$SAMPLED,])>1){
-      warning("check that reDistributeMixedCatch() handles this many mixed baskets properly")
-    }
- 
-  sampB <- basket[basket$catch_id %in% allMixedCatch[allMixedCatch$parent_catch_id %in% parentIDs[i],"id"],]
-  colnames(sampB)[colnames(sampB)=="id"] <- "basket_id"
-  colnames(sampB)[colnames(sampB)=="catch_id"] <- "basket_catch_id"
-  sampC <- catch[catch$id %in% sampB$basket_catch_id,]
-  sampled <- merge(sampC, sampB, all.y=T)
-  unsampC <- allMixedCatch[allMixedCatch$id == parentIDs[i],]
-  unsampB <- basket[basket$catch_id %in% unsampC$id & !basket$SAMPLED,]
-  colnames(unsampB)[colnames(unsampB)=="id"] <- "basket_id"
-  colnames(unsampB)[colnames(unsampB)=="catch_id"] <- "basket_catch_id"
-  unsampled <- merge(unsampC, unsampB, all.y=T)
-  newRecs <- sampled
-  newRecs$id <- unsampled$id
-  newRecs$parent_catch_id <- unsampled$parent_catch_id
 
-  newRecs$PROP_WT           <- round(newRecs$BASKET_WEIGHT/sum(newRecs$BASKET_WEIGHT),5)
-  newRecs$WT_EACH           <- round(newRecs$BASKET_WEIGHT/newRecs$NUMBER_CAUGHT,5)
-  colnames(newRecs)[colnames(newRecs)=="NUMBER_CAUGHT"] <- "NUM_smpld"
-  colnames(newRecs)[colnames(newRecs)=="BASKET_WEIGHT"] <- "BW_smpld"
+#' @title loadData
+#' @description This function loads all of the csv files in a specified folder into the global 
+#' environment.  The object names will be identical to the original file names.
+#' @param dataPath default is \code{NULL} the folder containing files to be loaded into R.  If left 
+#' as NULL, csv files in the\code{sampleAndesData} folder will be loaded
+#' @return nothing - just loads data to environment
+#' @family general_use
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
 
-  newRecs$Parent_unsampled <- unsampled$BASKET_WEIGHT
-  newRecs$NUM <- NA
-  newRecs$BW_calc       <- round(newRecs$Parent_unsampled*newRecs$PROP_WT,3)
-  newRecs$NUM_calc      <- round(newRecs$BW_calc/newRecs$WT_EACH,0)
-  newRecs$Parent_sampled<- mixedBaskets[mixedBaskets$SAMPLED,"BASKET_WEIGHT"]
-
-  oldCatch <- allMixedCatch[allMixedCatch$id %in% parentIDs[i],]
-  catch  <- catch[-which(catch$id %in% parentIDs[i]),]
-  oldBaskets <- basket[ which(basket$catch_id %in% parentIDs[i]),]
-  basket <- basket[-which(basket$catch_id %in% parentIDs[i]),]
-  
-  newRecs$NUM_new <- newRecs$NUM_calc + newRecs$NUM_smpld
-  evidenceTable <- newRecs[,c("MISSION", "SETNO", "SPEC", "Parent_sampled", "Parent_unsampled", "BW_smpld", "PROP_WT", "NUM_smpld", "WT_EACH", "BW_calc", "NUM_calc", "NUM_new")]
-
-  
-  newRecs$PROP_WT <- newRecs$WT_EACH <- newRecs$Parent_unsampled <- newRecs$Parent_sampled <- newRecs$BW_smpld <- newRecs$NUM_calc <- newRecs$NUM_smpld <- newRecs$NUM <- newRecs$id <- NULL
-  
-  colnames(newRecs)[colnames(newRecs)=="BW_calc"] <- "BASKET_WEIGHT"
-  colnames(newRecs)[colnames(newRecs)=="NUM_new"] <- "NUMBER_CAUGHT"
-  newCatch  <- newRecs[,c("MISSION", "SETNO", "SPEC", "basket_catch_id","NOTE", "UNWEIGHED_BASKETS", "NUMBER_CAUGHT", "is_parent", "parent_catch_id", "SIZE_CLASS")]
-  colnames(newCatch)[colnames(newCatch)=="basket_catch_id"] <- "id"
-  catch <- catch[-which(catch$id %in% newCatch$id),]
-  newBaskets <- newRecs[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED", "basket_id", "basket_catch_id")]
-  colnames(newBaskets)[colnames(newBaskets)=="basket_id"] <- "id"
-  colnames(newBaskets)[colnames(newBaskets)=="basket_catch_id"] <- "catch_id"
-  newBaskets$id <- oldBaskets[!oldBaskets$SAMPLED,"id"]
-  sampledBaskets <- sampled[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED", "basket_id", "basket_catch_id")] 
-  colnames(sampledBaskets)[colnames(sampledBaskets)=="basket_id"] <- "id"
-  colnames(sampledBaskets)[colnames(sampledBaskets)=="basket_catch_id"] <- "catch_id"
-  message("##########")
-  message("Bumping up unsampled mixed catch data:")
-  message("CATCH records:")
-  message("\tDeleted records:")
-  print(oldCatch)
-  message("\tInitial, existing, sampled Catch records:")
-  print(sampC)
-  message("\tReplacement Catch records (NUM_CAUGHT now includes estimates from unsampled baskets):")
-  print(newCatch)
-  message("BASKET records:")
-  message("\tDeleted Basket records:")
-  print(oldBaskets)
-  message("\tExisting, sampled Basket records:")
-  print(sampledBaskets)
-  message("\tReplacement Basket records:")
-  print(newBaskets)
-  message("\n\tThe data below can be used to check the calculation of the bumped up values")
-  print(evidenceTable)
-  message("##########")
-  basket <- rbind(basket, newBaskets)
-  catch <- rbind(catch, newCatch)
-}
-basket$id <- basket$catch_id <- NULL
-catch$id <- catch$is_parent <- catch$parent_catch_id <- NULL
-x$basket <- basket
-x$catch <- catch
-if (!is.na(theMsg)) message(theMsg)
-return(x)
-#######
+loadData <- function(dataPath = NULL){
+  #add trailing "/" if necess
+  if(substr(dataPath ,(nchar(dataPath)+1)-1,nchar(dataPath)) != "/")dataPath = paste0(dataPath,"/")
+  filenames <- list.files(dataPath, pattern="tmp_(basket|catch|cruise|obs_types|set|specimen)_data\\.csv$")
+  if (length(filenames)<1)stop("No csv files found")
+  res<-list()
+  for(i in 1:length(filenames))
+  {
+    thisFile = filenames[i]
+    thisFileName <- sub('tmp_', '', sub('\\.csv$', '', thisFile)) 
+    res[[thisFileName]]<- utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE)
+    # assign(thisFileName, utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE), envir = .GlobalEnv)
   }
+  return(res)
+}

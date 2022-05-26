@@ -18,11 +18,14 @@ This function sets the proper experiment type to match existing data structures 
 }
 \seealso{
 Other general_use: 
+\code{\link{colTypeConverter}()},
 \code{\link{loadData}()},
+\code{\link{loadESEData}()},
 \code{\link{matchAndesToESE}()},
-\code{\link{replaceESEData}()},
+\code{\link{tweakBasketsPostProcessing}()},
 \code{\link{tweakBaskets}()},
 \code{\link{tweakCatches}()},
+\code{\link{tweakLv1}()},
 \code{\link{tweakSets}()},
 \code{\link{tweakSpecimensRaw}()},
 \code{\link{tweakUniversal}()}
