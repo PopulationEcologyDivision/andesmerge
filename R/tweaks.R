@@ -170,9 +170,6 @@ tweakSets <- function(x = NULL){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 16: Corrected START_DEPTH\n")
     x[x$SETNO==16,"START_DEPTH"] <- 92
     
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 48: Corrected ELONG no -ve\n")
-    x[x$SETNO==48,"ELONG"] <- as.numeric(x[x$SETNO==48,"ELONG"])*-1
-    
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 4: Corrected missing ELONG\n")
     x[x$SETNO==4,"ELONG"] <- -6620.64599
     

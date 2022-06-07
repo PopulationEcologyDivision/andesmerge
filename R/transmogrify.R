@@ -37,9 +37,9 @@ transmogrifySets      <- function(df = NULL){
   df$END_TIME                 = as.character(as.POSIXlt(df$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M')
   df$STRAT                    = cleanStrata(df$stratum)
   df$SLAT                     = paste0(df$start_latitude_DD,sprintf("%05.2f",df$start_latitude_MMmm))  #sprintf used to ensure leading zeroes added as necessary.
-  df$SLONG                    = paste0(df$start_longitude_DD,sprintf("%05.2f",df$start_longitude_MMmm))
+  df$SLONG                    = paste0(abs(df$start_longitude_DD),sprintf("%05.2f",df$start_longitude_MMmm))
   df$ELAT                     = paste0(df$end_latitude_DD,sprintf("%05.2f",df$end_latitude_MMmm))
-  df$ELONG                    = paste0(df$end_longitude_DD,sprintf("%05.2f",df$end_longitude_MMmm))
+  df$ELONG                    = paste0(abs(df$end_longitude_DD),sprintf("%05.2f",df$end_longitude_MMmm))
   df$AREA                     = NA # MMM - used, but not sure what it would map to yet
   df$DIST                     = df$distance_towed                 #MMM - is this nautical miles
   df$HOWD                     = convertHOWOBT(df$distance_towed_obtained_code)
