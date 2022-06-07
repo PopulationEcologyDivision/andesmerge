@@ -20,9 +20,12 @@
 loadESEData <- function(cxnObj = NULL, source_df= NULL, target_table = NULL, confirmOverwrite = F){
   
   if (cxnObj$usepkg=='rodbc') stop("Sorry - rodbc is not supported, please create an roracle connection")
+  thisMission <- source_df$MISSION[1]
   dryRun <- T
   dfNm <-deparse(substitute(source_df))
   target_table <- toupper(target_table)
+  
+  delete_recs <-  paste0("DELETE FROM ",target_table," WHERE MISSION = '",thisMission,"'")
   if (grepl("^ESE_",target_table) & confirmOverwrite == T){
     dryRun <- F
   }else if (grepl("^ESE_",target_table)){
@@ -125,9 +128,10 @@ DATA_DESC VARCHAR2(255)
   ins_str <- paste0("insert into ",target_table," values(",paste0(":",paste(seq(1:n_commas), collapse=",:"),")"))
   
   ##### if this is a dry run, we will delete the old tables, and re-create new, empty ones
+
   if (dryRun){
     #remove the old table
-    tryDelete = tryCatch(
+    tryDeleteTabs = tryCatch(
       {
         DBI::dbRemoveTable(cxnObj$channel, target_table)
       },
@@ -136,7 +140,7 @@ DATA_DESC VARCHAR2(255)
         return(-1)
       }
     )
-    if (tryDelete == -1){
+    if (tryDeleteTabs == -1){
       message("\tCould not remove ", target_table,".  Maybe it was already deleted?")
     }else{
       message("\tDeleted old ", target_table," table")
@@ -155,6 +159,23 @@ DATA_DESC VARCHAR2(255)
       message("\tCould not create (empty) ", target_table)
     }else{
       message("\tCreated (empty) ", target_table)
+    }
+  }else{
+    #about to write new andesmerge data into ESE tables - make sure no records exist for the current mission...
+    tryDeleteRecs = tryCatch(
+      {
+        DBI::dbGetQuery(cxnObj$channel, delete_recs)
+      },
+      error=function(cond){
+        message(cond)
+        return(-1)
+      }
+    )
+    if (tryDeleteRecs == -1){
+      message("\tCould not delete existing data for this mission")
+      
+    }else{
+      message("\tDeleted old data for this mission")
     }
   }
   ##### dry run or not, we will now load the data into the tables 
