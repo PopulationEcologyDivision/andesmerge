@@ -16,6 +16,7 @@ Depends:
 Imports:
     dplyr,
     Mar.utils,
+    RVSurveyData,
     stats,
     stringi,
 	  tidyr,
@@ -25,6 +26,7 @@ Enhances:
   DBI
 Remotes: 
   Maritimes/Mar.utils
+  PopulationEcologyDivision/RVSurveyData
 Encoding: UTF-8
 License: MIT + file LICENSE
 URL: https://github.com/pevweb/andesmerge/

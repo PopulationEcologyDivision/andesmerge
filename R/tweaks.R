@@ -62,6 +62,23 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     x$basket_data<-x$basket_data[order(x$basket_data$id),]
     x$basket_data[x$basket_data$species_code==18495,"species_code"] <- c(6102,6126)
   }
+
+  if(mission == "CAR2022102"){
+    colnames(x$specimen_data)[colnames(x$specimen_data)=="species_code"]  <- "SPEC"
+    colnames(x$catch_data)[colnames(x$catch_data)=="species_code"]  <- "SPEC"
+    colnames(x$basket_data)[colnames(x$basket_data)=="species_code"]  <- "SPEC"
+  }else{
+    colnames(x$specimen_data)[colnames(x$specimen_data)=="species_aphia_id"]  <- "SPEC"
+    colnames(x$catch_data)[colnames(x$catch_data)=="species_aphia_id"]  <- "SPEC"
+    colnames(x$basket_data)[colnames(x$basket_data)=="species_aphia_id"]  <- "SPEC"
+  }
+  
+  if(mission == "TEL2022010"){
+    #tiny fish apparently marked as size class 12 instead of 2
+    x$basket_data[x$basket_data$set_number == 121 & x$basket_data$SPEC == 126503 & x$basket_data$size_class ==12,"size_class"]<-2
+    x$specimen_data[x$specimen_data$set_number == 121 & x$specimen_data$SPEC == 126503 & x$specimen_data$size_class ==12,"size_class"]<-2
+  }
+  
   if (!is.na(theMsg)) message("Universal Tweaks: \n", theMsg)
   return(x)
 }
@@ -250,6 +267,10 @@ tweakSets <- function(x = NULL){
     x[x$SETNO == "70", "AREA"] <- "523"
     x[x$SETNO == "71", "AREA"] <- "523"
     x[x$SETNO == "72", "AREA"] <- "467"
+  }
+  if(x$MISSION[1] == "CAR2022102"){
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tManually added area for each set\n")
+    x$AREA <- "999"
   }
   
   if (!is.na(theMsg)) message("Tweaking SETS: \n", theMsg)

@@ -1,7 +1,7 @@
 sourcery()
 library(dplyr)
 #run table refresher
-tt<-matchAndesToESE(dataPath = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groundfish/Andes/spring2022Data/")
+tt<-matchAndesToESE(dataPath = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groundfish/Andes/summer2022Data/TELEOST/")
 
 cxn <- Mar.utils::make_oracle_cxn(fn.oracle.username = groundfish.username,fn.oracle.password = groundfish.password, fn.oracle.dsn = "PTRAN", usepkg = 'roracle')
 
@@ -21,7 +21,7 @@ loadESEData(cxnObj = cxn, source_df = tt$ESE_SPECIMENS, target_table = "ESE_SPEC
 loadESEData(cxnObj = cxn, source_df = tt$ESE_LV1_OBSERVATIONS, target_table = "ESE_LV1_OBSERVATIONS", confirmOverwrite = T)
 }
 
-
+ROracle::dbDisconnect(cxn$channel)
 
 # ESE_MISSION               26 +      1 =      27   
 # ESE_SETS                2665 +     72 =    2737

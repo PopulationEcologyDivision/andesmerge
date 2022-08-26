@@ -22,21 +22,21 @@ get_value <- function(myKey, mylookupvector){
 #' @export
 #' 
 convertFORCE <- function(x){
-  
-  ESE.vals <- list("0" = 0,
-                   "1" = 1,
-                   "2" = 2,
-                   "3" = 3,
-                   "4" = 4,
-                   "5" = 5,
-                   "6" = 6,
-                   "7" = 7,
-                   "8" = 8,
-                   "9" = NA)
-  
-  ESE.vals = unlist(ESE.vals)
-  x = get_value(x, ESE.vals)
-  
+  if (is.character(any(x))){
+    ESE.vals <- list("0" = 0,
+                     "1" = 1,
+                     "2" = 2,
+                     "3" = 3,
+                     "4" = 4,
+                     "5" = 5,
+                     "6" = 6,
+                     "7" = 7,
+                     "8" = 8,
+                     "9" = NA)
+    
+    ESE.vals = unlist(ESE.vals)
+    x = get_value(x, ESE.vals)
+  }
   return(x)
 }
 
@@ -119,7 +119,7 @@ cleanStrata <- function(x){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 reFormatSpecimen <- function(x = NULL){ 
   colnames(x)[colnames(x)=="set_number"]    <- "SETNO"
-  colnames(x)[colnames(x)=="species_code"]  <- "SPEC"
+  # colnames(x)[colnames(x)=="species_code"]  <- "SPEC"
   colnames(x)[colnames(x)=="size_class"]    <- "SIZE_CLASS"
   colnames(x)[colnames(x)=="id"]            <- "SPECIMEN_ID"
   y <- list()
@@ -144,6 +144,10 @@ reFormatSpecimen <- function(x = NULL){
   
   # remove 1) all NA values, 2) empty cells (i.e. ""), 3) cases of 1 character entries
   x <- x[!is.na(x$DATA_VALUE) & nchar(x$DATA_VALUE)>0,]
+# remove entries of NAN from DATA_VALUE
+    x <-x[!grepl(pattern = "^nan$", x$DATA_VALUE, ignore.case = T),]
+    # remove entries of Print Label from LV1_OBSERVATION
+    x <-x[!grepl(pattern = "^Print Label$", x$LV1_OBSERVATION, ignore.case = T),]
   x[,"DATA_VALUE"]      <-cleanfields(x[,"DATA_VALUE"])
   x[,"LV1_OBSERVATION"] <-cleanfields(x[,"LV1_OBSERVATION"])
   # periods were introduced in the data frame names - remove them 

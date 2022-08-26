@@ -40,7 +40,13 @@ transmogrifySets      <- function(df = NULL){
   df$SLONG                    = paste0(abs(df$start_longitude_DD),sprintf("%05.2f",df$start_longitude_MMmm))
   df$ELAT                     = paste0(df$end_latitude_DD,sprintf("%05.2f",df$end_latitude_MMmm))
   df$ELONG                    = paste0(abs(df$end_longitude_DD),sprintf("%05.2f",df$end_longitude_MMmm))
-  df$AREA                     = NA # MMM - used, but not sure what it would map to yet
+  df$SLAT_dd               <- df$start_latitude_DD+(df$start_latitude_MMmm/60)
+  df$SLONG_dd               <- abs(df$start_longitude_DD+(df$start_longitude_MMmm/60))*-1
+  df <- Mar.utils::identify_area(df, lat.field = "SLAT_dd", lon.field = "SLONG_dd", agg.poly.shp = RVSurveyData::nafo_sf, agg.poly.field = "AREA_ID")
+  colnames(df)[colnames(df)=="AREA_ID"] <- "AREA"
+  df[df$AREA %in% "<outside known areas>", "AREA"] <- NA
+  # df$AREA <- as.numeric(df$AREA)
+
   df$DIST                     = df$distance_towed                 #MMM - is this nautical miles
   df$HOWD                     = convertHOWOBT(df$distance_towed_obtained_code)
   df$SPEED                    = round(df$ship_speed,2)
@@ -61,7 +67,7 @@ transmogrifySets      <- function(df = NULL){
   df$BOTTOM_TEMPERATURE       = NA # data to come later, not captured during survey
   df$BOTTOM_SALINITY          = NA # data to come later, not captured during survey
   df$HYDRO                    = NA # data to come later, not captured during survey
-  df$STATION                  = stringi::stri_extract_first_regex(df$new_station, "\\d{3}")
+  df$STATION                  = stringi::stri_extract_first_regex(df$station_number, "\\d{3}")
   df$BOTTOM_TYPE_CODE         = NA
   df$BOTTOM_TEMP_DEVICE_CODE  = NA
   df$WAVE_HEIGHT_CODE         = NA
@@ -84,12 +90,11 @@ transmogrifyBaskets   <- function(df = NULL){
   # df$sampled <- tolower(df$sampled)
   # df$sampled <- ifelse(df$sampled == "true", T, ifelse(df$sampled == "false", F, NA))
   colnames(df)[colnames(df)=="set_number"]    <- "SETNO"
-  colnames(df)[colnames(df)=="species_code"]  <- "SPEC"  
   colnames(df)[colnames(df)=="size_class"]    <- "SIZE_CLASS"
   colnames(df)[colnames(df)=="basket_wt_kg"]  <- "BASKET_WEIGHT"  
   colnames(df)[colnames(df)=="sampled"]       <- "SAMPLED"
   #match expected field order
-  df <- df[,c("MISSION","SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED", "id", "catch_id")]
+  df <- df[,c("MISSION","SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED", "basket_id", "catch_id")]
   if (!is.na(theMsg)) message("BASKETS (General): \n\t", theMsg,"\n")
   return(df)
 }
@@ -103,14 +108,13 @@ transmogrifyBaskets   <- function(df = NULL){
 transmogrifyCatches   <- function(df = NULL){
   theMsg <- NA
   colnames(df)[colnames(df)=="set_number"]        <- "SETNO"
-  colnames(df)[colnames(df)=="species_code"]      <- "SPEC"
   colnames(df)[colnames(df)=="notes"]             <- "NOTE"
   colnames(df)[colnames(df)=="unweighed_baskets"] <- "UNWEIGHED_BASKETS"
   colnames(df)[colnames(df)=="specimen_count"]    <- "NUMBER_CAUGHT"
   df$is_parent <-charToBinary(df$is_parent, bool=T)
   #match expected field order
   df <- df[,c("MISSION","SETNO", "SPEC", "NOTE", "UNWEIGHED_BASKETS", "NUMBER_CAUGHT",
-              "id", "is_parent", "parent_catch_id")]
+              "catch_id", "is_parent", "parent_catch_id")]
   if (!is.na(theMsg)) message("CATCH (general): \n\t", theMsg,"\n")
   return(df) 
 }
@@ -124,7 +128,7 @@ transmogrifyCatches   <- function(df = NULL){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifySpecimens <- function(df = NULL){
   theMsg <- NA
-  
+
   if (!is.na(theMsg)) message("SPECIMENS (general): \n\t", theMsg,"\n")
   return(df)
 }

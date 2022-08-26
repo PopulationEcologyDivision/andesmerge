@@ -10,7 +10,6 @@ matchAndesToESE <- function(dataPath = NULL){
   
   # load Andes CSV files extracted from server at end of survey 
   tmp                    <- loadData(dataPath = dataPath)
-
   # keepFieldsXxx  - extracts required/usable fields from andes data
   # tansmogrifyXxx - translate andes fields into formats/units, etc as used by ESE tables 
   # tweakXxx       - mission-specific modifications to the various ESE objects
@@ -22,29 +21,28 @@ matchAndesToESE <- function(dataPath = NULL){
   mission                <- ESE_MISSIONS[1,"MISSION"]
   #perform any mission level tweaks that impact multiple tables
   tmp                    <- tweakUniversal(tmp, mission)
-         
   ESE_SETS               <- keepFieldsSets(tmp$set_data, mission)
   ESE_SETS               <- transmogrifySets(ESE_SETS)
   ESE_SETS               <- tweakSets(ESE_SETS)
-  
   ESE_BASKETS            <- keepFieldsBaskets(tmp$basket_data, mission)
   ESE_BASKETS            <- transmogrifyBaskets(ESE_BASKETS)
   ESE_BASKETS            <- tweakBaskets(ESE_BASKETS)
 
   ESE_CATCHES            <- keepFieldsCatches(tmp$catch_data, mission)
+
   ESE_CATCHES            <- transmogrifyCatches(ESE_CATCHES)
+
   ESE_CATCHES            <- tweakCatches(ESE_CATCHES)
-  
+
   ESE_CATCHES            <- merge(ESE_CATCHES, 
                                   unique(ESE_BASKETS[,c("MISSION", "SETNO", "SPEC", "catch_id", "SIZE_CLASS")]), 
                                   all.x = T, 
-                                  by.x=c("MISSION", "SETNO", "SPEC", "id"), 
+                                  by.x=c("MISSION", "SETNO", "SPEC", "catch_id"), 
                                   by.y = c("MISSION", "SETNO", "SPEC", "catch_id")) 
-  
   subsampled             <- redistributeMixedCatch(catch = ESE_CATCHES, basket = ESE_BASKETS)
+
   ESE_CATCHES            <- subsampled$catch
   ESE_BASKETS            <- subsampled$basket
-  
   # both specimen and lv1 observations are kept together in specimen_data, so they are
   # initially handled together
   specimensRaw           <- keepFieldsSpecimens(tmp$specimen_data, mission)
