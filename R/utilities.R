@@ -119,7 +119,6 @@ cleanStrata <- function(x){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 reFormatSpecimen <- function(x = NULL){ 
   colnames(x)[colnames(x)=="set_number"]    <- "SETNO"
-  # colnames(x)[colnames(x)=="species_code"]  <- "SPEC"
   colnames(x)[colnames(x)=="size_class"]    <- "SIZE_CLASS"
   colnames(x)[colnames(x)=="id"]            <- "SPECIMEN_ID"
   y <- list()
@@ -330,15 +329,30 @@ colTypeConverter <- function(df = NULL){
 loadData <- function(dataPath = NULL){
   #add trailing "/" if necess
   if(substr(dataPath ,(nchar(dataPath)+1)-1,nchar(dataPath)) != "/")dataPath = paste0(dataPath,"/")
-  filenames <- list.files(dataPath, pattern="tmp_(basket|catch|cruise|obs_types|set|specimen)_data\\.csv$")
+  filenames <- list.files(dataPath, pattern="^tmp_(basket|catch|cruise|set|specimen|species)_data\\.csv$")
   if (length(filenames)<1)stop("No csv files found")
   res<-list()
   for(i in 1:length(filenames))
   {
+    message("Working on ",filenames[i])
     thisFile = filenames[i]
     thisFileName <- sub('tmp_', '', sub('\\.csv$', '', thisFile)) 
     res[[thisFileName]]<- utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE)
     # assign(thisFileName, utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE), envir = .GlobalEnv)
   }
   return(res)
+}
+
+uuidToGulf <-function(x=NULL){
+  # can do ESE_BASKETS("SPEC"), ESE_CATCHES("SPEC"), ESE_SPECIMENS ("SPEC"), ESE_LV1_OBSERVATIONS ("SPEC") 
+  x$specimen_data<- merge(x$specimen_data, x$species_data[,c("uuid","code")], all.x=T, by.x="species_uuid", by.y="uuid")
+  x$basket_data<- merge(x$basket_data, x$species_data[,c("uuid","code")], all.x=T, by.x="species_uuid", by.y="uuid")
+  x$catch_data<- merge(x$catch_data, x$species_data[,c("uuid","code")], all.x=T, by.x="species_uuid", by.y="uuid")
+  colnames(x$specimen_data)[colnames(x$specimen_data)=="code"] <- "SPEC"
+  colnames(x$basket_data)[colnames(x$basket_data)=="code"] <- "SPEC"
+  colnames(x$catch_data)[colnames(x$catch_data)=="code"] <- "SPEC"
+  x$specimen_data$uuid <- NULL
+  x$basket_data$uuid <- NULL
+  x$catch_data$uuid <- NULL
+  return(x)
 }

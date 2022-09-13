@@ -10,10 +10,12 @@ matchAndesToESE <- function(dataPath = NULL){
   
   # load Andes CSV files extracted from server at end of survey 
   tmp                    <- loadData(dataPath = dataPath)
+  tmp                    <- uuidToGulf(tmp)
+
   # keepFieldsXxx  - extracts required/usable fields from andes data
   # tansmogrifyXxx - translate andes fields into formats/units, etc as used by ESE tables 
   # tweakXxx       - mission-specific modifications to the various ESE objects
-  
+
   ESE_MISSIONS           <- keepFieldsMissions(tmp$cruise_data) 
   ESE_MISSIONS           <- transmogrifyMissions(ESE_MISSIONS)
   
@@ -36,10 +38,8 @@ matchAndesToESE <- function(dataPath = NULL){
 
   ESE_CATCHES            <- merge(ESE_CATCHES, 
                                   unique(ESE_BASKETS[,c("MISSION", "SETNO", "SPEC", "catch_id", "SIZE_CLASS")]), 
-                                  all.x = T, 
-                                  by.x=c("MISSION", "SETNO", "SPEC", "catch_id"), 
-                                  by.y = c("MISSION", "SETNO", "SPEC", "catch_id")) 
-  subsampled             <- redistributeMixedCatch(catch = ESE_CATCHES, basket = ESE_BASKETS)
+                                  by = c("MISSION", "SETNO", "SPEC", "catch_id")) 
+  subsampled             <- redistributeMixedCatch(catch = ESE_CATCHES, basket = ESE_BASKETS, quiet = F)
 
   ESE_CATCHES            <- subsampled$catch
   ESE_BASKETS            <- subsampled$basket
@@ -54,7 +54,7 @@ matchAndesToESE <- function(dataPath = NULL){
 
   ESE_LV1_OBSERVATIONS   <- specimenList$LV1_OBSERVATION
   ESE_LV1_OBSERVATIONS   <- transmogrifyLV1_OBS(ESE_LV1_OBSERVATIONS)
-  rm(list=c("tmp", "specimensRaw", "specimenList"))
+  rm(list=c("specimensRaw", "specimenList"))
 
   ESE_LV1_OBSERVATIONS   <- tweakLv1(x = ESE_LV1_OBSERVATIONS)
 
@@ -96,6 +96,8 @@ matchAndesToESE <- function(dataPath = NULL){
   x$ESE_CATCHES          <- ESE_CATCHES
   x$ESE_SPECIMENS        <- ESE_SPECIMENS
   x$ESE_LV1_OBSERVATIONS <- ESE_LV1_OBSERVATIONS
-  
+
+   x$SPP_LIST_GULF <- tmp$species_data[,c("code","common_name_en", "scientific_name", "aphia_id", "common_name_fr", "uuid")]
+  message("Note that right now, all of the spp codes are GULF's")
   return(x) 
 }

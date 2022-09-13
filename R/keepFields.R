@@ -89,25 +89,15 @@ keepFieldsSets <- function(df = NULL, mission=NULL){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 keepFieldsCatches <- function(df = NULL, mission=NULL){
-  if (mission =="CAR2022102"){
-    df <- df[,c("set_number",
-                "species_code",
-                "notes",
-                "unweighed_baskets",
-                "specimen_count",
-                "id",
-                "is_parent",
-                "parent_catch_id")]  
-  }else{
-    df <- df[,c("set_number",
-                "SPEC",
-                "notes",
-                "unweighed_baskets",
-                "specimen_count",
-                "id",
-                "is_parent",
-                "parent_catch_id")] 
-  }
+  df <- df[,c("set_number",
+              "SPEC",
+              "notes",
+              "unweighed_baskets",
+              "specimen_count",
+              "id",
+              "is_parent",
+              "parent_catch_id")] 
+  
   colnames(df)[colnames(df)=="id"] <- "catch_id"
   df <- data.frame(MISSION = mission, df)
   return(df)
@@ -120,23 +110,15 @@ keepFieldsCatches <- function(df = NULL, mission=NULL){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 keepFieldsBaskets <- function(df = NULL, mission=NULL){
-  if (mission =="CAR2022102"){
-    df <- df[,c("set_number",
-                "species_code",
-                "size_class",
-                "basket_wt_kg",
-                "id",
-                "catch_id",
-                "sampled")]
-  }else{
-    df <- df[,c("set_number",
-                "SPEC",
-                "size_class",
-                "basket_wt_kg",
-                "id",
-                "catch_id",
-                "sampled")] 
-  }
+  
+  df <- df[,c("set_number",
+              "SPEC",
+              "size_class",
+              "basket_wt_kg",
+              "id",
+              "catch_id",
+              "sampled")] 
+  
   colnames(df)[colnames(df)=="id"] <- "basket_id"
   df <- data.frame(MISSION = mission, df)
   return(df)
@@ -152,7 +134,11 @@ keepFieldsSpecimens <- function(df = NULL, mission=NULL){
   df <- df[,!names(df) %in% c("mission_number",
                               "size_class_display", 
                               "creation_date", 
-                              "guessed_weight")]
+                              "guessed_weight",
+                              "species_uuid",
+                              "species_aphia_id",
+                              "print.label",
+                              "collect.specimen.w.fish.number")]
   df <- data.frame(MISSION = mission, df)
   return(df)
 }

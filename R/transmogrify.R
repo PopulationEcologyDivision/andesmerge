@@ -29,23 +29,30 @@ transmogrifyMissions  <- function(df = NULL){
 transmogrifySets      <- function(df = NULL){
   theMsg <- NA
   if (any(4 %in% c(df$ship_speed_obtained_code,df$distance_towed_obtained_code))) theMsg <- 'Assuming entries of "4 - LORAN bearings or GPS" for HOWD/HOWS should be  "0 - GPS"'
-  
   colnames(df)[colnames(df)=="set_number"] <- "SETNO"
-  df$START_DATE               = format.Date(strftime(as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")), format = "%d%m%Y")
-  df$START_TIME               = as.character(as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M')
-  df$END_DATE                 = format.Date(strftime(as.POSIXlt(df$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")), format = "%d%m%Y")
-  df$END_TIME                 = as.character(as.POSIXlt(df$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S") , format = '%H%M')
+  df$start_date_utc <- as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")
+  df$end_date_utc <- as.POSIXlt(df$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")
+  df$start_date_loc <- lubridate::with_tz(df$start_date_utc, tz="America/Halifax")
+  df$end_date_loc <- lubridate::with_tz(df$end_date_utc, tz="America/Halifax")
+  df$START_DATE               = format.Date(strftime(df$start_date_loc), format = "%d%m%Y")
+  df$END_DATE                 = format.Date(strftime(df$end_date_loc), format = "%d%m%Y")
+  df$START_TIME               = as.character(df$start_date_loc , format = '%H%M')
+  df$END_TIME                 = as.character(df$end_date_loc , format = '%H%M')
   df$STRAT                    = cleanStrata(df$stratum)
   df$SLAT                     = paste0(df$start_latitude_DD,sprintf("%05.2f",df$start_latitude_MMmm))  #sprintf used to ensure leading zeroes added as necessary.
   df$SLONG                    = paste0(abs(df$start_longitude_DD),sprintf("%05.2f",df$start_longitude_MMmm))
   df$ELAT                     = paste0(df$end_latitude_DD,sprintf("%05.2f",df$end_latitude_MMmm))
   df$ELONG                    = paste0(abs(df$end_longitude_DD),sprintf("%05.2f",df$end_longitude_MMmm))
   df$SLAT_dd               <- df$start_latitude_DD+(df$start_latitude_MMmm/60)
-  df$SLONG_dd               <- abs(df$start_longitude_DD+(df$start_longitude_MMmm/60))*-1
+  df$SLONG_dd               <- abs(abs(df$start_longitude_DD)+(df$start_longitude_MMmm/60))*-1
   df <- Mar.utils::identify_area(df, lat.field = "SLAT_dd", lon.field = "SLONG_dd", agg.poly.shp = RVSurveyData::nafo_sf, agg.poly.field = "AREA_ID")
   colnames(df)[colnames(df)=="AREA_ID"] <- "AREA"
+
   df[df$AREA %in% "<outside known areas>", "AREA"] <- NA
-  # df$AREA <- as.numeric(df$AREA)
+  if (any(is.na(df$AREA))){
+    warning("One or more sets could not be assigned to a NAFO area.")
+  }
+  df$AREA <- as.integer(df$AREA)
 
   df$DIST                     = df$distance_towed                 #MMM - is this nautical miles
   df$HOWD                     = convertHOWOBT(df$distance_towed_obtained_code)
@@ -67,7 +74,7 @@ transmogrifySets      <- function(df = NULL){
   df$BOTTOM_TEMPERATURE       = NA # data to come later, not captured during survey
   df$BOTTOM_SALINITY          = NA # data to come later, not captured during survey
   df$HYDRO                    = NA # data to come later, not captured during survey
-  df$STATION                  = stringi::stri_extract_first_regex(df$station_number, "\\d{3}")
+  df$STATION                  = stringi::stri_extract_first_regex(df$station_number, "\\d{3,}")
   df$BOTTOM_TYPE_CODE         = NA
   df$BOTTOM_TEMP_DEVICE_CODE  = NA
   df$WAVE_HEIGHT_CODE         = NA

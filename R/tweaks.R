@@ -61,22 +61,27 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     
     x$basket_data<-x$basket_data[order(x$basket_data$id),]
     x$basket_data[x$basket_data$species_code==18495,"species_code"] <- c(6102,6126)
-  }
-
-  if(mission == "CAR2022102"){
     colnames(x$specimen_data)[colnames(x$specimen_data)=="species_code"]  <- "SPEC"
     colnames(x$catch_data)[colnames(x$catch_data)=="species_code"]  <- "SPEC"
     colnames(x$basket_data)[colnames(x$basket_data)=="species_code"]  <- "SPEC"
-  }else{
-    colnames(x$specimen_data)[colnames(x$specimen_data)=="species_aphia_id"]  <- "SPEC"
-    colnames(x$catch_data)[colnames(x$catch_data)=="species_aphia_id"]  <- "SPEC"
-    colnames(x$basket_data)[colnames(x$basket_data)=="species_aphia_id"]  <- "SPEC"
   }
+  
+  # if(mission != "CAR2022102"){
+  #   colnames(x$specimen_data)[colnames(x$specimen_data)=="species_aphia_id"]  <- "SPEC"
+  #   colnames(x$catch_data)[colnames(x$catch_data)=="species_aphia_id"]  <- "SPEC"
+  #   colnames(x$basket_data)[colnames(x$basket_data)=="species_aphia_id"]  <- "SPEC"
+  # }
   
   if(mission == "TEL2022010"){
     #tiny fish apparently marked as size class 12 instead of 2
-    x$basket_data[x$basket_data$set_number == 121 & x$basket_data$SPEC == 126503 & x$basket_data$size_class ==12,"size_class"]<-2
-    x$specimen_data[x$specimen_data$set_number == 121 & x$specimen_data$SPEC == 126503 & x$specimen_data$size_class ==12,"size_class"]<-2
+    x$basket_data[x$basket_data$set_number == 121 & x$basket_data$species_aphia_id == 126503 & x$basket_data$size_class ==12,"size_class"]<-2
+    x$specimen_data[x$specimen_data$set_number == 121 & x$specimen_data$species_aphia_id  == 126503 & x$specimen_data$size_class ==12,"size_class"]<-2
+
+    #mola mola was not in andes spp list
+    x$basket_data[x$basket_data$set_number == 69 & x$basket_data$SPEC == 9991,c("SPEC","species_aphia_id","species_name")] <- as.data.frame(t(as.matrix(c(730,127405,"OCEAN SUNFISH"))))
+    x$specimen_data[x$specimen_data$set_number == 69 & x$specimen_data$SPEC == 9991,c("SPEC","species_aphia_id")] <- as.data.frame(t(as.matrix(c(730,127405))))
+    x$catch_data[x$catch_data$set_number == 69 & x$catch_data$SPEC == 9991,c("SPEC","species_aphia_id")] <- as.data.frame(t(as.matrix(c(730,127405))))
+
   }
   
   if (!is.na(theMsg)) message("Universal Tweaks: \n", theMsg)
@@ -268,9 +273,14 @@ tweakSets <- function(x = NULL){
     x[x$SETNO == "71", "AREA"] <- "523"
     x[x$SETNO == "72", "AREA"] <- "467"
   }
-  if(x$MISSION[1] == "CAR2022102"){
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tManually added area for each set\n")
-    x$AREA <- "999"
+  if(x$MISSION[1] == "TEL2022010"){
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tModified exp type manually for several sets\n")
+    x[x$SETNO == "1", "EXPERIMENT_TYPE_CODE"] <- "9"
+    x[x$SETNO == "44", "EXPERIMENT_TYPE_CODE"] <- "9"
+    x[x$SETNO == "170", "EXPERIMENT_TYPE_CODE"] <- "9"
+    
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tModified dist and speed manually for a set\n")
+    x[x$SETNO == "99", c("DIST", "SPEED")] <- as.data.frame(t(c(1.61,3.22)))
   }
   
   if (!is.na(theMsg)) message("Tweaking SETS: \n", theMsg)
@@ -290,35 +300,31 @@ tweakSets <- function(x = NULL){
 #' @export
 tweakBasketsPostProcessing <- function(basket=NULL, lv1 = NULL){
   if(length(unique(basket$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
-  if(basket$MISSION[1] == "CAR2022102"){
-    message("Tweaking final BASKET weights: \n")
-    badBasksSampled<- basket[basket$BASKET_WEIGHT<0.0005 & basket$SAMPLED,"id"]
-    badBasksUnsampled<- basket[basket$BASKET_WEIGHT<0.0005 & !basket$SAMPLED,"id"]
-    if (length(badBasksUnsampled)>0 | length(badBasksSampled)>0) message("\tMinimum measurable basket weight is 0.0005 kg\n")
-    if (length(badBasksUnsampled)>0){
-      message("\tUnsampled baskets reporting a weight lower than the minimum were bumped up to 0.0005 kg\n")
-      basket[basket$BASKET_WEIGHT<0.0005 & !basket$SAMPLED,"BASKET_WEIGHT"] <- 0.0005
-    }
-    if (length(badBasksSampled)>0){
-      message("\tSampled baskets reporting a weight lower than the minimum were bumped up using recorded speciment weights\n\n")
-      for (i in 1:length(badBasksSampled)){
-        thisBasketSampled <- basket[basket$id %in% badBasksSampled[i],]
-        thisBasketSampledSpecimensWeight <- as.numeric(lv1[lv1$basket_id %in% badBasksSampled[i] & lv1$LV1_OBSERVATION == "Weight","DATA_VALUE"])
-        message("\t\tHandling")
-        print(basket[basket$id %in% thisBasketSampled$id,])
-        if (length(thisBasketSampledSpecimensWeight)>0){
-          #wts in lv1 are in grams, but baskets are kg, convert below
-          basket[basket$id %in% thisBasketSampled$id,"BASKET_WEIGHT"] <- sum(thisBasketSampledSpecimensWeight/1000)
-          message("\t\t\t<done>") 
-        }else{
-          basket[basket$id %in% thisBasketSampled$id,"BASKET_WEIGHT"] <- 0.0005
-          message("\t\t\t<No sampled weights could be found - forcing 0.0005 kg>")
-        }
-        
+  message("Tweaking final BASKET weights: \n")
+  badBasksSampled   <- basket[basket$BASKET_WEIGHT<0.0005 & basket$SAMPLED,"basket_id"]
+  badBasksUnsampled <- basket[basket$BASKET_WEIGHT<0.0005 & !basket$SAMPLED,"basket_id"]
+  if (length(badBasksUnsampled)>0 | length(badBasksSampled)>0) message("\tMinimum measurable basket weight is 0.0005 kg\n")
+  if (length(badBasksUnsampled)>0){
+    message("\tUnsampled baskets reporting a weight lower than the minimum were bumped up to 0.0005 kg\n")
+    basket[basket$BASKET_WEIGHT<0.0005 & !basket$SAMPLED,"BASKET_WEIGHT"] <- 0.0005
+  }
+  if (length(badBasksSampled)>0){
+    message("\tOne or more sampled baskets reporting a weight lower than the minimum were bumped up using recorded speciment weights\n\n")
+    for (i in 1:length(badBasksSampled)){
+      thisBasketSampled <- basket[basket$basket_id %in% badBasksSampled[i],]
+      thisBasketSampledSpecimensWeight <- as.numeric(lv1[lv1$basket_id %in% badBasksSampled[i] & lv1$LV1_OBSERVATION == "Weight","DATA_VALUE"])
+      # message("\t\tHandling")
+      if (length(thisBasketSampledSpecimensWeight)>0){
+        #wts in lv1 are in grams, but baskets are kg, convert below
+        basket[basket$basket_id %in% thisBasketSampled$basket_id,"BASKET_WEIGHT"] <- sum(thisBasketSampledSpecimensWeight/1000)
+        # message("\t\t\t<done>") 
+      }else{
+        basket[basket$basket_id %in% thisBasketSampled$basket_id,"BASKET_WEIGHT"] <- 0.0005
+        # message("\t\t\t<No sampled weights could be found - forcing 0.0005 kg>")
       }
+      
     }
   }
-  
   return(basket)
 }
 
@@ -334,7 +340,7 @@ tweakBasketsPostProcessing <- function(basket=NULL, lv1 = NULL){
 tweakLv1 <- function(x = NULL){
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   theMsg <- NA
-
+  
   if(x$MISSION[1] == "CAR2022102"){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tHerring otoliths taken post-survey - manually adding that information\n")
     x[x$SPEC == 60 & x$LV1_OBSERVATION == "Collect Specimen" & x$DATA_VALUE =="1" ,c("LV1_OBSERVATION","DATA_DESC")]     <- as.data.frame(t(as.matrix(c("Age Material Type","Otolith Taken"))))

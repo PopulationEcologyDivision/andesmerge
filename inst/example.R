@@ -1,7 +1,11 @@
 sourcery()
 library(dplyr)
+library(RVSurveyData)
+
 #run table refresher
-tt<-matchAndesToESE(dataPath = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groundfish/Andes/summer2022Data/TELEOST/")
+tt<-matchAndesToESE(dataPath = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groundfish/Andes/summer2022Data/TELEOST/ecosystem_survey reports/")
+old<-matchAndesToESE(dataPath = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groundfish/Andes/spring2022Data/")
+
 
 cxn <- Mar.utils::make_oracle_cxn(fn.oracle.username = groundfish.username,fn.oracle.password = groundfish.password, fn.oracle.dsn = "PTRAN", usepkg = 'roracle')
 
@@ -11,6 +15,18 @@ loadESEData(cxnObj = cxn, source_df = tt$ESE_BASKETS, target_table = "ANDESE_BAS
 loadESEData(cxnObj = cxn, source_df = tt$ESE_CATCHES, target_table = "ANDESE_CATCHES")
 loadESEData(cxnObj = cxn, source_df = tt$ESE_SPECIMENS, target_table = "ANDESE_SPECIMENS")
 loadESEData(cxnObj = cxn, source_df = tt$ESE_LV1_OBSERVATIONS, target_table = "ANDESE_LV1_OBSERVATIONS")
+
+cc<-matchAndesToESE(dataPath = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groundfish/Andes/summer2022Data/CABOT/reports/")
+loadESEData(cxnObj = cxn, source_df = cc$ESE_MISSIONS, target_table = "ANDESE_CAB_MISSIONS")
+loadESEData(cxnObj = cxn, source_df = cc$ESE_SETS, target_table = "ANDESE_CAB_SETS")
+loadESEData(cxnObj = cxn, source_df = cc$ESE_BASKETS, target_table = "ANDESE_CAB_BASKETS")
+loadESEData(cxnObj = cxn, source_df = cc$ESE_CATCHES, target_table = "ANDESE_CAB_CATCHES")
+loadESEData(cxnObj = cxn, source_df = cc$ESE_SPECIMENS, target_table = "ANDESE_CAB_SPECIMENS")
+loadESEData(cxnObj = cxn, source_df = cc$ESE_LV1_OBSERVATIONS, target_table = "ANDESE_CAB_LV1_OBSERVATIONS")
+
+
+
+
 
 if (F){
 loadESEData(cxnObj = cxn, source_df = tt$ESE_MISSIONS, target_table = "ESE_MISSIONS", confirmOverwrite = T)
