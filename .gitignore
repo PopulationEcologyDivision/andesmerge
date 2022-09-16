@@ -4,4 +4,10 @@
 .Ruserdata
 .Rproj
 inst/Unused
+*.xlsx
+*.dbf
+*.prj
+*.shp
+*.shx
+*.csv
 !example.R

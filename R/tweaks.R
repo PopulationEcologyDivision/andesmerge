@@ -38,6 +38,8 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     x$specimen_data[x$specimen_data$species_code == 12157,"species_code"] <- 8382
     x$specimen_data[x$specimen_data$species_code == 10854,"species_code"] <- 500
     x$specimen_data[x$specimen_data$species_code == 12096,"species_code"] <- 8516
+    
+    x$specimen_data[x$specimen_data$species_code == 9003,"species_code"] <- 1224
     # x$specimen_data[x$specimen_data$species_code == 18495,"species_code"] <- 6105
     
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemapping species in  the basket_data\n") 
@@ -66,22 +68,145 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     colnames(x$basket_data)[colnames(x$basket_data)=="species_code"]  <- "SPEC"
   }
   
-  # if(mission != "CAR2022102"){
-  #   colnames(x$specimen_data)[colnames(x$specimen_data)=="species_aphia_id"]  <- "SPEC"
-  #   colnames(x$catch_data)[colnames(x$catch_data)=="species_aphia_id"]  <- "SPEC"
-  #   colnames(x$basket_data)[colnames(x$basket_data)=="species_aphia_id"]  <- "SPEC"
-  # }
-  
-  if(mission == "TEL2022010"){
-    #tiny fish apparently marked as size class 12 instead of 2
-    x$basket_data[x$basket_data$set_number == 121 & x$basket_data$species_aphia_id == 126503 & x$basket_data$size_class ==12,"size_class"]<-2
-    x$specimen_data[x$specimen_data$set_number == 121 & x$specimen_data$species_aphia_id  == 126503 & x$specimen_data$size_class ==12,"size_class"]<-2
-
+  if(mission == "TEL2022010"){ 
+    #changing time and coords here so they get appropriately converted by transmogrified
+    
+    x$set_data[x$set_data$set_number == 148, c("start_latitude_DD", "start_latitude_MMmm", "start_longitude_DD", "start_longitude_MMmm")]<- as.data.frame(t(c(42,27.707,-64,51.821)))
+    x$set_data[x$set_data$set_number == 148, c("start_date")] <- "2022-08-03 13:43:00.000000+00:00"
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tConverting andes codes to Maritimes spp\n") 
     #mola mola was not in andes spp list
-    x$basket_data[x$basket_data$set_number == 69 & x$basket_data$SPEC == 9991,c("SPEC","species_aphia_id","species_name")] <- as.data.frame(t(as.matrix(c(730,127405,"OCEAN SUNFISH"))))
-    x$specimen_data[x$specimen_data$set_number == 69 & x$specimen_data$SPEC == 9991,c("SPEC","species_aphia_id")] <- as.data.frame(t(as.matrix(c(730,127405))))
-    x$catch_data[x$catch_data$set_number == 69 & x$catch_data$SPEC == 9991,c("SPEC","species_aphia_id")] <- as.data.frame(t(as.matrix(c(730,127405))))
-
+    x$basket_data[x$basket_data$set_number == 69 & x$basket_data$SPEC == 9991,c("SPEC")] <- c(730)
+    x$specimen_data[x$specimen_data$set_number == 69 & x$specimen_data$SPEC == 9991,c("SPEC")] <- c(730)
+    x$catch_data[x$catch_data$set_number == 69 & x$catch_data$SPEC == 9991,c("SPEC")] <- c(730)
+    
+    #andes used some codes not held by Gulf, so they get changed
+    x$basket_data[x$basket_data$SPEC==12161,"SPEC"] <- c(8216)
+    x$basket_data[x$basket_data$SPEC==12174,"SPEC"] <- c(8209)
+    x$basket_data[x$basket_data$SPEC==14878,"SPEC"] <- c(4508)
+    x$basket_data[x$basket_data$SPEC==16593,"SPEC"] <- c(2062)
+    x$basket_data[x$basket_data$SPEC==18411,"SPEC"] <- c(6126)
+    x$basket_data[x$basket_data$SPEC==18495,"SPEC"] <- c(6105)
+    x$basket_data[x$basket_data$SPEC==18515,"SPEC"] <- c(6107)
+    x$basket_data[x$basket_data$SPEC==18575,"SPEC"] <- c(6202)
+    x$basket_data[x$basket_data$SPEC==18792,"SPEC"] <- c(1812)
+    
+    x$catch_data[x$catch_data$SPEC==12161,"SPEC"] <- c(8216)
+    x$catch_data[x$catch_data$SPEC==12174,"SPEC"] <- c(8209)
+    x$catch_data[x$catch_data$SPEC==14878,"SPEC"] <- c(4508)
+    x$catch_data[x$catch_data$SPEC==16593,"SPEC"] <- c(2062)
+    x$catch_data[x$catch_data$SPEC==18411,"SPEC"] <- c(6126)
+    x$catch_data[x$catch_data$SPEC==18495,"SPEC"] <- c(6105)
+    x$catch_data[x$catch_data$SPEC==18515,"SPEC"] <- c(6107)
+    x$catch_data[x$catch_data$SPEC==18575,"SPEC"] <- c(6202)
+    x$catch_data[x$catch_data$SPEC==18792,"SPEC"] <- c(1812)
+    
+    x$specimen_data[x$specimen_data$SPEC==12161,"SPEC"] <- c(8216)
+    x$specimen_data[x$specimen_data$SPEC==12174,"SPEC"] <- c(8209)
+    x$specimen_data[x$specimen_data$SPEC==14878,"SPEC"] <- c(4508)
+    x$specimen_data[x$specimen_data$SPEC==16593,"SPEC"] <- c(2062)
+    x$specimen_data[x$specimen_data$SPEC==18411,"SPEC"] <- c(6126)
+    x$specimen_data[x$specimen_data$SPEC==18495,"SPEC"] <- c(6105)
+    x$specimen_data[x$specimen_data$SPEC==18515,"SPEC"] <- c(6107)
+    x$specimen_data[x$specimen_data$SPEC==18575,"SPEC"] <- c(6202)
+    x$specimen_data[x$specimen_data$SPEC==18792,"SPEC"] <- c(1812)
+    
+    #andes used specified a level of detail different than what Mar has codes for
+    #J Emberley made these suggestions
+    x$basket_data[x$basket_data$SPEC==10244,"SPEC"] <- c(942)
+    x$basket_data[x$basket_data$SPEC==12676,"SPEC"] <- c(1900)
+    x$basket_data[x$basket_data$SPEC==12679,"SPEC"] <- c(1901)
+    x$basket_data[x$basket_data$SPEC==13090,"SPEC"] <- c(1930) 
+    x$basket_data[x$basket_data$SPEC==14230,"SPEC"] <- c(4316)
+    x$basket_data[x$basket_data$SPEC==16592,"SPEC"] <- c(2990)
+    x$basket_data[x$basket_data$SPEC==18800,"SPEC"] <- c(7733)
+    x$basket_data[x$basket_data$SPEC==19220,"SPEC"] <- c(9303)
+    x$basket_data[x$basket_data$SPEC==13891,"SPEC"] <- c(4400)
+    x$basket_data[x$basket_data$SPEC==13908,"SPEC"] <- c(4400)
+    
+    x$catch_data[x$catch_data$SPEC==10244,"SPEC"] <- c(942)
+    x$catch_data[x$catch_data$SPEC==12676,"SPEC"] <- c(1900)
+    x$catch_data[x$catch_data$SPEC==12679,"SPEC"] <- c(1901)
+    x$catch_data[x$catch_data$SPEC==13090,"SPEC"] <- c(1930) 
+    x$catch_data[x$catch_data$SPEC==14230,"SPEC"] <- c(4316)
+    x$catch_data[x$catch_data$SPEC==16592,"SPEC"] <- c(2990)
+    x$catch_data[x$catch_data$SPEC==18800,"SPEC"] <- c(7733)
+    x$catch_data[x$catch_data$SPEC==19220,"SPEC"] <- c(9303)
+    x$catch_data[x$catch_data$SPEC==13891,"SPEC"] <- c(4400)
+    x$catch_data[x$catch_data$SPEC==13908,"SPEC"] <- c(4400)
+    
+    x$specimen_data[x$specimen_data$SPEC==10244,"SPEC"] <- c(942)
+    x$specimen_data[x$specimen_data$SPEC==12676,"SPEC"] <- c(1900)
+    x$specimen_data[x$specimen_data$SPEC==12679,"SPEC"] <- c(1901)
+    x$specimen_data[x$specimen_data$SPEC==13090,"SPEC"] <- c(1930) 
+    x$specimen_data[x$specimen_data$SPEC==14230,"SPEC"] <- c(4316)
+    x$specimen_data[x$specimen_data$SPEC==16592,"SPEC"] <- c(2990)
+    x$specimen_data[x$specimen_data$SPEC==18800,"SPEC"] <- c(7733)
+    x$specimen_data[x$specimen_data$SPEC==19220,"SPEC"] <- c(9303)
+    x$specimen_data[x$specimen_data$SPEC==13891,"SPEC"] <- c(4400)
+    x$specimen_data[x$specimen_data$SPEC==13908,"SPEC"] <- c(4400)
+    #Mar varies from Gulf
+    x$basket_data[x$basket_data$SPEC==7706,"SPEC"] <- c(8382)
+    x$basket_data[x$basket_data$SPEC==7712,"SPEC"] <- c(8367)
+    x$basket_data[x$basket_data$SPEC==7725,"SPEC"] <- c(3215)
+    x$basket_data[x$basket_data$SPEC==7733,"SPEC"] <- c(1811)
+    x$basket_data[x$basket_data$SPEC==7737,"SPEC"] <- c(708)
+    
+    x$catch_data[x$catch_data$SPEC==7706,"SPEC"] <- c(8382)
+    x$catch_data[x$catch_data$SPEC==7712,"SPEC"] <- c(8367)
+    x$catch_data[x$catch_data$SPEC==7725,"SPEC"] <- c(3215)
+    x$catch_data[x$catch_data$SPEC==7733,"SPEC"] <- c(1811)
+    x$catch_data[x$catch_data$SPEC==7737,"SPEC"] <- c(708)
+    
+    x$specimen_data[x$specimen_data$SPEC==7706,"SPEC"] <- c(8382)
+    x$specimen_data[x$specimen_data$SPEC==7712,"SPEC"] <- c(8367)
+    x$specimen_data[x$specimen_data$SPEC==7725,"SPEC"] <- c(3215)
+    x$specimen_data[x$specimen_data$SPEC==7733,"SPEC"] <- c(1811)
+    x$specimen_data[x$specimen_data$SPEC==7737,"SPEC"] <- c(708)
+    
+    #tiny fish apparently marked as size class 12 instead of 2
+    x$basket_data[x$basket_data$set_number == 121 & x$basket_data$SPEC == 13 & x$basket_data$size_class ==12,"size_class"]<-2
+    x$specimen_data[x$specimen_data$set_number == 121 & x$specimen_data$SPEC == 13 & x$specimen_data$size_class ==12,"size_class"]<-2
+  }
+  
+  if(mission == "CAB2022010"){  
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemapping species in  the catch_, basket and speciment_ data\n")
+    #Mar varies from Gulf
+    x$basket_data[x$basket_data$SPEC==7706,"SPEC"] <- c(8382)
+    x$basket_data[x$basket_data$SPEC==7712,"SPEC"] <- c(8367)
+    x$basket_data[x$basket_data$SPEC==7725,"SPEC"] <- c(3215)
+    x$basket_data[x$basket_data$SPEC==7733,"SPEC"] <- c(1811)
+    
+    x$catch_data[x$catch_data$SPEC==7706,"SPEC"] <- c(8382)
+    x$catch_data[x$catch_data$SPEC==7712,"SPEC"] <- c(8367)
+    x$catch_data[x$catch_data$SPEC==7725,"SPEC"] <- c(3215)
+    x$catch_data[x$catch_data$SPEC==7733,"SPEC"] <- c(1811)
+    
+    x$specimen_data[x$specimen_data$SPEC==7706,"SPEC"] <- c(8382)
+    x$specimen_data[x$specimen_data$SPEC==7712,"SPEC"] <- c(8367)
+    x$specimen_data[x$specimen_data$SPEC==7725,"SPEC"] <- c(3215)
+    x$specimen_data[x$specimen_data$SPEC==7733,"SPEC"] <- c(1811)
+    
+    #andes used some codes not held by Gulf, so they get changed
+    x$basket_data[x$basket_data$SPEC==12161,"SPEC"] <- c(8216)
+    x$basket_data[x$basket_data$SPEC==14878,"SPEC"] <- c(4508)
+    x$basket_data[x$basket_data$SPEC==16593,"SPEC"] <- c(2062)
+    x$basket_data[x$basket_data$SPEC==18114,"SPEC"] <- c(2217)
+    x$basket_data[x$basket_data$SPEC==18411,"SPEC"] <- c(6126)
+    x$basket_data[x$basket_data$SPEC==18495,"SPEC"] <- c(6105)
+    
+    x$catch_data[x$catch_data$SPEC==12161,"SPEC"] <- c(8216)
+    x$catch_data[x$catch_data$SPEC==14878,"SPEC"] <- c(4508)
+    x$catch_data[x$catch_data$SPEC==16593,"SPEC"] <- c(2062)
+    x$catch_data[x$catch_data$SPEC==18114,"SPEC"] <- c(2217)
+    x$catch_data[x$catch_data$SPEC==18411,"SPEC"] <- c(6126)
+    x$catch_data[x$catch_data$SPEC==18495,"SPEC"] <- c(6105)
+    
+    x$specimen_data[x$specimen_data$SPEC==12161,"SPEC"] <- c(8216)
+    x$specimen_data[x$specimen_data$SPEC==14878,"SPEC"] <- c(4508)
+    x$specimen_data[x$specimen_data$SPEC==16593,"SPEC"] <- c(2062)
+    x$specimen_data[x$specimen_data$SPEC==18114,"SPEC"] <- c(2217)
+    x$specimen_data[x$specimen_data$SPEC==18411,"SPEC"] <- c(6126)
+    x$specimen_data[x$specimen_data$SPEC==18495,"SPEC"] <- c(6105)
   }
   
   if (!is.na(theMsg)) message("Universal Tweaks: \n", theMsg)
@@ -119,6 +244,12 @@ tweakBaskets <- function(x = NULL){
 tweakCatches <- function(x = NULL){
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   theMsg <- NA
+  if(x$MISSION[1] == "TEL2022010"){  
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tApplying fixes on the catch records\n")
+    
+    x[x$SETNO==76 & x$SPEC == 2213,c("UNWEIGHED_BASKETS", "NUMBER_CAUGHT")] <- as.data.frame(t(c(NA,62)))
+    x[x$SETNO==133 & x$SPEC == 730,c("NOTE")] <- "Caught dead. Hagfish inside. Weight was estimated. Fin to Fin measurement: 167cm. Weight estimated, not weighed. Measured on deck."
+  }
   
   if (!is.na(theMsg)) message("Tweaking CATCH: ", theMsg)
   return(x)
@@ -138,8 +269,8 @@ tweakCatches <- function(x = NULL){
 tweakSpecimensRaw <- function(x = NULL){
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   theMsg <- NA
-  
-  theMsg <- paste0(theMsg[!is.na(theMsg)], "\tBerried female crabs and lobsters recoded to 3\n")
+  x$species_aphia_id <- NULL
+  # theMsg <- paste0(theMsg[!is.na(theMsg)], "\tBerried female crabs and lobsters recoded to 3\n")
   x[which(x$sex==2 & (x$crab.female.eggs == 1 | x$lobster.female.eggs==1)), "sex"] <-3
   if(nrow(x[which(x$sex==1 & (x$crab.female.eggs == 1 | x$lobster.female.eggs==1)), ]))warning("Berried Males detected")
   
@@ -164,6 +295,15 @@ tweakSpecimensRaw <- function(x = NULL){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSpec 60: Several sets list weight as less than <0.5g - the smallest precision available.  Bump all of these up to 0.5g\n")
     x[which(x$species_code == 60 & x$weight <0.5),"weight"] <- 0.5
     
+  }
+  if(x$MISSION[1] == "TEL2022010"){
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 133 - removed a duplicate sunfish record")
+    x <- x[!x$id %in% 49411,]
+    
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving some bad records")
+    x <- x[!x$id %in% 49475,]
+    x <- x[!x$id %in% 20427,]
+    x <- x[!x$id %in% 14656,]
   }
   if (!is.na(theMsg)) message("Tweaking specimen_data: \n", theMsg)
   return(x)
@@ -280,7 +420,7 @@ tweakSets <- function(x = NULL){
     x[x$SETNO == "170", "EXPERIMENT_TYPE_CODE"] <- "9"
     
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tModified dist and speed manually for a set\n")
-    x[x$SETNO == "99", c("DIST", "SPEED")] <- as.data.frame(t(c(1.61,3.22)))
+    x[x$SETNO == "141", c("DIST", "SPEED")] <- as.data.frame(t(c(1.61,3.22)))
   }
   
   if (!is.na(theMsg)) message("Tweaking SETS: \n", theMsg)
@@ -345,6 +485,16 @@ tweakLv1 <- function(x = NULL){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tHerring otoliths taken post-survey - manually adding that information\n")
     x[x$SPEC == 60 & x$LV1_OBSERVATION == "Collect Specimen" & x$DATA_VALUE =="1" ,c("LV1_OBSERVATION","DATA_DESC")]     <- as.data.frame(t(as.matrix(c("Age Material Type","Otolith Taken"))))
   }
+  if(x$MISSION[1] == "TEL2022010"){
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSome records were recorded in kg instead of g (fixed)\n")
+    x[x$SPECIMEN_ID %in% c(24705,24707) & x$LV1_OBSERVATION == "Weight" & x$DATA_VALUE =="0.001" ,c("DATA_VALUE")]     <- 1
+    x[x$SPECIMEN_ID == 178 & x$LV1_OBSERVATION == "Weight","DATA_VALUE"]<-1   
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSome records had inncorrect lengths")
+    x[x$SPECIMEN_ID == 42542 & x$LV1_OBSERVATION == "Length","DATA_VALUE"]<-14
+    x[x$SPECIMEN_ID == 46991 & x$LV1_OBSERVATION == "Length","DATA_VALUE"]<-10
+    x[x$SPECIMEN_ID == 54423 & x$LV1_OBSERVATION == "Length","DATA_VALUE"]<-20
+    x[x$SPECIMEN_ID == 27478 & x$LV1_OBSERVATION == "Length","DATA_VALUE"]<-26
+    }
   if (!is.na(theMsg)) message("Tweaking LV1_OBSERVATIONS: \n", theMsg)
   return(x)
 }

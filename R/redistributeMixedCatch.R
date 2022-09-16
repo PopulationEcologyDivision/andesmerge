@@ -22,6 +22,8 @@ redistributeMixedCatch <- function(catch=NULL, basket = NULL, quiet=T){
     thisParentC <- allParentsC[allParentsC$catch_id == parentIDs[i],]
     thisParentB <- basket[basket$catch_id == parentIDs[i],]
     
+
+    
     parentBaskets <- merge(thisParentC, thisParentB[, !names(thisParentB) %in% c("SPEC")], 
                            by=c("MISSION", "SETNO", "SIZE_CLASS", "catch_id"))
 
@@ -31,7 +33,6 @@ redistributeMixedCatch <- function(catch=NULL, basket = NULL, quiet=T){
     thisChildB <- basket[basket$catch_id %in% thisChildC$catch_id,]
     childBaskets <- merge(thisChildC, thisChildB[, !names(thisChildB) %in% c("SPEC")] , 
                           by=c("MISSION", "SETNO", "SIZE_CLASS","catch_id"))
-
     childBaskets$PROP_WT           <- round(childBaskets$BASKET_WEIGHT/sum(childBaskets$BASKET_WEIGHT),5)
     childBaskets$WT_EACH           <- round(childBaskets$BASKET_WEIGHT/childBaskets$NUMBER_CAUGHT,5)
     childBaskets$SAMPLED_WT        <- sampledParent$BASKET_WEIGHT
@@ -71,6 +72,7 @@ redistributeMixedCatch <- function(catch=NULL, basket = NULL, quiet=T){
     basket <- basket[-which(basket$catch_id %in% removedBaskets$catch_id),]
     #add new, corrected stuff
     basket <- rbind.data.frame(basket, newBaskets)
+    if(ncol(catch)!=ncol(newCatch))browser()
     catch  <- rbind.data.frame(catch, newCatch)
   }
   x$basket <- basket

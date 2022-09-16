@@ -4,12 +4,14 @@
 \alias{redistributeMixedCatch}
 \title{redistributeMixedCatch}
 \usage{
-redistributeMixedCatch(catch = NULL, basket = NULL)
+redistributeMixedCatch(catch = NULL, basket = NULL, quiet = T)
 }
 \arguments{
 \item{catch}{default is \code{NULL}.}
 
 \item{basket}{default is \code{NULL}.}
+
+\item{quiet}{default is \code{F}.}
 }
 \description{
 This function does stuff

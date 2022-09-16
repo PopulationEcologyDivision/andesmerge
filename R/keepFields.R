@@ -136,7 +136,6 @@ keepFieldsSpecimens <- function(df = NULL, mission=NULL){
                               "creation_date", 
                               "guessed_weight",
                               "species_uuid",
-                              "species_aphia_id",
                               "print.label",
                               "collect.specimen.w.fish.number")]
   df <- data.frame(MISSION = mission, df)

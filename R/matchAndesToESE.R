@@ -6,12 +6,11 @@
 #' @family general_use
 #' @author Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
-matchAndesToESE <- function(dataPath = NULL){
+matchAndesToESE <- function(dataPath = NULL, groundfish.username, groundfish.password){
   
   # load Andes CSV files extracted from server at end of survey 
   tmp                    <- loadData(dataPath = dataPath)
   tmp                    <- uuidToGulf(tmp)
-
   # keepFieldsXxx  - extracts required/usable fields from andes data
   # tansmogrifyXxx - translate andes fields into formats/units, etc as used by ESE tables 
   # tweakXxx       - mission-specific modifications to the various ESE objects
@@ -89,6 +88,7 @@ matchAndesToESE <- function(dataPath = NULL){
   
   ESE_LV1_OBSERVATIONS <- colTypeConverter(df = ESE_LV1_OBSERVATIONS)
 
+  
   x <- list()
   x$ESE_MISSIONS         <- ESE_MISSIONS 
   x$ESE_SETS             <- ESE_SETS
@@ -97,7 +97,9 @@ matchAndesToESE <- function(dataPath = NULL){
   x$ESE_SPECIMENS        <- ESE_SPECIMENS
   x$ESE_LV1_OBSERVATIONS <- ESE_LV1_OBSERVATIONS
 
+  # x          <- gulfToMarSpp(x, groundfish.username, groundfish.password)
+  
    x$SPP_LIST_GULF <- tmp$species_data[,c("code","common_name_en", "scientific_name", "aphia_id", "common_name_fr", "uuid")]
-  message("Note that right now, all of the spp codes are GULF's")
+
   return(x) 
 }

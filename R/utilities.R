@@ -356,3 +356,16 @@ uuidToGulf <-function(x=NULL){
   x$catch_data$uuid <- NULL
   return(x)
 }
+# gulfToMarSpp <- function(x=NULL, groundfish.username=groundfish.username, groundfish.password=groundfish.password){
+  # con <- ROracle::dbConnect(DBI::dbDriver("Oracle"), groundfish.username, groundfish.password, "PTRAN")
+  # sqlStatement <- paste0("select APHIAID, CODE AS CODE_MAR, SPEC, COMM, GULF,
+  #                        APHIAID_SUGG, SPEC_SUGG, TSN
+  #                        from GROUNDFISH.GSSPECIES_APHIAS")
+  # MAR_ORA <- ROracle::dbGetQuery(con, sqlStatement)
+#   
+#   b<- merge(x$ESE_BASKETS, MAR_ORA[,c("CODE_MAR", "GULF")], by.x="SPEC", by.y="GULF", all.x=T)
+#   c<- merge(x$ESE_CATCHES, MAR_ORA[,c("CODE_MAR", "GULF")], by.x="SPEC", by.y="GULF", all.x=T)
+#   o<-merge(x$ESE_LV1_OBSERVATIONS, MAR_ORA[,c("CODE_MAR", "GULF")], by.x="SPEC", by.y="GULF", all.x=T)
+#   
+#   browser()
+# }

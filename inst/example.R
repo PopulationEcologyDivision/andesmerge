@@ -1,13 +1,23 @@
 sourcery()
 library(dplyr)
 library(RVSurveyData)
-
+teleost = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groundfish/Andes/summer2022Data/TELEOST/ecosystem_survey reports/"
+# old = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groundfish/Andes/spring2022Data/"
 #run table refresher
-tt<-matchAndesToESE(dataPath = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groundfish/Andes/summer2022Data/TELEOST/ecosystem_survey reports/")
-old<-matchAndesToESE(dataPath = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groundfish/Andes/spring2022Data/")
+tt<-matchAndesToESE(dataPath = teleost, groundfish.username = groundfish.username, groundfish.password = groundfish.password)
+  
+# old<-matchAndesToESE(dataPath = old)
+# con <- ROracle::dbConnect(DBI::dbDriver("Oracle"), groundfish.username, groundfish.password, "PTRAN")
+# sqlStatement <- paste0("select APHIAID, CODE AS CODE_MAR, SPEC, COMM, GULF,
+#                        APHIAID_SUGG, SPEC_SUGG, TSN
+#                        from GROUNDFISH.GSSPECIES_APHIAS")
+# MAR_ORA <- ROracle::dbGetQuery(con, sqlStatement)
+# glf_Bask <- merge(tt$ESE_BASKETS, MAR_ORA[,c("CODE_MAR", "GULF")], by.x="SPEC", by.y="GULF", all.x=T)                                      
+# glf_Spec <- merge(tt$ESE_SPECIMENS, MAR_ORA[,c("CODE_MAR", "GULF")], by.x="SPEC", by.y="GULF", all.x=T)                                      
 
-
-cxn <- Mar.utils::make_oracle_cxn(fn.oracle.username = groundfish.username,fn.oracle.password = groundfish.password, fn.oracle.dsn = "PTRAN", usepkg = 'roracle')
+# View(glf_Bask[which(glf_Bask$SPEC != glf_Bask$CODE_MAR),])
+ cxn <- Mar.utils::make_oracle_cxn(fn.oracle.username = groundfish.username,fn.oracle.password = groundfish.password, fn.oracle.dsn = "PTRAN", usepkg = 'roracle')
+# tmp                    <- loadData(dataPath = teleost)
 
 loadESEData(cxnObj = cxn, source_df = tt$ESE_MISSIONS, target_table = "ANDESE_MISSIONS")
 loadESEData(cxnObj = cxn, source_df = tt$ESE_SETS, target_table = "ANDESE_SETS")
