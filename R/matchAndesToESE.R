@@ -10,8 +10,7 @@ matchAndesToESE <- function(dataPath = NULL, groundfish.username, groundfish.pas
   
   # load Andes CSV files extracted from server at end of survey 
   tmp                    <- loadData(dataPath = dataPath)
-  tmp                    <<- uuidToGulf(tmp)
-  stop()
+  tmp                    <- uuidToGulf(tmp)
   # keepFieldsXxx  - extracts required/usable fields from andes data
   # tansmogrifyXxx - translate andes fields into formats/units, etc as used by ESE tables 
   # tweakXxx       - mission-specific modifications to the various ESE objects
