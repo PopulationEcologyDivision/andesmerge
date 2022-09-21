@@ -10,7 +10,8 @@ matchAndesToESE <- function(dataPath = NULL, groundfish.username, groundfish.pas
   
   # load Andes CSV files extracted from server at end of survey 
   tmp                    <- loadData(dataPath = dataPath)
-  tmp                    <- uuidToGulf(tmp)
+  tmp                    <<- uuidToGulf(tmp)
+  stop()
   # keepFieldsXxx  - extracts required/usable fields from andes data
   # tansmogrifyXxx - translate andes fields into formats/units, etc as used by ESE tables 
   # tweakXxx       - mission-specific modifications to the various ESE objects
@@ -38,7 +39,7 @@ matchAndesToESE <- function(dataPath = NULL, groundfish.username, groundfish.pas
   ESE_CATCHES            <- merge(ESE_CATCHES, 
                                   unique(ESE_BASKETS[,c("MISSION", "SETNO", "SPEC", "catch_id", "SIZE_CLASS")]), 
                                   by = c("MISSION", "SETNO", "SPEC", "catch_id")) 
-  subsampled             <- redistributeMixedCatch(catch = ESE_CATCHES, basket = ESE_BASKETS, quiet = F)
+  subsampled             <- redistributeMixedCatch(catch = ESE_CATCHES, basket = ESE_BASKETS, quiet = T)
 
   ESE_CATCHES            <- subsampled$catch
   ESE_BASKETS            <- subsampled$basket

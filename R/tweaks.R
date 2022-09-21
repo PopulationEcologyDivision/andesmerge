@@ -70,7 +70,6 @@ tweakUniversal <- function(x = NULL, mission=NULL){
   
   if(mission == "TEL2022010"){ 
     #changing time and coords here so they get appropriately converted by transmogrified
-    
     x$set_data[x$set_data$set_number == 148, c("start_latitude_DD", "start_latitude_MMmm", "start_longitude_DD", "start_longitude_MMmm")]<- as.data.frame(t(c(42,27.707,-64,51.821)))
     x$set_data[x$set_data$set_number == 148, c("start_date")] <- "2022-08-03 13:43:00.000000+00:00"
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tConverting andes codes to Maritimes spp\n") 
@@ -109,6 +108,11 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     x$specimen_data[x$specimen_data$SPEC==18515,"SPEC"] <- c(6107)
     x$specimen_data[x$specimen_data$SPEC==18575,"SPEC"] <- c(6202)
     x$specimen_data[x$specimen_data$SPEC==18792,"SPEC"] <- c(1812)
+    
+    #all instances of mud star were actually pulvillus
+    x$basket_data[x$basket_data$SPEC==6115,"SPEC"] <- c(6126)
+    x$catch_data[x$catch_data$SPEC==6115,"SPEC"] <- c(6126)
+    x$specimen_data[x$specimen_data$SPEC==6115,"SPEC"] <- c(6126)
     
     #andes used specified a level of detail different than what Mar has codes for
     #J Emberley made these suggestions
@@ -207,8 +211,90 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     x$specimen_data[x$specimen_data$SPEC==18114,"SPEC"] <- c(2217)
     x$specimen_data[x$specimen_data$SPEC==18411,"SPEC"] <- c(6126)
     x$specimen_data[x$specimen_data$SPEC==18495,"SPEC"] <- c(6105)
+    
+    x$basket_data[x$basket_data$SPEC==11352,"SPEC"] <- c(8200) #Cnidarians
+    x$catch_data[x$catch_data$SPEC==11352,"SPEC"] <- c(8200) #Cnidarians
+    x$specimen_data[x$specimen_data$SPEC==11352,"SPEC"] <- c(8200) #Cnidarians
+    
+    x$basket_data[x$basket_data$SPEC==13860,"SPEC"] <- c(4400) #Nudibranchs
+    x$catch_data[x$catch_data$SPEC==13860,"SPEC"] <- c(4400) #Nudibranchs
+    x$specimen_data[x$specimen_data$SPEC==13860,"SPEC"] <- c(4400) #Nudibranchs
+    
+    x$basket_data[x$basket_data$SPEC==15053,"SPEC"] <- c(3100) #Polychaete
+    x$catch_data[x$catch_data$SPEC==15053,"SPEC"] <- c(3100) #Polychaete
+    x$specimen_data[x$specimen_data$SPEC==15053,"SPEC"] <- c(3100) #Polychaete
+    
+    x$basket_data[x$basket_data$SPEC==19218,"SPEC"] <- c(9303) #Brown Seaweed
+    x$catch_data[x$catch_data$SPEC==19218,"SPEC"] <- c(9303) #Brown Seaweed
+    x$specimen_data[x$specimen_data$SPEC==19218,"SPEC"] <- c(9303) #Brown Seaweed   
+    
+    #these weren't necessarily global, but for specific sets  
+    x$basket_data[x$basket_data$set_number ==  8 & x$basket_data$SPEC == 6600,"SPEC"] <- 6615 #(stereoderma unisemita )
+    x$catch_data[x$catch_data$set_number ==  8 & x$catch_dataSPEC == 6600,"SPEC"] <- 6615
+    x$specimen_data[x$specimen_data$set_number ==  8 & x$specimen_data$SPEC == 6600,"SPEC"] <- 6615 
+    
+    x$basket_data[x$basket_data$set_number == 23 & x$basket_data$SPEC == 9300,"SPEC"] <- 1901 #("lemonweed")
+    x$catch_data[x$catch_data$set_number == 23 & x$catch_data$SPEC == 9300,"SPEC"] <- 1901
+    x$specimen_data[x$specimen_data$set_number == 23 & x$specimen_data$SPEC == 9300,"SPEC"] <- 1901 
+    
+    x$basket_data[x$basket_data$set_number == 30 & x$basket_data$SPEC == 1901,"SPEC"] <- 1901 #("lemonweed")
+    x$catch_data[x$catch_data$set_number == 30 & x$catch_data$SPEC == 1901,"SPEC"] <- 1901
+    x$specimen_data[x$specimen_data$set_number == 30 & x$specimen_data$SPEC == 1901,"SPEC"] <- 1901 
+    
+    x$basket_data[x$basket_data$set_number == 32 & x$basket_data$SPEC == 1901,"SPEC"] <- 1901 #("lemonweed")
+    x$catch_data[x$catch_data$set_number == 32 & x$catch_data$SPEC == 1901,"SPEC"] <- 1901
+    x$specimen_data[x$specimen_data$set_number == 32 & x$specimen_data$SPEC == 1901,"SPEC"] <- 1901 
+    
+    x$basket_data[x$basket_data$set_number == 44 & x$basket_data$SPEC == 1013,"SPEC"] <- 1270 #(Nezumia Aqualis)
+    x$catch_data[x$catch_data$set_number == 44 & x$catch_data$SPEC == 1013,"SPEC"] <- 1270
+    x$specimen_data[x$specimen_data$set_number == 44 & x$specimen_data$SPEC == 1013,"SPEC"] <- 1270 
+    
+    x$basket_data[x$basket_data$set_number == 46 & x$basket_data$SPEC ==  410,"SPEC"] <-  410  #(?) (marlin spike grenadier)
+    x$catch_data[x$catch_data$set_number == 46 & x$catch_data$SPEC ==  410,"SPEC"] <-  410 
+    x$specimen_data[x$specimen_data$set_number == 46 & x$specimen_data$SPEC ==  410,"SPEC"] <-  410 
+    
+    x$basket_data[x$basket_data$set_number == 47 & x$basket_data$SPEC == 6100,"SPEC"] <- 6139 #(Plutonaster agassizi)
+    x$catch_data[x$catch_data$set_number == 47 & x$catch_data$SPEC == 6100,"SPEC"] <- 6139 
+    x$specimen_data[x$specimen_data$set_number == 47 & x$specimen_data$SPEC == 6100,"SPEC"] <- 6139 
+    
+    x$basket_data[x$basket_data$set_number == 47 & x$basket_data$SPEC == 8354,"SPEC"] <- 1283 #("Sergia robustus")
+    x$catch_data[x$catch_data$set_number == 47 & x$catch_data$SPEC == 8354,"SPEC"] <- 1283 
+    x$specimen_data[x$specimen_data$set_number == 47 & x$specimen_data$SPEC == 8354,"SPEC"] <- 1283 
+    
+    x$basket_data[x$basket_data$set_number == 64 & x$basket_data$SPEC ==  983,"SPEC"] <- 1071 #("chain cat shark")
+    x$catch_data[x$catch_data$set_number == 64 & x$catch_data$SPEC ==  983,"SPEC"] <- 1071 
+    x$specimen_data[x$specimen_data$set_number == 64 & x$specimen_data$SPEC ==  983,"SPEC"] <- 1071 
+    
+    x$basket_data[x$basket_data$set_number == 73 & x$basket_data$SPEC == 8208,"SPEC"] <- 8383 #(Epizoanthus paguriphilus)
+    x$catch_data[x$catch_data$set_number == 73 & x$catch_data$SPEC == 8208,"SPEC"] <- 8383 
+    x$specimen_data[x$specimen_data$set_number == 73 & x$specimen_data$SPEC == 8208,"SPEC"] <- 8383 
+    
+    x$basket_data[x$basket_data$set_number == 97 & x$basket_data$SPEC ==   49,"SPEC"] <-  386  #( Etropus microstomus)
+    x$catch_data[x$catch_data$set_number == 97 & x$catch_data$SPEC ==   49,"SPEC"] <-  386
+    x$specimen_data[x$specimen_data$set_number == 97 & x$specimen_data$SPEC ==   49,"SPEC"] <-  386 
+    
+    
+    x$basket_data[x$basket_data$set_number ==  96 & x$basket_data$SPEC == 9992,"SPEC"] <- 785 #(silver-rag )
+    x$catch_data[x$catch_data$set_number ==  96 & x$catch_dataSPEC == 9992,"SPEC"] <- 785
+    x$specimen_data[x$specimen_data$set_number ==  96 & x$specimen_data$SPEC == 9992,"SPEC"] <- 785 
+    
+    x$basket_data[x$basket_data$set_number ==  96 & x$basket_data$SPEC == 9991,"SPEC"] <- 530 #(red eyed gaper)
+    x$catch_data[x$catch_data$set_number ==  96 & x$catch_data$SPEC == 9991,c("SPEC", "notes")] <- as.data.frame(t(c(530,"Red eye gaper (Chaunax stigmaeus)")))
+    x$specimen_data[x$specimen_data$set_number ==  96 & x$specimen_data$SPEC == 9991,"SPEC"] <- 530 
+    
+    x$basket_data[x$basket_data$set_number ==  105 & x$basket_data$SPEC == 9991,"SPEC"] <- 785 #(silver-rag )
+    x$catch_data[x$catch_data$set_number ==  105 & x$catch_dataSPEC == 9991,"SPEC"] <- 785
+    x$specimen_data[x$specimen_data$set_number ==  105 & x$specimen_data$SPEC == 9991,"SPEC"] <- 785
+    
+    #note indicated that set 28, spec 9990 was actually all spec  2214 and was not sampled
+    #increase specimen_count with knowledge that 0.103kg was 67 shrimp, so .4535 was ~295 shrimp
+    # 67+295=362
+    x$catch_data[x$catch_data$set_number == 28 & x$catch_data$SPEC == 2214,c("specimen_count")] <- 362
+    x$basket_data[x$basket_data$set_number == 28 & x$basket_data$SPEC %in% c(2214),"basket_wt_kg"] <- 0.5565
+    #remove the catch and set recs for 9990 for this set, since they turned out to all be 2214 and are captured above)
+    x$catch_data <- x$catch_data[!(x$catch_data$set_number == 28 & x$catch_data$SPEC == 9990),]
+    x$basket_data <- x$basket_data[!(x$basket_data$set_number == 28 & x$basket_data$SPEC == 9990 & x$basket_data$basket_wt_kg == 0.1030),]
   }
-  
   if (!is.na(theMsg)) message("Universal Tweaks: \n", theMsg)
   return(x)
 }
@@ -229,6 +315,11 @@ tweakBaskets <- function(x = NULL){
     x[x$SETNO == 13 & x$SPEC == 2100 & x$id ==  630,"SAMPLED"]<-F
     x[x$SETNO == 61 & x$SPEC == 8100 & x$id == 1918,"SAMPLED"]<-F
   }
+  if(x$MISSION[1] == "TEL2022010"){  
+    #nudibranchs had been broken into sp we don't track
+    x<- x[!(x$SETNO == 151 & x$SPEC == 4400),]
+    x<-rbind.data.frame(x,list("TEL2022010", 151, 4400, 1, 0.003, FALSE, NA, NA))
+    }
   if (!is.na(theMsg)) message("Tweaking BASKET: \n", theMsg)
   return(x)
 }
@@ -249,6 +340,10 @@ tweakCatches <- function(x = NULL){
     
     x[x$SETNO==76 & x$SPEC == 2213,c("UNWEIGHED_BASKETS", "NUMBER_CAUGHT")] <- as.data.frame(t(c(NA,62)))
     x[x$SETNO==133 & x$SPEC == 730,c("NOTE")] <- "Caught dead. Hagfish inside. Weight was estimated. Fin to Fin measurement: 167cm. Weight estimated, not weighed. Measured on deck."
+
+    #nudibranchs had been broken into sp we don't track
+    x<- x[!(x$SETNO == 151 & x$SPEC == 4400),]
+    x<-rbind.data.frame(x,list("TEL2022010", 151, 4400, NA, NA, 6, NA, FALSE, NA))
   }
   
   if (!is.na(theMsg)) message("Tweaking CATCH: ", theMsg)
@@ -304,6 +399,13 @@ tweakSpecimensRaw <- function(x = NULL){
     x <- x[!x$id %in% 49475,]
     x <- x[!x$id %in% 20427,]
     x <- x[!x$id %in% 14656,]
+  }
+  
+  if(x$MISSION[1] == "CAB2022010"){
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 46 - The first 30 'silver hake' records are actually dogfish (fixed)")
+    x<- x[with(x,order(id)),]
+    x[x$set_number == 46 & x$SPEC == 14,][1:30,"SPEC"]<- 220
+    
   }
   if (!is.na(theMsg)) message("Tweaking specimen_data: \n", theMsg)
   return(x)
@@ -420,7 +522,7 @@ tweakSets <- function(x = NULL){
     x[x$SETNO == "170", "EXPERIMENT_TYPE_CODE"] <- "9"
     
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tModified dist and speed manually for a set\n")
-    x[x$SETNO == "141", c("DIST", "SPEED")] <- as.data.frame(t(c(1.61,3.22)))
+    x[x$SETNO == "99", c("DIST", "SPEED")] <- as.data.frame(t(c(1.61,3.22)))
   }
   
   if (!is.na(theMsg)) message("Tweaking SETS: \n", theMsg)
@@ -494,7 +596,7 @@ tweakLv1 <- function(x = NULL){
     x[x$SPECIMEN_ID == 46991 & x$LV1_OBSERVATION == "Length","DATA_VALUE"]<-10
     x[x$SPECIMEN_ID == 54423 & x$LV1_OBSERVATION == "Length","DATA_VALUE"]<-20
     x[x$SPECIMEN_ID == 27478 & x$LV1_OBSERVATION == "Length","DATA_VALUE"]<-26
-    }
+  }
   if (!is.na(theMsg)) message("Tweaking LV1_OBSERVATIONS: \n", theMsg)
   return(x)
 }
