@@ -29,7 +29,7 @@ Enhances:
   ROracle,
   DBI
 Remotes: 
-  Maritimes/Mar.utils
+  Maritimes/Mar.utils,
   PopulationEcologyDivision/RVSurveyData
 Encoding: UTF-8
 License: MIT + file LICENSE
