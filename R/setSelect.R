@@ -67,8 +67,8 @@
 #'                        }
 #' @family surveyTools
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
 
-# EPSG:2961 - NAD83(CSRS) / UTM zone 20N
 setSelect <- function(MaritimesSurvey = NULL,
                       stationData = NULL,
                       stationData_StratField = NULL,
