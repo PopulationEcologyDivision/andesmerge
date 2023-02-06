@@ -4,7 +4,7 @@
 \alias{matchAndesToESE}
 \title{matchAndesToESE}
 \usage{
-matchAndesToESE(dataPath = NULL, groundfish.username, groundfish.password)
+matchAndesToESE(dataPath = NULL)
 }
 \arguments{
 \item{dataPath}{default is \code{NULL}. This is the location of the csv files exported from andes}

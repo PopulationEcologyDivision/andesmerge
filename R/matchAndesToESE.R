@@ -6,7 +6,7 @@
 #' @family general_use
 #' @author Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
-matchAndesToESE <- function(dataPath = NULL, groundfish.username, groundfish.password){
+matchAndesToESE <- function(dataPath = NULL){
   
   # load Andes CSV files extracted from server at end of survey 
   tmp                    <- loadData(dataPath = dataPath)
@@ -97,7 +97,6 @@ matchAndesToESE <- function(dataPath = NULL, groundfish.username, groundfish.pas
   x$ESE_SPECIMENS        <- ESE_SPECIMENS
   x$ESE_LV1_OBSERVATIONS <- ESE_LV1_OBSERVATIONS
 
-  # x          <- gulfToMarSpp(x, groundfish.username, groundfish.password)
   
    x$SPP_LIST_GULF <- tmp$species_data[,c("code","common_name_en", "scientific_name", "aphia_id", "common_name_fr", "uuid")]
 

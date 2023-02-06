@@ -230,7 +230,7 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     
     #these weren't necessarily global, but for specific sets  
     x$basket_data[x$basket_data$set_number ==  8 & x$basket_data$SPEC == 6600,"SPEC"] <- 6615 #(stereoderma unisemita )
-    x$catch_data[x$catch_data$set_number ==  8 & x$catch_dataSPEC == 6600,"SPEC"] <- 6615
+    x$catch_data[x$catch_data$set_number ==  8 & x$catch_data$SPEC == 6600,"SPEC"] <- 6615
     x$specimen_data[x$specimen_data$set_number ==  8 & x$specimen_data$SPEC == 6600,"SPEC"] <- 6615 
     
     x$basket_data[x$basket_data$set_number == 23 & x$basket_data$SPEC == 9300,"SPEC"] <- 1901 #("lemonweed")
@@ -275,7 +275,7 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     
     
     x$basket_data[x$basket_data$set_number ==  96 & x$basket_data$SPEC == 9992,"SPEC"] <- 785 #(silver-rag )
-    x$catch_data[x$catch_data$set_number ==  96 & x$catch_dataSPEC == 9992,"SPEC"] <- 785
+    x$catch_data[x$catch_data$set_number ==  96 & x$catch_data$SPEC == 9992,"SPEC"] <- 785
     x$specimen_data[x$specimen_data$set_number ==  96 & x$specimen_data$SPEC == 9992,"SPEC"] <- 785 
     
     x$basket_data[x$basket_data$set_number ==  96 & x$basket_data$SPEC == 9991,"SPEC"] <- 530 #(red eyed gaper)
@@ -283,8 +283,16 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     x$specimen_data[x$specimen_data$set_number ==  96 & x$specimen_data$SPEC == 9991,"SPEC"] <- 530 
     
     x$basket_data[x$basket_data$set_number ==  105 & x$basket_data$SPEC == 9991,"SPEC"] <- 785 #(silver-rag )
-    x$catch_data[x$catch_data$set_number ==  105 & x$catch_dataSPEC == 9991,"SPEC"] <- 785
+    x$catch_data[x$catch_data$set_number ==  105 & x$catch_data$SPEC == 9991,"SPEC"] <- 785
     x$specimen_data[x$specimen_data$set_number ==  105 & x$specimen_data$SPEC == 9991,"SPEC"] <- 785
+    
+    x$basket_data[x$basket_data$set_number ==  64 & x$basket_data$SPEC == 9991,"SPEC"] <- 498 #(yellow fin bass )
+    x$catch_data[x$catch_data$set_number ==  64 & x$catch_data$SPEC == 9991,"SPEC"] <- 498
+    x$specimen_data[x$specimen_data$set_number ==  64 & x$specimen_data$SPEC == 9991,"SPEC"] <- 498
+    
+    x$basket_data[x$basket_data$set_number ==  85 & x$basket_data$SPEC == 9991,"SPEC"] <- 498 #(yellow fin bass )
+    x$catch_data[x$catch_data$set_number ==  85 & x$catch_data$SPEC == 9991,"SPEC"] <- 498
+    x$specimen_data[x$specimen_data$set_number ==  85 & x$specimen_data$SPEC == 9991,"SPEC"] <- 498
     
     #note indicated that set 28, spec 9990 was actually all spec  2214 and was not sampled
     #increase specimen_count with knowledge that 0.103kg was 67 shrimp, so .4535 was ~295 shrimp
@@ -294,7 +302,41 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     #remove the catch and set recs for 9990 for this set, since they turned out to all be 2214 and are captured above)
     x$catch_data <- x$catch_data[!(x$catch_data$set_number == 28 & x$catch_data$SPEC == 9990),]
     x$basket_data <- x$basket_data[!(x$basket_data$set_number == 28 & x$basket_data$SPEC == 9990 & x$basket_data$basket_wt_kg == 0.1030),]
+    
+    x$basket_data[x$basket_data$SPEC==400 & x$basket_data$set_number==40,"size_class"]<-1
+    x$specimen_data[x$specimen_data$SPEC==400 & x$specimen_data$set_number==40,"size_class"]<-1
+    
+    x$basket_data[x$basket_data$SPEC==11 & x$basket_data$set_number==56,"size_class"]<-1
+    x$specimen_data[x$specimen_data$SPEC==11 & x$specimen_data$set_number==56,"size_class"]<-1
+    
+    x$basket_data[x$basket_data$SPEC==11 & x$basket_data$set_number==57,"size_class"]<-1
+    x$specimen_data[x$specimen_data$SPEC==11 & x$specimen_data$set_number==57,"size_class"]<-1
+    #two brown algaes were entered with different andes codes:
+    #combine specimen count, delete one catch record, and reassign child basket to the retained catch record
+    x$catch_data[x$catch_data$id==1207,"specimen_count" ]<- sum(x$catch_data[x$catch_data$id==1207,"specimen_count" ], x$catch_data[x$catch_data$id==1223,"specimen_count" ])
+    x$catch_data<- x$catch_data[!(x$catch_data$id==1223),]
+    x$basket_data[x$basket_data$catch_id==1223,"catch_id"]<-1207
+    #two species of nudibranchs were entered with different andes codes but we only capture them as 
+    #4400 - deleting one catch record, and reassigning its child basket to the retained catch record
+    
+    x$catch_data[x$catch_data$id==2254,"specimen_count" ]<- sum(x$catch_data[x$catch_data$id==2254,"specimen_count" ], x$catch_data[x$catch_data$id==2255,"specimen_count" ])
+    x$catch_data<- x$catch_data[!(x$catch_data$id==2255),]
+    x$basket_data[x$basket_data$catch_id==2255,"catch_id"]<- 2254
+
+    x$set_data[x$set_data$set_number=="59",c("start_date")]<-"2022-07-31 07:07:00+00:00"
+    x$set_data[x$set_data$set_number=="59",c("start_latitude_DD")]<- 41
+    x$set_data[x$set_data$set_number=="59",c("start_latitude_MMmm")]<- 36.90
+    x$set_data[x$set_data$set_number=="59",c("start_longitude_DD")]<- -66                                                 
+    x$set_data[x$set_data$set_number=="59",c("start_longitude_MMmm")] <- 36.59
+    
+    x$set_data[x$set_data$set_number=="84",c("start_date")]<-"2022-08-03 13:41:00.000000+00:00"
+    x$set_data[x$set_data$set_number=="84",c("start_latitude_DD")]<- 42
+    x$set_data[x$set_data$set_number=="84",c("start_latitude_MMmm")]<- 27.9
+    x$set_data[x$set_data$set_number=="84",c("start_longitude_DD")]<- -64                                                 
+    x$set_data[x$set_data$set_number=="84",c("start_longitude_MMmm")] <- 52.4
   }
+  
+  
   if (!is.na(theMsg)) message("Universal Tweaks: \n", theMsg)
   return(x)
 }
@@ -319,7 +361,12 @@ tweakBaskets <- function(x = NULL){
     #nudibranchs had been broken into sp we don't track
     x<- x[!(x$SETNO == 151 & x$SPEC == 4400),]
     x<-rbind.data.frame(x,list("TEL2022010", 151, 4400, 1, 0.003, FALSE, NA, NA))
-    }
+  }
+  if(x$MISSION[1] == "CAB2022010"){
+    x[x$SETNO == 18 & x$SPEC == 150,"SAMPLED"]<-F
+    #remove a basket weight that was estimated from the unweighed baskets
+    x <- x[!(x$SETNO == 55 & x$SPEC == 2550 & x$basket_id == 2475),] 
+  } 
   if (!is.na(theMsg)) message("Tweaking BASKET: \n", theMsg)
   return(x)
 }
@@ -339,11 +386,16 @@ tweakCatches <- function(x = NULL){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tApplying fixes on the catch records\n")
     
     x[x$SETNO==76 & x$SPEC == 2213,c("UNWEIGHED_BASKETS", "NUMBER_CAUGHT")] <- as.data.frame(t(c(NA,62)))
-    x[x$SETNO==133 & x$SPEC == 730,c("NOTE")] <- "Caught dead. Hagfish inside. Weight was estimated. Fin to Fin measurement: 167cm. Weight estimated, not weighed. Measured on deck."
-
+    x[x$SETNO==133 & x$SPEC == 730,"NOTE"] <- "Caught dead. Hagfish inside. Weight was estimated. Fin to Fin measurement: 167cm. Weight estimated, not weighed. Measured on deck."
+    
     #nudibranchs had been broken into sp we don't track
     x<- x[!(x$SETNO == 151 & x$SPEC == 4400),]
     x<-rbind.data.frame(x,list("TEL2022010", 151, 4400, NA, NA, 6, NA, FALSE, NA))
+  }
+  if(x$MISSION[1] == "CAB2022010"){
+    x[x$SETNO==34 & x$SPEC == 243,"NOTE"] <- "basket weight is estimate only"
+    x[x$SETNO==50 & x$SPEC == 220,"NOTE"] <- "the large basket weight (858kg) was calculated at sea from a count of unweighed baskets"
+    x[x$SETNO==50 & x$SPEC == 204,"NOTE"] <- "the large basket weight (507kg) was calculated at sea from a count of unweighed baskets"
   }
   
   if (!is.na(theMsg)) message("Tweaking CATCH: ", theMsg)
@@ -405,6 +457,24 @@ tweakSpecimensRaw <- function(x = NULL){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 46 - The first 30 'silver hake' records are actually dogfish (fixed)")
     x<- x[with(x,order(id)),]
     x[x$set_number == 46 & x$SPEC == 14,][1:30,"SPEC"]<- 220
+    
+    #remove specimens with length = 0
+    x <- x[!x$id==34724,]
+    x <- x[!x$id==34744,]
+    #certain 0cm lengths should be 10cm
+    x[x$id==35107,"length"]<-10
+    x[x$id==31275,"length"]<-10
+    x[x$id==47775,"length"]<-10
+    x[x$id==32839,"length"]<-10
+    x[x$id==27596,"length"]<-10
+    #likely typo - length should be 250 (not 25)
+    x[x$id==17577,"length"]<-250
+    
+    #lobsters measured as less than 3mm are likely typos
+    x<-x[!(x$SPEC == 2550 & x$length <3),]
+    #some entries for the following spp had tiny lengths - almost certainly typos
+    x<-x[!(x$SPEC %in% c(11,13,14,23, 1191) & x$length <3),]
+    
     
   }
   if (!is.na(theMsg)) message("Tweaking specimen_data: \n", theMsg)
@@ -523,6 +593,12 @@ tweakSets <- function(x = NULL){
     
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tModified dist and speed manually for a set\n")
     x[x$SETNO == "99", c("DIST", "SPEED")] <- as.data.frame(t(c(1.61,3.22)))
+  }
+  if (x$MISSION[1] == "CAB2022010"){
+    x[x$SETNO == "3", "DIST"] <- 0.95
+    #NEST trawl is not 23, but 15 - change here; expect this will be corrected in the future
+    x[x$GEAR==23,"GEAR"] <- 15
+    x[x$EXPERIMENT_TYPE_CODE==1, "EXPERIMENT_TYPE_CODE"]<- 5
   }
   
   if (!is.na(theMsg)) message("Tweaking SETS: \n", theMsg)
