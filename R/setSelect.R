@@ -77,21 +77,22 @@ setSelect <- function(MaritimesSurvey = NULL,
                       avoidShp = NULL,
                       localCRS = NULL,
                       minDistNM = 4){
-  
+library(maptools)
+  #maptools must be loaded, or behavior of as.owin changes
   TYPE <- LABEL <- polygon_ <- SPRING_4VW <- SPRING_4X <- SUMMER_4VWX <- GEORGES_5Z <- NA 
 
   if (!is.null(MaritimesSurvey)){
     localCRS_ <- 2961
-    # stationData_ <- switch(toupper(MaritimesSurvey),
-    #                       "SPRING_4VW" =  loadRData(SPRING_4VW),
-    #                       "SPRING_4X" = get(SPRING_4X),
-    #                       "SUMMER_4VWX" = get(SUMMER_4VWX),
-    #                       "GEORGES_5Z" = loadRData(GEORGES_5Z)
-    #                       )
-    if(toupper(MaritimesSurvey)=="SPRING_4VW")stationData_ <- SPRING_4VW
-    if(toupper(MaritimesSurvey)=="SPRING_4X")stationData_ <- SPRING_4X
-    if(toupper(MaritimesSurvey)=="SUMMER_4VWX")stationData_ <- SUMMER_4VWX
-    if(toupper(MaritimesSurvey)=="GEORGES_5Z")stationData_ <- GEORGES_5Z
+    stationData_ <- switch(toupper(MaritimesSurvey),
+                          "SPRING_4VW" =  andesmerge::SPRING_4VW,
+                          "SPRING_4X" = andesmerge::SPRING_4X,
+                          "SUMMER_4VWX" = andesmerge::SUMMER_4VWX,
+                          "GEORGES_5Z" = andesmerge::GEORGES_5Z
+                          )
+    # if(toupper(MaritimesSurvey)=="SPRING_4VW")stationData_ <- andesmerge::SPRING_4VW
+    # if(toupper(MaritimesSurvey)=="SPRING_4X")stationData_ <- andesmerge::SPRING_4X
+    # if(toupper(MaritimesSurvey)=="SUMMER_4VWX")stationData_ <- andesmerge::SUMMER_4VWX)
+    # if(toupper(MaritimesSurvey)=="GEORGES_5Z")stationData_ <- andesmerge::GEORGES_5Z
 
     stationData_StratField_ <- "STRATUM"
 
