@@ -106,7 +106,7 @@ redistributeMixedCatch <- function(catch=NULL, basket = NULL, quiet=T){
     colnames(unsampB)[colnames(unsampB)=="id"] <- "basket_id"
     colnames(unsampB)[colnames(unsampB)=="catch_id"] <- "basket_catch_id"
     unsampled <- merge(unsampC, unsampB, all.y=T)
-    if (nrow(sampled)==0 & nrow(unsampled)==0)browser()
+    # if (nrow(sampled)==0 & nrow(unsampled)==0)browser()
     if (nrow(unsampled)==0 && (abs(round(sum(sampled$BASKET_WEIGHT)-basket[basket$catch_id == parentIDs[i],"BASKET_WEIGHT"],1))<=0.5)){
       message("\tIt appears that a mixed catch was handled at sea, but the parent records were not removed.")
       message("\tDeleting this CATCH record:")
@@ -122,7 +122,6 @@ redistributeMixedCatch <- function(catch=NULL, basket = NULL, quiet=T){
       next
     }else if (nrow(unsampled)==0 && (abs(round(sum(sampled$BASKET_WEIGHT)-basket[basket$catch_id == parentIDs[i],"BASKET_WEIGHT"],1))>0.5)){
       warning("\tIt appears that a mixed catch was handled at sea, but the weight of the child records is different than the parent - this should be looked at")
-      browser()
     }else if (nrow(unsampled)==0){
       warning("check that reDistributeMixedCatch() handles this many mixed baskets properly")
     }
@@ -135,7 +134,7 @@ redistributeMixedCatch <- function(catch=NULL, basket = NULL, quiet=T){
     newRecs$WT_EACH           <- round(newRecs$BASKET_WEIGHT/newRecs$NUMBER_CAUGHT,5)
     colnames(newRecs)[colnames(newRecs)=="NUMBER_CAUGHT"] <- "NUM_smpld"
     colnames(newRecs)[colnames(newRecs)=="BASKET_WEIGHT"] <- "BW_smpld"
-    browser()
+    # browser()
     newRecs$Parent_unsampled <- unsampled$BASKET_WEIGHT
     newRecs$NUM <- integer()
     newRecs$BW_calc       <- round(newRecs$Parent_unsampled*newRecs$PROP_WT,3)

@@ -4,10 +4,17 @@
 #' @param df default is \code{NULL}.  This is the andes cruise_data data frame  
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-keepFieldsMissions <- function(df = NULL){
+keepFieldsMissions <- function(df = NULL, new=T){
+  if (!new){
   df <- df[,c("mission_number", 
               "area_of_operation", 
               "description")]
+  }else{
+    mission_number <- df[df$KEY== "mission_number", "VALUE"]
+    area_of_operation <- df[df$KEY== "area_of_operation", "VALUE"]
+    description <- df[df$KEY== "description", "VALUE"]
+    df <- data.frame("mission_number"=c(mission_number),"area_of_operation"=c(area_of_operation),"description"=c(description))
+  }
   return(df)
 }
 #' @title keepFieldsSets
@@ -33,8 +40,9 @@ keepFieldsSets <- function(df = NULL, mission=NULL){
                 "end_longitude_MMmm",
                 "distance_towed_obtained_code",
                 "distance_towed",
-                "ship_speed_obtained_code",
-                "ship_speed",
+                # "ship_speed_obtained_code",
+                # "ship_speed",
+                "speed",
                 "start_depth_m",
                 "end_depth_m",
                 "wind_direction_degree",
@@ -63,8 +71,9 @@ keepFieldsSets <- function(df = NULL, mission=NULL){
                 "end_longitude_MMmm",
                 "distance_towed_obtained_code",
                 "distance_towed",
-                "ship_speed_obtained_code",
-                "ship_speed",
+                # "ship_speed_obtained_code",
+                # "ship_speed",
+                "speed",
                 "start_depth_m",
                 "end_depth_m",
                 "wind_direction_degree",

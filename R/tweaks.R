@@ -335,7 +335,12 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     x$set_data[x$set_data$set_number=="84",c("start_longitude_DD")]<- -64                                                 
     x$set_data[x$set_data$set_number=="84",c("start_longitude_MMmm")] <- 52.4
   }
-  
+  if(mission == "VEN2023001"){
+    #changes requested following Jamie Emberley's initial QC
+    x$basket_data[x$basket_data$SPEC == 314,"SPEC"] <- 303 #(Spatulate sculpin entries changed to Grubby Sculpins)
+    x$catch_data[x$catch_data$SPEC == 314,"SPEC"] <- 303
+    x$specimen_data[x$specimen_data$SPEC == 314,"SPEC"] <- 303
+  }
   
   if (!is.na(theMsg)) message("Universal Tweaks: \n", theMsg)
   return(x)
@@ -477,6 +482,14 @@ tweakSpecimensRaw <- function(x = NULL){
     
     
   }
+  if(x$MISSION[1] == "VEN2023001"){
+    #changes requested following Jamie Emberley's initial QC
+    x <- x[!x$id==4098,]
+    x <- x[!x$id==14617,]
+    x[x$id==3315,"weight"]<- 2 #0.002 to 2
+    x[x$id==9641,"weight"]<- 5 #0.0005 to 5
+
+  }
   if (!is.na(theMsg)) message("Tweaking specimen_data: \n", theMsg)
   return(x)
 }
@@ -600,7 +613,10 @@ tweakSets <- function(x = NULL){
     x[x$GEAR==23,"GEAR"] <- 15
     x[x$EXPERIMENT_TYPE_CODE==1, "EXPERIMENT_TYPE_CODE"]<- 5
   }
-  
+  if (x$MISSION[1] == "VEN2023001"){
+    x[x$SETNO == 32, "end_date"] <- "2023-02-11 23:13:04+00:00"
+    x[x$SETNO == 32, "END_TIME"] <- 1912
+  }
   if (!is.na(theMsg)) message("Tweaking SETS: \n", theMsg)
   return(x)
 }

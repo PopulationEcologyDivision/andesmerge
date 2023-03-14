@@ -13,57 +13,61 @@ get_value <- function(myKey, mylookupvector){
   return(myvalue)
 }
 
-#' @title convertFORCE
-#' @description This function returns converted FORCE codes
-#' @param x default is \code{NULL}. This is the string to be processed.
-#' @return converted FORCE codes
-#' @family internal
-#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-#' @export
-#' 
-convertFORCE <- function(x){
-  if (is.character(any(x))){
-    ESE.vals <- list("0" = 0,
-                     "1" = 1,
-                     "2" = 2,
-                     "3" = 3,
-                     "4" = 4,
-                     "5" = 5,
-                     "6" = 6,
-                     "7" = 7,
-                     "8" = 8,
-                     "9" = NA)
-    
-    ESE.vals = unlist(ESE.vals)
-    x = get_value(x, ESE.vals)
-  }
-  return(x)
-}
+# @title convertFORCE
+# @description This function returns converted FORCE codes
+# @param x default is \code{NULL}. This is the string to be processed.
+# @return converted FORCE codes
+# @family internal
+# @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+# @export
+# 
+# convertFORCE <- function(x){
+#   if (is.character(any(x))){
+#     ESE.vals <- list("0" = 0,
+#                      "1" = 1,
+#                      "2" = 2,
+#                      "3" = 3,
+#                      "4" = 4,
+#                      "5" = 5,
+#                      "6" = 6,
+#                      "7" = 7,
+#                      "8" = 8,
+#                      "9" = NA)
+#     
+#     ESE.vals = unlist(ESE.vals)
+#     x = get_value(x, ESE.vals)
+#   }
+#   return(x)
+# }
 
-#' @title convertHOWOBT
-#' @description This function returns converted obtained_code codes
-#' @param x default is \code{NULL}. This is the string to be processed.
-#' @return converted FORCE codes
-#' @family internal
-#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-#' @export
-#' 
-convertHOWOBT <- function(x){
-  ESE.vals <- list("1" = 1, # "Ships log or distance program"
-                   "2" = 2, # "Radar bouy"
-                   "3" = 3, # "DECCA bearings"
-                   "4" = 0, # "LORAN bearings or GPS"
-                   "5" = 5, # "DECCA radar"
-                   "6" = 6, # "LORAN radar"
-                   "7" = 7, # "DECCA and LORAN"
-                   "8" = 8, # "Satelite navigation"
-                   "9" = 9) # "No observation / hydrographic station"
-  
-  ESE.vals = unlist(ESE.vals)
-  x = get_value(x, ESE.vals)
-  
-  return(x)
-}
+# @title convertHOWOBT
+# @description This function returns converted obtained_code codes
+# @param x default is \code{NULL}. This is the string to be processed.
+# @return converted FORCE codes
+# @family internal
+# @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+# @export
+# 
+#' convertHOWOBT <- function(x){
+#'   # browser()
+#'   # if (any(grepl(" - ", x = x))){
+#'     x <- as.numeric(stringi::stri_extract_first_regex(x, "[0-9]+"))
+#'   # }else{
+#'   #   ESE.vals <- list("1" = 1, # "Ships log or distance program"
+#'   #                    "2" = 2, # "Radar bouy"
+#'   #                    "3" = 3, # "DECCA bearings"
+#'   #                    "4" = 0, # "LORAN bearings or GPS"
+#'   #                    "5" = 5, # "DECCA radar"
+#'   #                    "6" = 6, # "LORAN radar"
+#'   #                    "7" = 7, # "DECCA and LORAN"
+#'   #                    "8" = 8, # "Satelite navigation"
+#'   #                    "9" = 9) # "No observation / hydrographic station"
+#'   #   
+#'   #   ESE.vals = unlist(ESE.vals)
+#'   #   x = get_value(x, ESE.vals)
+#'   # }
+#'   return(x)
+#' }
 
 #' @title getEseTables
 #' @description This function returns the names of the ese tables.
@@ -296,9 +300,9 @@ setExperimentType <- function(x){
 charToBinary <- function(x = NULL, bool=T){
   x <- tolower(x)
   if (bool){
-    x <- ifelse(x == "true", T, ifelse(x == "false", F, NA))
+    x <- ifelse(x %in% c("true","yes", "t", "y"), T, ifelse(x %in% c("false","no", "f", "n"), F, NA))
   }else{
-    x <- ifelse(x == "true", "Y", ifelse(x == "false", "N", NA))
+    x <- ifelse(x %in% c("true","yes", "t", "y"), "Y", ifelse(x %in% c("false","no", "f", "n"), "N", NA))
   }
   return(x)
 }
@@ -329,16 +333,23 @@ colTypeConverter <- function(df = NULL){
 loadData <- function(dataPath = NULL){
   #add trailing "/" if necess
   if(substr(dataPath ,(nchar(dataPath)+1)-1,nchar(dataPath)) != "/")dataPath = paste0(dataPath,"/")
-  filenames <- list.files(dataPath, pattern="^tmp_(basket|catch|cruise|set|specimen|species)_data\\.csv$")
+  filenames <- list.files(dataPath, pattern="^.*_(basket|catch|cruise|mission|observation|set|specimen|species)_(data|export).*\\.csv$")
   if (length(filenames)<1)stop("No csv files found")
   res<-list()
   for(i in 1:length(filenames))
   {
-    message("Working on ",filenames[i])
+    # message("Working on ",filenames[i])
     thisFile = filenames[i]
-    thisFileName <- sub('tmp_', '', sub('\\.csv$', '', thisFile)) 
+    if(grepl('basket', thisFile))thisFileName <- "basket_data"
+    if(grepl('catch', thisFile))thisFileName <- "catch_data"
+    if(grepl('cruise', thisFile))thisFileName <- "cruise_data"
+    if(grepl('mission', thisFile))thisFileName <- "mission_data"
+    if(grepl('observation', thisFile))thisFileName <- "observation_data"
+    if(grepl('set', thisFile))thisFileName <- "set_data"
+    if(grepl('specimen', thisFile))thisFileName <- "specimen_data"
+    if(grepl('species', thisFile))thisFileName <- "species_data"
+
     res[[thisFileName]]<- utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE)
-    # assign(thisFileName, utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE), envir = .GlobalEnv)
   }
   return(res)
 }
@@ -354,6 +365,27 @@ uuidToGulf <-function(x=NULL){
   x$specimen_data$uuid <- NULL
   x$basket_data$uuid <- NULL
   x$catch_data$uuid <- NULL
+  return(x)
+}
+uuidToCODE <-function(x=NULL){
+  MARCodes<- RVSurveyData::GSSPECIES[, c("UUID", "CODE")]
+  # can do ESE_BASKETS("SPEC"), ESE_CATCHES("SPEC"), ESE_SPECIMENS ("SPEC"), ESE_LV1_OBSERVATIONS ("SPEC") 
+  x$specimen_data<- merge(x$specimen_data, MARCodes, all.x=T, by.x="species_uuid", by.y="UUID")
+  x$basket_data<- merge(x$basket_data, MARCodes, all.x=T, by.x="species_uuid", by.y="UUID")
+  x$catch_data<- merge(x$catch_data, MARCodes, all.x=T, by.x="species_uuid", by.y="UUID")
+  colnames(x$specimen_data)[colnames(x$specimen_data)=="CODE"] <- "SPEC"
+  colnames(x$basket_data)[colnames(x$basket_data)=="CODE"] <- "SPEC"
+  colnames(x$catch_data)[colnames(x$catch_data)=="CODE"] <- "SPEC"
+  x$specimen_data$species_uuid <- NULL
+  x$basket_data$species_uuid <- NULL
+  x$catch_data$species_uuid <- NULL
+  if ("observation_data" %in% names(x)){
+    x$observation_data<- merge(x$observation_data, MARCodes, all.x=T, by.x="species_uuid", by.y="UUID")
+    colnames(x$observation_data)[colnames(x$observation_data)=="CODE"] <- "SPEC"
+    x$observation_data$species_uuid <- NULL
+  }
+  
+  browser()
   return(x)
 }
 # gulfToMarSpp <- function(x=NULL, groundfish.username=groundfish.username, groundfish.password=groundfish.password){
