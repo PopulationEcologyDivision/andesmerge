@@ -19,6 +19,7 @@
 #'  \item \code{"4X_Spring"}
 #'  \item \code{"4VWX_Summer"}
 #'  \item \code{"5Z_Georges"}
+#'  \item \code{"custom"}
 #'  }
 #' @param stationData default is \code{NULL}.  This is the path to a csv file containing the all of 
 #' the strata for which stations should be generated.  In addition to the strata, this file must 
@@ -77,25 +78,36 @@ setSelect <- function(MaritimesSurvey = NULL,
                       avoidShp = NULL,
                       localCRS = NULL,
                       minDistNM = 4){
-library(maptools)
+  library(maptools)
+  library(dplyr)
   #maptools must be loaded, or behavior of as.owin changes
   TYPE <- LABEL <- polygon_ <- SPRING_4VW <- SPRING_4X <- SUMMER_4VWX <- GEORGES_5Z <- NA 
-
+  
   if (!is.null(MaritimesSurvey)){
     localCRS_ <- 2961
     stationData_ <- switch(toupper(MaritimesSurvey),
-                          "SPRING_4VW" =  andesmerge::SPRING_4VW,
-                          "SPRING_4X" = andesmerge::SPRING_4X,
-                          "SUMMER_4VWX" = andesmerge::SUMMER_4VWX,
-                          "GEORGES_5Z" = andesmerge::GEORGES_5Z
-                          )
+                           "SPRING_4VW" =  andesmerge::SPRING_4VW,
+                           "SPRING_4X" = andesmerge::SPRING_4X,
+                           "SUMMER_4VWX" = andesmerge::SUMMER_4VWX,
+                           "GEORGES_5Z" = andesmerge::GEORGES_5Z,
+                           "CUSTOM" = utils::read.csv(stationData)
+    )
     # if(toupper(MaritimesSurvey)=="SPRING_4VW")stationData_ <- andesmerge::SPRING_4VW
     # if(toupper(MaritimesSurvey)=="SPRING_4X")stationData_ <- andesmerge::SPRING_4X
     # if(toupper(MaritimesSurvey)=="SUMMER_4VWX")stationData_ <- andesmerge::SUMMER_4VWX)
     # if(toupper(MaritimesSurvey)=="GEORGES_5Z")stationData_ <- andesmerge::GEORGES_5Z
-
+    
+    if (toupper(MaritimesSurvey)=="CUSTOM"){
+      message("CUSTOM selected\n
+              Please ensure that you provide a csv with the following fields (cases-insensitive):\n
+              \tSTRATUM
+              \tPRIMARY
+              \tSECONDARY
+              \tALTERNATE")
+      names(stationData_)<- toupper(names(stationData_))
+    }
     stationData_StratField_ <- "STRATUM"
-
+    
     strataShp_ <- RVSurveyData::strataMar_sf %>% sf::st_transform(crs = localCRS_) 
     colnames(stationData_)[colnames(stationData_)=="STRATUM"] <- "filterField_"
     colnames(strataShp_)[colnames(strataShp_)=="STRATA_ID"] <- "filterField_"
@@ -113,14 +125,16 @@ library(maptools)
     stationData_[,stationData_StratField] <- NULL
     strataShp_[, stationData_StratField_]<- NULL
   }
-
+  
   #buffer is in meters, and is 1/2 the min distance
   buffSize <- (minDistNM * 1852)
-
+  
   assignStrata <- function(df = NULL, type = "PRIMARY", n_sets=NULL){
-    #randomly select n_sets stations from the unassigned
-    df[sample(which(is.na(df$TYPE)),n_sets),"TYPE"]<-type
-    
+    if (nrow(df[which(is.na(df$TYPE)),])==n_sets){
+      df[which(is.na(df$TYPE)),"TYPE"]<-type
+    }else{
+      df[sample(which(is.na(df$TYPE)),n_sets, replace = F),"TYPE"]<-type
+    }
     return(df)
   }
   convert.dd.dddd<-function(x){
@@ -149,7 +163,7 @@ library(maptools)
   # st_erase from https://bit.ly/3WuRj1b
   st_erase <- function(x, y) sf::st_difference(x, sf::st_union(sf::st_combine(y)))
   
-
+  
   
   #handle submitted station data - replace "NA" with NA, and convert fields to numeric/character as appropriate
   stationData_[stationData_ == "NA"] <- NA  
@@ -160,7 +174,7 @@ library(maptools)
   #create filtered version of strata file of only those strata present in the stationData_ csv and add the stationData_ into the sf
   filtStrata <- strataShp_[strataShp_$filterField_ %in% stationData_$filterField_,]
   filtStrata <- merge(filtStrata, stationData_, all.x=T, by.x="filterField_", by.y="filterField_")
-
+  
   if(!is.null(avoidShp)){
     # remove untrawlable areas from the selected strata prior to station selection
     # generates warning "attribute variables are assumed to be spatially constant throughout all geometries"
@@ -186,6 +200,10 @@ library(maptools)
     stations[[allStrat[s]]]<- merge(stations[[allStrat[s]]], sf::st_drop_geometry(x), by.x= "polygon_", by.y="filterField_")
     stations[[allStrat[s]]]$TYPE <- NA
     
+    # stations[[allStrat[s]]] %>% dplyr::mutate(lon = sf::st_coordinates(.)[,1],
+    #                                           lat = sf::st_coordinates(.)[,2]) %>% sf::st_drop_geometry()
+    
+    
     n_prim <- stations[[allStrat[s]]]$PRIMARY[1]
     n_alt  <- stations[[allStrat[s]]]$ALTERNATE[1]
     n_sec  <- stations[[allStrat[s]]]$SECONDARY[1]
@@ -206,6 +224,7 @@ library(maptools)
                                               type = "SECONDARY", 
                                               n_sets = n_sec)
     }   
+    if (any(is.na(stations[[allStrat[s]]]$TYPE)))browser()
   } 
   stations <- do.call(rbind, stations)
   stations <- sf::st_transform(x = stations, crs = 4326) 
@@ -216,8 +235,6 @@ library(maptools)
   stations$LAT_DDMM <- convert.dd.dddd(stations$LAT_DD)
   stations <- stations[,c("polygon_","TYPE","LON_DD", "LAT_DD", "LON_DDMM", "LAT_DDMM")]
   
-
-  
   # apply station names
   # primaries     1 - 299
   # secondaries 501 - 699
@@ -227,15 +244,15 @@ library(maptools)
     dplyr::group_by(TYPE) %>% 
     dplyr::mutate(LABEL = dplyr::row_number()) %>% 
     dplyr::mutate(LABEL = ifelse(TYPE == "SECONDARY", LABEL+500, 
-                          ifelse(TYPE == "ALTERNATE", LABEL+900, LABEL))) %>% 
+                                 ifelse(TYPE == "ALTERNATE", LABEL+900, LABEL))) %>% 
     dplyr::ungroup()%>% 
     dplyr::arrange(polygon_,LABEL)
-
-
+  
+  
   
   timestamp <- format(Sys.time(),"%Y%m%d_%H%M")
   #add original field name back, and delete the one I made
-
+  
   if (!is.null(MaritimesSurvey)){
     #add dmin dmax from gsstratum
     depths <- RVSurveyData::GSSTRATUM
@@ -245,10 +262,10 @@ library(maptools)
     stations[, stationData_StratField] <- stations$polygon_
     stations$polygon_<-NULL
   }
-
+  
   #write files
   sf::st_write(stations, paste0("stations_",timestamp,".shp"), delete_layer = TRUE) 
-  xlsx::write.xlsx2(stations , paste0("stations_",timestamp,".xlsx"), sheetName = "stations", col.names = TRUE, row.names = FALSE, append = FALSE)
+  xlsx::write.xlsx2(as.data.frame(stations %>% sf::st_drop_geometry()) , paste0("stations_",timestamp,".xlsx"), sheetName = "stations", col.names = TRUE, row.names = FALSE, append = FALSE)
   message("wrote files to ", getwd())
   # res <- list()
   # 

@@ -14,9 +14,11 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
     tmp                    <- uuidToGulf(tmp)
   }else{
     tmp$specimen_data<- merge(tmp$specimen_data, RVSurveyData::GSSPECIES[, c("UUID", "CODE")], all.x=T, by.x="species_uuid", by.y="UUID")
+    tmp$basket_data<- merge(tmp$basket_data, RVSurveyData::GSSPECIES[, c("UUID", "CODE")], all.x=T, by.x="species_uuid", by.y="UUID")
+    tmp$catch_data<- merge(tmp$catch_data, RVSurveyData::GSSPECIES[, c("UUID", "CODE")], all.x=T, by.x="species_uuid", by.y="UUID")
     colnames(tmp$specimen_data)[colnames(tmp$specimen_data)=="CODE"] <- "SPEC"
-    colnames(tmp$basket_data)[colnames(tmp$basket_data)=="species_code"] <- "SPEC"
-    colnames(tmp$catch_data)[colnames(tmp$catch_data)=="species_code"] <- "SPEC"
+    colnames(tmp$basket_data)[colnames(tmp$basket_data)=="CODE"] <- "SPEC"
+    colnames(tmp$catch_data)[colnames(tmp$catch_data)=="CODE"] <- "SPEC"
     if ("observation_data" %in% names(tmp)){
       colnames(tmp$observation_data)[colnames(tmp$observation_data)=="species_code"] <- "SPEC"
     }
@@ -24,22 +26,17 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
   # keepFieldsXxx  - extracts required/usable fields from andes data
   # tansmogrifyXxx - translate andes fields into formats/units, etc as used by ESE tables 
   # tweakXxx       - mission-specific modifications to the various ESE objects
-  if ("cruise_data" %in% names(tmp)){
+  if ("cruise_data" %in% names(tmp)) {
     ESE_MISSIONS           <- keepFieldsMissions(tmp$cruise_data, new=F) 
     ESE_MISSIONS           <- transmogrifyMissions(ESE_MISSIONS)
-    #capture formatted version of 'mission' for use with all other datasets       
     mission                <- ESE_MISSIONS[1,"MISSION"]
-    # browser()
-    # 
-    # colnames(tmp$specimen_data)[colnames(tmp$specimen_data)=="set_number"] <- "new_name"
-    specimensRaw           <- keepFieldsSpecimens(tmp$specimen_data, mission)
+    tmp$specimensRaw           <- keepFieldsSpecimens(tmp$specimen_data, mission)
   }else{
     ESE_MISSIONS           <- keepFieldsMissions(tmp$mission_data, new=T) 
     ESE_MISSIONS           <- transmogrifyMissions(ESE_MISSIONS)
-    #capture formatted version of 'mission' for use with all other datasets       
     mission                <- ESE_MISSIONS[1,"MISSION"]
     mrg <- merge(tmp$specimen_data[,!names(tmp$specimen_data) %in% c("species_en", "species_fr", "species_scientific", "species_aphia_id")], 
-          tmp$observation_data[,c("specimen_id","observation_type", "observation_value_raw")], all.y=T, by.x = "id", by.y="specimen_id")
+                 tmp$observation_data[,c("specimen_id","observation_type", "observation_value_raw")], all.y=T, by.x = "id", by.y="specimen_id")
     mrg <- cbind(mrg, mission)
     colnames(mrg)[colnames(mrg)=="mission"] <- "MISSION"
     mrg$observation_type <- gsub("[()]", "", mrg$observation_type)
@@ -47,20 +44,18 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
     mrg$observation_type <- gsub(" w/ fish number", "", mrg$observation_type)
     mrg$observation_type <- trimws(mrg$observation_type)
     mrg$observation_type <- gsub(" ", ".", mrg$observation_type)
-    specimensRaw <- mrg %>% 
+    tmp$specimensRaw <- mrg %>% 
       tidyr::pivot_wider(id_cols = c("id", "MISSION", "basket_id", "comment", "fish_number", "set_number", "size_class", "SPEC"), names_from = "observation_type", values_from = "observation_value_raw") %>% as.data.frame()
-    
-    
   }
   #perform any mission level tweaks that impact multiple tables
   tmp                    <- tweakUniversal(tmp, mission)
   ESE_SETS               <- keepFieldsSets(tmp$set_data, mission)
   ESE_SETS               <- transmogrifySets(ESE_SETS)
   ESE_SETS               <- tweakSets(ESE_SETS)
+
   ESE_BASKETS            <- keepFieldsBaskets(tmp$basket_data, mission)
   ESE_BASKETS            <- transmogrifyBaskets(ESE_BASKETS)
   ESE_BASKETS            <- tweakBaskets(ESE_BASKETS)
-
   ESE_CATCHES            <- keepFieldsCatches(tmp$catch_data, mission)
 
   ESE_CATCHES            <- transmogrifyCatches(ESE_CATCHES)
@@ -70,7 +65,6 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
   ESE_CATCHES            <- merge(ESE_CATCHES, 
                                   unique(ESE_BASKETS[,c("MISSION", "SETNO", "SPEC", "catch_id", "SIZE_CLASS")]), 
                                   by = c("MISSION", "SETNO", "SPEC", "catch_id")) 
-
   subsampled             <- redistributeMixedCatch(catch = ESE_CATCHES, basket = ESE_BASKETS, quiet = T)
 
   ESE_CATCHES            <- subsampled$catch
@@ -80,6 +74,7 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
   # initially handled together
   # browser()
   # colnames(specimensRaw)[colnames(specimensRaw)=="set_number"] <- "new_name"
+  specimensRaw            <- tmp$specimensRaw
   specimensRaw           <- tweakSpecimensRaw(specimensRaw)  
 
   specimenList           <- reFormatSpecimen(specimensRaw)
@@ -133,7 +128,7 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
   x$ESE_LV1_OBSERVATIONS <- ESE_LV1_OBSERVATIONS
 
   
-   x$SPP_LIST_GULF <- tmp$species_data[,c("code","common_name_en", "scientific_name", "aphia_id", "common_name_fr", "uuid")]
+   #x$SPP_LIST_GULF <- tmp$species_data[,c("code","common_name_en", "scientific_name", "aphia_id", "common_name_fr", "uuid")]
 
   return(x) 
 }

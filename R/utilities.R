@@ -236,11 +236,6 @@ cleanfields <- function(data= NULL){
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
 setExperimentType <- function(x){
-  #exp.num =  x$experiment_type_id
-  exp.num =  as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", x$experiment_type))
-  set.res =  x$set_result_id
-  
-  
   # possible experiment types (from : andesdb.shared_models_experimenttype)
   #   1	Stratified random survey set		
   #   5	Comparative fishing experiment	
@@ -249,6 +244,10 @@ setExperimentType <- function(x){
   #   7	Gear testing		
   #   99	Systematic		
   valid.exp.num = c(1, 5, 6, 7, 9, 99)
+  #exp.num =  x$experiment_type_id
+  exp.num =  as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", x$experiment_type))
+  set.res =  x$set_result_id
+
   if(!all(exp.num %in% valid.exp.num)) stop("Unknown Experiment type(s) found")
   x$experiment_type_id_tweaked <- NA
   x$experiment_type_id_tweaked <- as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", x$experiment_type))
@@ -385,7 +384,6 @@ uuidToCODE <-function(x=NULL){
     x$observation_data$species_uuid <- NULL
   }
   
-  browser()
   return(x)
 }
 # gulfToMarSpp <- function(x=NULL, groundfish.username=groundfish.username, groundfish.password=groundfish.password){

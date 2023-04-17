@@ -4,7 +4,7 @@
 \alias{keepFieldsMissions}
 \title{keepFieldsMissions}
 \usage{
-keepFieldsMissions(df = NULL)
+keepFieldsMissions(df = NULL, new = T)
 }
 \arguments{
 \item{df}{default is \code{NULL}.  This is the andes cruise_data data frame}
@@ -19,8 +19,6 @@ Other internal:
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
-\code{\link{convertFORCE}()},
-\code{\link{convertHOWOBT}()},
 \code{\link{getEseTables}()},
 \code{\link{get_value}()},
 \code{\link{keepFieldsBaskets}()},

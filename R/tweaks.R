@@ -340,6 +340,8 @@ tweakUniversal <- function(x = NULL, mission=NULL){
     x$basket_data[x$basket_data$SPEC == 314,"SPEC"] <- 303 #(Spatulate sculpin entries changed to Grubby Sculpins)
     x$catch_data[x$catch_data$SPEC == 314,"SPEC"] <- 303
     x$specimen_data[x$specimen_data$SPEC == 314,"SPEC"] <- 303
+    x$specimensRaw[x$specimensRaw$SPEC == 314,"SPEC"] <- 303
+  
   }
   
   if (!is.na(theMsg)) message("Universal Tweaks: \n", theMsg)
@@ -372,6 +374,9 @@ tweakBaskets <- function(x = NULL){
     #remove a basket weight that was estimated from the unweighed baskets
     x <- x[!(x$SETNO == 55 & x$SPEC == 2550 & x$basket_id == 2475),] 
   } 
+  if(x$MISSION[1] == "VEN2023001"){
+    x[x$SETNO == 35 & x$SPEC == 61,"BASKET_WEIGHT"] <- 0.69
+  }
   if (!is.na(theMsg)) message("Tweaking BASKET: \n", theMsg)
   return(x)
 }
@@ -486,9 +491,11 @@ tweakSpecimensRaw <- function(x = NULL){
     #changes requested following Jamie Emberley's initial QC
     x <- x[!x$id==4098,]
     x <- x[!x$id==14617,]
+    x <- x[!x$id==17226,]
     x[x$id==3315,"weight"]<- 2 #0.002 to 2
     x[x$id==9641,"weight"]<- 5 #0.0005 to 5
-
+    x[x$id==14872,"sex"] <- 0 #too small to have been sexed
+    x[x$id==20014,"weight"] <- 264 #likely typo in wgt
   }
   if (!is.na(theMsg)) message("Tweaking specimen_data: \n", theMsg)
   return(x)
@@ -615,7 +622,7 @@ tweakSets <- function(x = NULL){
   }
   if (x$MISSION[1] == "VEN2023001"){
     x[x$SETNO == 32, "end_date"] <- "2023-02-11 23:13:04+00:00"
-    x[x$SETNO == 32, "END_TIME"] <- 1912
+    x[x$SETNO == 32, "END_TIME"] <- 1913
   }
   if (!is.na(theMsg)) message("Tweaking SETS: \n", theMsg)
   return(x)

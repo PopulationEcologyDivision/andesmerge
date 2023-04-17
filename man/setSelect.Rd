@@ -32,6 +32,7 @@ fields above will be auto-populated:
  \item \code{"4X_Spring"}
  \item \code{"4VWX_Summer"}
  \item \code{"5Z_Georges"}
+ \item \code{"custom"}
  }}
 
 \item{stationData}{default is \code{NULL}.  This is the path to a csv file containing the all of 

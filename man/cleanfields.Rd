@@ -18,8 +18,6 @@ Other internal:
 \code{\link{charToBinary}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
-\code{\link{convertFORCE}()},
-\code{\link{convertHOWOBT}()},
 \code{\link{getEseTables}()},
 \code{\link{get_value}()},
 \code{\link{keepFieldsBaskets}()},

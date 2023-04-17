@@ -28,6 +28,37 @@ transmogrifyMissions  <- function(df = NULL){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifySets      <- function(df = NULL){
 
+  #####
+  valid.exp.num = c(1, 5, 6, 7, 9, 99)
+
+  if (nrow(df[!(as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", df$experiment_type)) %in% valid.exp.num) &
+             is.na(df$start_latitude_DD) &
+             is.na(df$start_latitude_MMmm)&
+             is.na(df$start_longitude_DD) &
+             is.na(df$start_longitude_MMmm ) &
+             is.na(df$end_latitude_DD) &
+             is.na(df$end_latitude_MMmm) &
+             is.na(df$end_longitude_DD) &
+             is.na(df$end_longitude_MMmm),])>0){
+    stoppedSets<- data.frame()
+    stoppedSets<- df[!(as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", df$experiment_type)) %in% valid.exp.num) &
+                      is.na(df$start_latitude_DD) &
+                      is.na(df$start_latitude_MMmm)&
+                      is.na(df$start_longitude_DD) &
+                      is.na(df$start_longitude_MMmm ) &
+                      is.na(df$end_latitude_DD) &
+                      is.na(df$end_latitude_MMmm) &
+                      is.na(df$end_longitude_DD) &
+                      is.na(df$end_longitude_MMmm),]
+    if (nrow(stoppedSets) > 0 ){
+      message("The following set(s) were detected that had almost no information.  These were likely started accidentally and will be dropped")
+      print(stoppedSets)
+      df <-setdiff(df,stoppedSets)
+    }
+  }
+  #####
+  
+  
   theMsg <- NA
   if (any(grepl("4 - ", c(df$ship_speed_obtained_code,df$distance_towed_obtained_code))))theMsg <- 'Assuming entries of "4 - LORAN bearings or GPS" for HOWD/HOWS should be  "0 - GPS"'
   colnames(df)[colnames(df)=="set_number"] <- "SETNO"
@@ -46,7 +77,7 @@ transmogrifySets      <- function(df = NULL){
   df$ELONG                   <- paste0(abs(df$end_longitude_DD),sprintf("%05.2f",df$end_longitude_MMmm))
   df$SLAT_dd                 <- df$start_latitude_DD+(df$start_latitude_MMmm/60)
   df$SLONG_dd                <- abs(abs(df$start_longitude_DD)+(df$start_longitude_MMmm/60))*-1
-  df$DIST                    <- df$distance_towed                 #MMM - is this nautical miles
+  df$DIST                    <- df$crow_distance
   df$HOWD                    <- as.numeric(stringi::stri_extract_first_regex(df$distance_towed_obtained_code, "[0-9]+"))
   # df$SPEED                 <- round(df$ship_speed,2)
   # df$HOWS                  <- convertHOWOBT(df$ship_speed_obtained_code)

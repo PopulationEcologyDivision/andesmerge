@@ -12,14 +12,34 @@ character vector of the 6 core ESE tables
 \description{
 This function returns the names of the ese tables.
 }
+\details{
+convertHOWOBT <- function(x){
+  # browser()
+  # if (any(grepl(" - ", x = x))){
+    x <- as.numeric(stringi::stri_extract_first_regex(x, "[0-9]+"))
+  # }else{
+  #   ESE.vals <- list("1" = 1, # "Ships log or distance program"
+  #                    "2" = 2, # "Radar bouy"
+  #                    "3" = 3, # "DECCA bearings"
+  #                    "4" = 0, # "LORAN bearings or GPS"
+  #                    "5" = 5, # "DECCA radar"
+  #                    "6" = 6, # "LORAN radar"
+  #                    "7" = 7, # "DECCA and LORAN"
+  #                    "8" = 8, # "Satelite navigation"
+  #                    "9" = 9) # "No observation / hydrographic station"
+  #   
+  #   ESE.vals = unlist(ESE.vals)
+  #   x = get_value(x, ESE.vals)
+  # }
+  return(x)
+}
+}
 \seealso{
 Other internal: 
 \code{\link{charToBinary}()},
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
-\code{\link{convertFORCE}()},
-\code{\link{convertHOWOBT}()},
 \code{\link{get_value}()},
 \code{\link{keepFieldsBaskets}()},
 \code{\link{keepFieldsCatches}()},

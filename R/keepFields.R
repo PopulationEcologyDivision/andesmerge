@@ -56,6 +56,7 @@ keepFieldsSets <- function(df = NULL, mission=NULL){
                 "remarks",
                 "new_station")]
     colnames(df)[colnames(df)=="new_station"] <- "station_number"
+    colnames(df)[colnames(df)=="distance_towed"] <- "crow_distance"
   }else{
     df <- df[,c("set_number",
                 "start_date",
@@ -70,7 +71,7 @@ keepFieldsSets <- function(df = NULL, mission=NULL){
                 "end_longitude_DD",
                 "end_longitude_MMmm",
                 "distance_towed_obtained_code",
-                "distance_towed",
+                "crow_distance",
                 # "ship_speed_obtained_code",
                 # "ship_speed",
                 "speed",
