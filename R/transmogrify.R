@@ -57,10 +57,8 @@ transmogrifySets      <- function(df = NULL){
     }
   }
   #####
-  
-  
+
   theMsg <- NA
-  if (any(grepl("4 - ", c(df$ship_speed_obtained_code,df$distance_towed_obtained_code))))theMsg <- 'Assuming entries of "4 - LORAN bearings or GPS" for HOWD/HOWS should be  "0 - GPS"'
   colnames(df)[colnames(df)=="set_number"] <- "SETNO"
   df$start_date_utc          <- as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")
   df$end_date_utc            <- as.POSIXlt(df$end_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")
@@ -79,6 +77,8 @@ transmogrifySets      <- function(df = NULL){
   df$SLONG_dd                <- abs(abs(df$start_longitude_DD)+(df$start_longitude_MMmm/60))*-1
   df$DIST                    <- df$crow_distance
   df$HOWD                    <- as.numeric(stringi::stri_extract_first_regex(df$distance_towed_obtained_code, "[0-9]+"))
+  if (any(grepl("4 - ", c(df$ship_speed_obtained_code,df$distance_towed_obtained_code))))theMsg <- 'Assuming entries of "4 - LORAN bearings or GPS" for HOWD/HOWS should be  "0 - GPS"'
+  df[df$HOWD==4,"HOWD"] <- 0
   # df$SPEED                 <- round(df$ship_speed,2)
   # df$HOWS                  <- convertHOWOBT(df$ship_speed_obtained_code)
   df$SPEED                   <- round(df$speed,2)

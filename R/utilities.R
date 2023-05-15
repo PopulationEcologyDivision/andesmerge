@@ -122,12 +122,14 @@ cleanStrata <- function(x){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 reFormatSpecimen <- function(x = NULL){ 
+  message("Look into c(15691, 15692, 15693)")
+
   colnames(x)[colnames(x)=="set_number"]    <- "SETNO"
   colnames(x)[colnames(x)=="size_class"]    <- "SIZE_CLASS"
   colnames(x)[colnames(x)=="id"]            <- "SPECIMEN_ID"
   y <- list()
   y$specimen <- x[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID", "basket_id")]
-  
+
   # Match data for level 1 observations 
   # Need to turn specimen table from wide format to long in order to have each observation on its own row
   x$basket_id <- x$basket <- NULL

@@ -92,8 +92,10 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
 
   #ensure fields names are identical to what the tables expect
   #some uncessary, but for consistency they're all here.
+
   ESE_MISSIONS           <- ESE_MISSIONS[,c("MISSION", "SAMPLING_REQUIREMENT", "NOTE", 
                                             "DATA_VERSION", "PROGRAM_TITLE")]
+  
   ESE_SETS               <- ESE_SETS[,c("MISSION", "SETNO", "START_DATE", "START_TIME", "END_DATE", 
                                         "END_TIME", "STRAT", "SLAT", "SLONG", "ELAT", "ELONG", 
                                         "AREA", "DIST", "HOWD", "SPEED", "HOWS", "DMIN", "DMAX", 

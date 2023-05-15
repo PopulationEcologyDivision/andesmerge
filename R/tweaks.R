@@ -430,7 +430,48 @@ tweakSpecimensRaw <- function(x = NULL){
   # theMsg <- paste0(theMsg[!is.na(theMsg)], "\tBerried female crabs and lobsters recoded to 3\n")
   x[which(x$sex==2 & (x$crab.female.eggs == 1 | x$lobster.female.eggs==1)), "sex"] <-3
   if(nrow(x[which(x$sex==1 & (x$crab.female.eggs == 1 | x$lobster.female.eggs==1)), ]))warning("Berried Males detected")
+ 
+  if(x$MISSION[1] == "CAR2023002"){
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving Fish Numbers from Mackerel records\n") 
+  # •	Set 171, spec 11, specimen id 71795 – length entered as 0.30.  Update length to 30
+    x[x$id==71795,"length"]<-30
+  # •	Set 17 – spec 11, specimen id 5022, change weight to 217
+    x[x$id==5022,"weight"]<-217
+  # •	Set 11 – spec 4511, specimen id 3709, remove the weight observation
+    x[x$id==3709,"weight"]<-NA
+  # •	Set 56 – spec 11, specimen id 15691, 15692, 15693 do not exist in lv1_observations; delete from specimens table
+    # message("Look into c(15691, 15692, 15693)")
+    # x[x$id %in% c(15691, 15692, 15693),]
+  # •	Set 104 – spec 303, specimen id 37264, change weight to 1.5
+    x[x$id==37264,"weight"]<-1.5
+  # •	Set 65 – spec 303, specimen id 19640, Change weight to 0.5
+    x[x$id==19640,"weight"]<-0.5
+  # •	Set 153 – spec 14, specimen id 63547, Change weight to 0.5
+    x[x$id==63547,"weight"]<-0.5
+  # •	Set 69 – spec 150, specimen id 22031, change weight to 4
+    x[x$id==22031,"weight"]<-4
+  # •	Set 189 – spec 340, specimen id 30865, change weight to 1.5
+    x[x$id==30865,"weight"]<-1.5
+  # •	Set 167, spec 410, specimen id 70480, Change weight to 0.5
+    x[x$id==70480,"weight"]<-0.5
+  # •	Set 166, spec 410, specimen id 70267, Change weight to 0.5
+    x[x$id==70267,"weight"]<-0.5
+  # •	Set 166, spec 410, specimen id 70272, Change weight to 0.5
+    x[x$id==70272,"weight"]<-0.5
+  # •	Set 166, spec 410, specimen id	70277, Change weight to 0.5
+    x[x$id==70277,"weight"]<-0.5
+  # •	Set 166, spec 410, specimen id	70283, Change weight to 0.5
+    x[x$id==70283,"weight"]<-0.5
+  # •	Set 167, spec 604, specimen id	70566, Change weight to 0.5
+    x[x$id==70566,"weight"]<-0.5
+  # •	Set 7, spec 44, specimen id 1231, change weight from .5 to 0.5
+    x[x$id==1231,"weight"]<-0.5
+  # •	Set 24, spec 143, specimen id 6483, change weight from .5 to 0.5
+    x[x$id==6483,"weight"]<-0.5
+  # •	Set 47, spec 60, specimen id 11696, change length from 376 to 276
+    x[x$id==11696,"length"]<-276
   
+  }
   if(x$MISSION[1] == "CAR2022102"){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving Fish Numbers from Mackerel records\n")
     x[x$species_code == 70,"fish_number"] <- NA
@@ -512,7 +553,31 @@ tweakSpecimensRaw <- function(x = NULL){
 tweakSets <- function(x = NULL){
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   theMsg <- NA
+  if(x$MISSION[1] == "CAR2023002"){
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRecoded GEAR from 23 to 15\n")
+    #NEST trawl is not 23, but 15 - change here; expect this will be corrected in the future
+    # Jamie created aux = 6 for the nest
+    x[x$GEAR==23,"GEAR"] <- 15
+    x[x$AUX==2,"AUX"] <- 6
+
+    #set 1
+    # •	Set 1 – update Experiment type to 9
+    # •	Set 1 – delete station 100, leave this field blank
+    # •	Set 1 – delete Warpout, leave blank
+    # •	Set 1 – add a Note for the set – HFX HYD
+    x[x$SETNO==1,"EXPERIMENT_TYPE_CODE"]<- 9
+    x[x$SETNO==1,"STATION"]<- NA
+    x[x$SETNO==1,"WARPOUT"]<- NA
+    x[x$SETNO==1,"NOTE"]<- "HFX HYD"
+    # set 129
   
+    # •	Set 129 - update Experiment type to 9
+    # •	Set 129 - delete station 100, leave this field blank
+    # •	Set 129 - add a Note for the set – HFX HYD
+    x[x$SETNO==129,"EXPERIMENT_TYPE_CODE"]<- 9
+    x[x$SETNO==129,"STATION"]<- NA
+    x[x$SETNO==129,"NOTE"]<- "HFX HYD"
+  }
   if(x$MISSION[1] == "CAR2022102"){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRecoded GEAR from 23 to 15\n")
     #NEST trawl is not 23, but 15 - change here; expect this will be corrected in the future

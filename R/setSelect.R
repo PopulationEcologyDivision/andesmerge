@@ -53,6 +53,8 @@
 #' containing polygons of the areas where stations should not be located.   For example, one might 
 #' populate a file with areas known to contain unexploded ordinance, or areas where bottom contact 
 #' is forbidden.  No stations will be generated where polygons exist in this file.
+#' @param addNafoInfo
+#' @param oceansAreas
 #' @examples \dontrun{
 #' NonMaritimesExample <-setSelect(minDistNM = 4, 
 #'                                 stationData = "mySurveyStrata_requirements.csv", 
@@ -77,9 +79,12 @@ setSelect <- function(MaritimesSurvey = NULL,
                       strataShp_StratField = NULL,
                       avoidShp = NULL,
                       localCRS = NULL,
-                      minDistNM = 4){
+                      minDistNM = 4,
+                      addNafoInfo=T,
+                      oceansAreas = NULL){
   library(maptools)
   library(dplyr)
+  library(Mar.data)
   #maptools must be loaded, or behavior of as.owin changes
   TYPE <- LABEL <- polygon_ <- SPRING_4VW <- SPRING_4X <- SUMMER_4VWX <- GEORGES_5Z <- NA 
   
@@ -200,10 +205,7 @@ setSelect <- function(MaritimesSurvey = NULL,
     stations[[allStrat[s]]]<- merge(stations[[allStrat[s]]], sf::st_drop_geometry(x), by.x= "polygon_", by.y="filterField_")
     stations[[allStrat[s]]]$TYPE <- NA
     
-    # stations[[allStrat[s]]] %>% dplyr::mutate(lon = sf::st_coordinates(.)[,1],
-    #                                           lat = sf::st_coordinates(.)[,2]) %>% sf::st_drop_geometry()
-    
-    
+
     n_prim <- stations[[allStrat[s]]]$PRIMARY[1]
     n_alt  <- stations[[allStrat[s]]]$ALTERNATE[1]
     n_sec  <- stations[[allStrat[s]]]$SECONDARY[1]
@@ -262,7 +264,34 @@ setSelect <- function(MaritimesSurvey = NULL,
     stations[, stationData_StratField] <- stations$polygon_
     stations$polygon_<-NULL
   }
-  
+  #NAFO unit area and code
+  if (addNafoInfo){
+    forNAFO <- sf::st_drop_geometry(stations)
+    forNAFO <- forNAFO[,c("LABEL","LAT_DD", "LON_DD")]
+    forNAFO <- identify_area(forNAFO, lat.field = "LAT_DD", lon.field = "LON_DD")
+    forNAFO <- identify_area(forNAFO, lat.field = "LAT_DD", lon.field = "LON_DD", agg.poly.field = "AREA_ID")
+    colnames(forNAFO)[colnames(forNAFO)=="AREA_ID"] <- "NAFO_AREA"
+    forNAFO[forNAFO=="<outside known areas>"]<-NA
+    forNAFO$LAT_DD <- forNAFO$LON_DD <- NULL
+    stations <- merge(stations, forNAFO, by="LABEL")
+  }
+
+  if (!is.null(oceansAreas)){
+    forOceans<- sf::st_drop_geometry(stations)
+    forOceans <- forOceans[,c("LABEL","LAT_DD", "LON_DD")]
+    oceansAreas <- sf::st_read(oceansAreas, quiet = T) %>% sf::st_transform(crs = localCRS_) 
+    forOceans <- identify_area(forOceans, lat.field = "LAT_DD", lon.field = "LON_DD", agg.poly.shp = oceansAreas, agg.poly.field = "NAME_E")
+    forOceans <- identify_area(forOceans, lat.field = "LAT_DD", lon.field = "LON_DD", agg.poly.shp = oceansAreas, agg.poly.field = "ZONE_E")
+    forOceans <- identify_area(forOceans, lat.field = "LAT_DD", lon.field = "LON_DD", agg.poly.shp = oceansAreas, agg.poly.field = "URL_E")
+    forOceans <- identify_area(forOceans, lat.field = "LAT_DD", lon.field = "LON_DD", agg.poly.shp = oceansAreas, agg.poly.field = "REGULATION")
+    colnames(forOceans)[colnames(forOceans)=="NAME_E"] <- "OCEANS_NAME"
+    colnames(forOceans)[colnames(forOceans)=="ZONE_E"] <- "OCEANS_ZONE"
+    colnames(forOceans)[colnames(forOceans)=="URL_E"] <- "OCEANS_INFO"
+    colnames(forOceans)[colnames(forOceans)=="REGULATION"] <- "OCEANS_REGULATION"
+    forOceans[forOceans=="<outside known areas>"]<-NA
+    forOceans$LAT_DD <- forOceans$LON_DD <- NULL
+    stations <- merge(stations, forOceans, by="LABEL")
+  }
   #write files
   sf::st_write(stations, paste0("stations_",timestamp,".shp"), delete_layer = TRUE) 
   xlsx::write.xlsx2(as.data.frame(stations %>% sf::st_drop_geometry()) , paste0("stations_",timestamp,".xlsx"), sheetName = "stations", col.names = TRUE, row.names = FALSE, append = FALSE)

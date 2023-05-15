@@ -94,16 +94,16 @@ redistributeMixedCatch <- function(catch=NULL, basket = NULL, quiet=T){
     return(x)
   }
   for (i in 1:length(parentIDs)){
-    sampB <- basket[basket$catch_id %in% allMixedCatch[allMixedCatch$parent_catch_id %in% parentIDs[i],"id"],]
+    sampB <- basket[basket$catch_id %in% allMixedCatch[allMixedCatch$parent_catch_id %in% parentIDs[i],"catch_id"],]
     if(nrow(sampB)<1)next
-    colnames(sampB)[colnames(sampB)=="id"] <- "basket_id"
+    # colnames(sampB)[colnames(sampB)=="id"] <- "basket_id"
     colnames(sampB)[colnames(sampB)=="catch_id"] <- "basket_catch_id"
-    sampC <- catch[catch$id %in% sampB$basket_catch_id,]
+    sampC <- catch[catch$catch_id %in% sampB$basket_catch_id,]
     sampled <- merge(sampC, sampB, all.y=T)
 
-    unsampC <- allMixedCatch[allMixedCatch$id == parentIDs[i],]
-    unsampB <- basket[basket$catch_id %in% unsampC$id & !basket$SAMPLED,]
-    colnames(unsampB)[colnames(unsampB)=="id"] <- "basket_id"
+    unsampC <- allMixedCatch[allMixedCatch$catch_id == parentIDs[i],]
+    unsampB <- basket[basket$catch_id %in% unsampC$catch_id & !basket$SAMPLED,]
+    # colnames(unsampB)[colnames(unsampB)=="id"] <- "basket_id"
     colnames(unsampB)[colnames(unsampB)=="catch_id"] <- "basket_catch_id"
     unsampled <- merge(unsampC, unsampB, all.y=T)
     # if (nrow(sampled)==0 & nrow(unsampled)==0)browser()
@@ -134,15 +134,15 @@ redistributeMixedCatch <- function(catch=NULL, basket = NULL, quiet=T){
     newRecs$WT_EACH           <- round(newRecs$BASKET_WEIGHT/newRecs$NUMBER_CAUGHT,5)
     colnames(newRecs)[colnames(newRecs)=="NUMBER_CAUGHT"] <- "NUM_smpld"
     colnames(newRecs)[colnames(newRecs)=="BASKET_WEIGHT"] <- "BW_smpld"
-    # browser()
+
     newRecs$Parent_unsampled <- unsampled$BASKET_WEIGHT
-    newRecs$NUM <- integer()
+    # newRecs$NUM <- integer()
     newRecs$BW_calc       <- round(newRecs$Parent_unsampled*newRecs$PROP_WT,3)
     newRecs$NUM_calc      <- round(newRecs$BW_calc/newRecs$WT_EACH,0)
     newRecs$Parent_sampled<- basket[basket$catch_id == parentIDs[i] & basket$SAMPLED,"BASKET_WEIGHT"]
 
-    oldCatch <- allMixedCatch[allMixedCatch$id %in% parentIDs[i],]
-    catch  <- catch[-which(catch$id %in% parentIDs[i]),]
+    oldCatch <- allMixedCatch[allMixedCatch$catch_id %in% parentIDs[i],]
+    catch  <- catch[-which(catch$catch_id %in% parentIDs[i]),]
     oldBaskets <- basket[ which(basket$catch_id %in% parentIDs[i]),]
     basket <- basket[-which(basket$catch_id %in% parentIDs[i]),]
 
@@ -155,12 +155,12 @@ redistributeMixedCatch <- function(catch=NULL, basket = NULL, quiet=T){
     colnames(newRecs)[colnames(newRecs)=="BW_calc"] <- "BASKET_WEIGHT"
     colnames(newRecs)[colnames(newRecs)=="NUM_new"] <- "NUMBER_CAUGHT"
     newCatch  <- newRecs[,c("MISSION", "SETNO", "SPEC", "basket_catch_id","NOTE", "UNWEIGHED_BASKETS", "NUMBER_CAUGHT", "is_parent", "parent_catch_id", "SIZE_CLASS")]
-    colnames(newCatch)[colnames(newCatch)=="basket_catch_id"] <- "id"
-    catch <- catch[-which(catch$id %in% newCatch$id),]
+    colnames(newCatch)[colnames(newCatch)=="basket_catch_id"] <- "catch_id"
+    catch <- catch[-which(catch$catch_id %in% newCatch$catch_id),]
     newBaskets <- newRecs[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED", "basket_id", "basket_catch_id")]
-    colnames(newBaskets)[colnames(newBaskets)=="basket_id"] <- "id"
+    # colnames(newBaskets)[colnames(newBaskets)=="basket_id"] <- "id"
     colnames(newBaskets)[colnames(newBaskets)=="basket_catch_id"] <- "catch_id"
-    newBaskets$id <- oldBaskets[!oldBaskets$SAMPLED,"id"]
+    newBaskets$basket_id <- oldBaskets[!oldBaskets$SAMPLED,"basket_id"]
     sampledBaskets <- sampled[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED", "basket_id", "basket_catch_id")]
     colnames(sampledBaskets)[colnames(sampledBaskets)=="basket_id"] <- "id"
     colnames(sampledBaskets)[colnames(sampledBaskets)=="basket_catch_id"] <- "catch_id"

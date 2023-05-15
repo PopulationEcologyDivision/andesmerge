@@ -5,6 +5,7 @@ theData = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groundfish/Andes/CAR2023
 #run table refresher
 results <-matchAndesToESE(dataPath = theData, gulfCodes=F)
 
+#
 
 sqlStatement <- paste0("select APHIAID, CODE AS CODE_MAR, SPEC, COMM, GULF,
                        APHIAID_SUGG, SPEC_SUGG, TSN
