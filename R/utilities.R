@@ -122,7 +122,6 @@ cleanStrata <- function(x){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 reFormatSpecimen <- function(x = NULL){ 
-  message("Look into c(15691, 15692, 15693)")
 
   colnames(x)[colnames(x)=="set_number"]    <- "SETNO"
   colnames(x)[colnames(x)=="size_class"]    <- "SIZE_CLASS"

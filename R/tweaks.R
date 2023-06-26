@@ -374,8 +374,19 @@ tweakBaskets <- function(x = NULL){
     #remove a basket weight that was estimated from the unweighed baskets
     x <- x[!(x$SETNO == 55 & x$SPEC == 2550 & x$basket_id == 2475),] 
   } 
+  if(x$MISSION[1] == "CAR2023002"){
+
+    x[which(x$SETNO == 164 & x$SPEC == 4500),"SAMPLED"] <- FALSE 
+    # SETNO 7, SPEC 2541
+    x[which(x$SETNO == 7 & x$SPEC == 2541),"SAMPLED"] <- FALSE 
+    
+    x[x$basket_id == 4484,"SIZE_CLASS"]<-1
+    x[x$basket_id == 4482,"SIZE_CLASS"]<-1
+    x[x$basket_id == 4480,"SIZE_CLASS"]<-2
+    
+    x[x$basket_id == 1747,"SAMPLED"]<-TRUE
+  }
   if(x$MISSION[1] == "VEN2023001"){
-    x[x$SETNO == 35 & x$SPEC == 61,"BASKET_WEIGHT"] <- 0.69
   }
   if (!is.na(theMsg)) message("Tweaking BASKET: \n", theMsg)
   return(x)
@@ -439,9 +450,6 @@ tweakSpecimensRaw <- function(x = NULL){
     x[x$id==5022,"weight"]<-217
   # •	Set 11 – spec 4511, specimen id 3709, remove the weight observation
     x[x$id==3709,"weight"]<-NA
-  # •	Set 56 – spec 11, specimen id 15691, 15692, 15693 do not exist in lv1_observations; delete from specimens table
-    # message("Look into c(15691, 15692, 15693)")
-    # x[x$id %in% c(15691, 15692, 15693),]
   # •	Set 104 – spec 303, specimen id 37264, change weight to 1.5
     x[x$id==37264,"weight"]<-1.5
   # •	Set 65 – spec 303, specimen id 19640, Change weight to 0.5
@@ -470,7 +478,11 @@ tweakSpecimensRaw <- function(x = NULL){
     x[x$id==6483,"weight"]<-0.5
   # •	Set 47, spec 60, specimen id 11696, change length from 376 to 276
     x[x$id==11696,"length"]<-276
-  
+    
+    #SET 29. SPEC 4321, SPECIMEN ID 7713
+    x <- x[-which(x$id == 7713),]
+    #SETNO 7, SPEC 2541, SPECIMEN ID 1094,
+    x <- x[-which(x$id == 1094),]
   }
   if(x$MISSION[1] == "CAR2022102"){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving Fish Numbers from Mackerel records\n")

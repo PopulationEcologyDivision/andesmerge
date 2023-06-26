@@ -130,7 +130,6 @@ setSelect <- function(MaritimesSurvey = NULL,
     stationData_[,stationData_StratField] <- NULL
     strataShp_[, stationData_StratField_]<- NULL
   }
-  
   #buffer is in meters, and is 1/2 the min distance
   buffSize <- (minDistNM * 1852)
   
@@ -184,6 +183,7 @@ setSelect <- function(MaritimesSurvey = NULL,
     # remove untrawlable areas from the selected strata prior to station selection
     # generates warning "attribute variables are assumed to be spatially constant throughout all geometries"
     avoidShp <- sf::st_read(avoidShp, quiet = T) %>% sf::st_transform(crs = localCRS_) 
+    
     filtStrata <- suppressWarnings(st_erase(filtStrata, avoidShp))
   }
   
@@ -254,7 +254,7 @@ setSelect <- function(MaritimesSurvey = NULL,
   
   timestamp <- format(Sys.time(),"%Y%m%d_%H%M")
   #add original field name back, and delete the one I made
-  
+
   if (!is.null(MaritimesSurvey)){
     #add dmin dmax from gsstratum
     depths <- RVSurveyData::GSSTRATUM
@@ -264,13 +264,14 @@ setSelect <- function(MaritimesSurvey = NULL,
     stations[, stationData_StratField] <- stations$polygon_
     stations$polygon_<-NULL
   }
+  
   #NAFO unit area and code
   if (addNafoInfo){
     forNAFO <- sf::st_drop_geometry(stations)
     forNAFO <- forNAFO[,c("LABEL","LAT_DD", "LON_DD")]
-    forNAFO <- identify_area(forNAFO, lat.field = "LAT_DD", lon.field = "LON_DD")
-    forNAFO <- identify_area(forNAFO, lat.field = "LAT_DD", lon.field = "LON_DD", agg.poly.field = "AREA_ID")
-    colnames(forNAFO)[colnames(forNAFO)=="AREA_ID"] <- "NAFO_AREA"
+
+    forNAFO <- identify_area(forNAFO, lat.field = "LAT_DD", lon.field = "LON_DD",agg.poly.field = "NAFO")
+    colnames(forNAFO)[colnames(forNAFO)=="NAFO"] <- "NAFO_AREA"
     forNAFO[forNAFO=="<outside known areas>"]<-NA
     forNAFO$LAT_DD <- forNAFO$LON_DD <- NULL
     stations <- merge(stations, forNAFO, by="LABEL")
