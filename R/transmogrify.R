@@ -27,11 +27,11 @@ transmogrifyMissions  <- function(df = NULL){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifySets      <- function(df = NULL){
-
   #####
   valid.exp.num = c(1, 5, 6, 7, 9, 99)
 
-  if (nrow(df[!(as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", df$experiment_type)) %in% valid.exp.num) &
+  if (nrow(#df[!(as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", df$experiment_type)) %in% valid.exp.num) &
+    df[df$start_latitude_DD > 90 | (is.na(df$crow_distance) &
              is.na(df$start_latitude_DD) &
              is.na(df$start_latitude_MMmm)&
              is.na(df$start_longitude_DD) &
@@ -39,9 +39,10 @@ transmogrifySets      <- function(df = NULL){
              is.na(df$end_latitude_DD) &
              is.na(df$end_latitude_MMmm) &
              is.na(df$end_longitude_DD) &
-             is.na(df$end_longitude_MMmm),])>0){
+             is.na(df$end_longitude_MMmm)),])>0){
     stoppedSets<- data.frame()
-    stoppedSets<- df[!(as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", df$experiment_type)) %in% valid.exp.num) &
+    stoppedSets<- #df[!(as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", df$experiment_type)) %in% valid.exp.num) &
+                    df[df$start_latitude_DD > 90 | (is.na(df$crow_distance) &
                       is.na(df$start_latitude_DD) &
                       is.na(df$start_latitude_MMmm)&
                       is.na(df$start_longitude_DD) &
@@ -49,15 +50,14 @@ transmogrifySets      <- function(df = NULL){
                       is.na(df$end_latitude_DD) &
                       is.na(df$end_latitude_MMmm) &
                       is.na(df$end_longitude_DD) &
-                      is.na(df$end_longitude_MMmm),]
+                      is.na(df$end_longitude_MMmm)),]
     if (nrow(stoppedSets) > 0 ){
-      message("The following set(s) were detected that had almost no information.  These were likely started accidentally and will be dropped")
+      message("The following set(s) were detected that had almost no information, or glaringly incorrect latitudes.  These were likely started accidentally and will be dropped")
       print(stoppedSets)
       df <-setdiff(df,stoppedSets)
     }
   }
   #####
-
   theMsg <- NA
   colnames(df)[colnames(df)=="set_number"] <- "SETNO"
   df$start_date_utc          <- as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")
@@ -101,7 +101,7 @@ transmogrifySets      <- function(df = NULL){
   df$BOTTOM_TEMPERATURE      <- NA # data to come later, not captured during survey
   df$BOTTOM_SALINITY         <- NA # data to come later, not captured during survey
   df$HYDRO                   <- NA # data to come later, not captured during survey
-  df$STATION                 <- stringi::stri_extract_first_regex(df$station_number, "\\d{1,3}")
+  df$STATION                 <- stringi::stri_extract_first_regex(df$station_number, "\\d{1,4}")
   df$BOTTOM_TYPE_CODE        <- NA
   df$BOTTOM_TEMP_DEVICE_CODE <- NA
   df$WAVE_HEIGHT_CODE        <- NA

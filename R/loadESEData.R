@@ -100,7 +100,7 @@ SPEC NUMBER(8,0),
 SIZE_CLASS NUMBER(1,0),
 NOTE VARCHAR2(2000),
 UNWEIGHED_BASKETS NUMBER(4,0),
-NUMBER_CAUGHT NUMBER(5,0)
+NUMBER_CAUGHT NUMBER(6,0)
 )")
   }else if (grepl(pattern = "ESE_SPECIMENS", x = dfNm)){
     create_table <- paste0("create table ",target_table,"(

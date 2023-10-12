@@ -71,6 +71,7 @@ keepFieldsSets <- function(df = NULL, mission=NULL){
                 "end_longitude_DD",
                 "end_longitude_MMmm",
                 "distance_towed_obtained_code",
+                "distance_towed", #left this field in in case we need it for tweaks
                 "crow_distance",
                 # "ship_speed_obtained_code",
                 # "ship_speed",

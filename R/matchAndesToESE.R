@@ -10,6 +10,20 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
   
   # load Andes CSV files extracted from server at end of survey 
   tmp                    <- loadData(dataPath = dataPath)
+ 
+  catch_data_wo_baskets <- tmp$catch_data[!paste0(tmp$catch_data$mission_number ,"_",tmp$catch_data$set_number,"_",tmp$catch_data$species_code) %in% 
+                                   paste0(tmp$basket_data$mission_number ,"_",tmp$basket_data$set_number,"_",tmp$basket_data$species_code),
+                                   c("created_at", "id", "mission_number" , "set_number","species_aphia_id", "species_code", "species_en", "species_fr", "species_scientific", "species_uuid" )]
+  colnames(catch_data_wo_baskets)[colnames(catch_data_wo_baskets)=="created_at"] <- "creation_date"
+  colnames(catch_data_wo_baskets)[colnames(catch_data_wo_baskets)=="id"] <- "catch_id"
+  catch_data_wo_baskets$basket_wt_kg   <- NA
+  catch_data_wo_baskets$sampled  <- "No"
+  catch_data_wo_baskets$size_class  <- 1
+  catch_data_wo_baskets$size_class_display  <- 1
+  catch_data_wo_baskets$id   <- 888888
+  catch_data_wo_baskets$last_modified_date <- catch_data_wo_baskets$creation_date 
+  
+  tmp$basket_data <- rbind.data.frame(tmp$basket_data, catch_data_wo_baskets)
   if (gulfCodes) {
     tmp                    <- uuidToGulf(tmp)
   }else{
@@ -50,26 +64,46 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
   #perform any mission level tweaks that impact multiple tables
   tmp                    <- tweakUniversal(tmp, mission)
   ESE_SETS               <- keepFieldsSets(tmp$set_data, mission)
+
   ESE_SETS               <- transmogrifySets(ESE_SETS)
   ESE_SETS               <- tweakSets(ESE_SETS)
 
   ESE_BASKETS            <- keepFieldsBaskets(tmp$basket_data, mission)
   ESE_BASKETS            <- transmogrifyBaskets(ESE_BASKETS)
+  
   ESE_BASKETS            <- tweakBaskets(ESE_BASKETS)
+
   ESE_CATCHES            <- keepFieldsCatches(tmp$catch_data, mission)
 
   ESE_CATCHES            <- transmogrifyCatches(ESE_CATCHES)
 
   ESE_CATCHES            <- tweakCatches(ESE_CATCHES)
 
+
+# nullBaskets<-setdiff(ESE_CATCHES[,c("MISSION", "SETNO", "SPEC", "catch_id")], ESE_BASKETS[,c("MISSION", "SETNO", "SPEC", "catch_id")])
+# nullBaskets$SIZE_CLASS <- 1
+# nullBaskets$BASKET_WEIGHT <- NA
+# nullBaskets$SAMPLED <- F
+# nullBaskets$basket_id <- 99999
+  # ESE_BASKETS <- rbind.data.frame(ESE_BASKETS, nullBaskets)
+
   ESE_CATCHES            <- merge(ESE_CATCHES, 
                                   unique(ESE_BASKETS[,c("MISSION", "SETNO", "SPEC", "catch_id", "SIZE_CLASS")]), 
-                                  by = c("MISSION", "SETNO", "SPEC", "catch_id")) 
-  subsampled             <- redistributeMixedCatch(catch = ESE_CATCHES, basket = ESE_BASKETS, quiet = T)
+                                  by = c("MISSION", "SETNO", "SPEC", "catch_id"), all.x = T) 
 
+  # print(ESE_BASKETS[ESE_BASKETS$SETNO==217 & ESE_BASKETS$SPEC %in% c(2521, 2526, 6411), !names(ESE_BASKETS) %in% "NOTE"])
+  subsampled             <- redistributeMixedCatch2(catch = ESE_CATCHES, basket = ESE_BASKETS, quiet = T)
+#   message("subsampled")
+#   print(subsampled$basket[subsampled$basket$SETNO==217 & subsampled$basket$SPEC %in% c(2521, 2526, 6411), !names(subsampled$basket) %in% "NOTE"])
+# browser()
   ESE_CATCHES            <- subsampled$catch
+  
   ESE_BASKETS            <- subsampled$basket
   
+  
+  # ESE_BASKETS <- ESE_BASKETS[!is.na(ESE_BASKETS$BASKET_WEIGHT),]
+
+
   # both specimen and lv1 observations are kept together in specimen_data, so they are
   # initially handled together
   # browser()
@@ -115,8 +149,6 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
   ESE_LV1_OBSERVATIONS   <- ESE_LV1_OBSERVATIONS[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS",
                                                   "SPECIMEN_ID", "LV1_OBSERVATION_ID", 
                                                   "LV1_OBSERVATION", "DATA_VALUE", "DATA_DESC")]
-  
-
   
   ESE_LV1_OBSERVATIONS <- colTypeConverter(df = ESE_LV1_OBSERVATIONS)
 

@@ -348,7 +348,6 @@ loadData <- function(dataPath = NULL){
     if(grepl('set', thisFile))thisFileName <- "set_data"
     if(grepl('specimen', thisFile))thisFileName <- "specimen_data"
     if(grepl('species', thisFile))thisFileName <- "species_data"
-
     res[[thisFileName]]<- utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE)
   }
   return(res)
@@ -386,6 +385,11 @@ uuidToCODE <-function(x=NULL){
   }
   
   return(x)
+}
+df.diff <- function (df1, df2) {
+  is.dup <- duplicated(rbind(df2, df1))
+  is.dup <- tail(is.dup, nrow(df1))
+  return(df1[!is.dup, ])
 }
 # gulfToMarSpp <- function(x=NULL, groundfish.username=groundfish.username, groundfish.password=groundfish.password){
   # con <- ROracle::dbConnect(DBI::dbDriver("Oracle"), groundfish.username, groundfish.password, "PTRAN")
