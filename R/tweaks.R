@@ -675,7 +675,7 @@ tweakSets <- function(x = NULL){
   if(x$MISSION[1] == "TEL2023010"){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tUsed manually recorded distance for  sets 222 to 234\n")
     x[x$SETNO %in% c(222:234),"DIST"]<- x[x$SETNO%in% c(222:234),"distance_towed"]
-    x[x$SETNO%in% c(232),"START_TIME"] <- 2959
+    # x[x$SETNO%in% c(232),"START_TIME"] <- 2959
   }
   if(x$MISSION[1] == "CAR2023002"){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRecoded GEAR from 23 to 15\n")

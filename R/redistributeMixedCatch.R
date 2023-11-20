@@ -29,7 +29,7 @@ redistributeMixedCatch2 <- function(catch=NULL, basket = NULL, quiet=T){
   
   allCatchParents <- catch[catch$is_parent==T,]
   allCatchChildren<- catch[catch$parent_catch_id %in% allCatchParents$catch_id,]
-  print(allCatchChildren[allCatchChildren$SETNO==217 & allCatchChildren$SPEC == 6211,])
+  # print(allCatchChildren[allCatchChildren$SETNO==217 & allCatchChildren$SPEC == 6211,])
   if (nrow(allCatchChildren)<1){
     if(!quiet) message("(No mixed catches found - skipping subsampling)")
     x$basket <- basket
@@ -39,106 +39,95 @@ redistributeMixedCatch2 <- function(catch=NULL, basket = NULL, quiet=T){
   }  
   parentIDs            <- unique(allCatchChildren$parent_catch_id)
   for (i in 1:length(parentIDs)){
-    #this is the unknown species catch record.  It will be deleted
+    
+    #this is the unknown species catch record.  It will be used to identify necessary child baskets, but will then be deleted 
     thisCatchParent   <- allCatchParents[allCatchParents$catch_id %in% parentIDs[i],]
+    catch <- df.diff(catch, thisCatchParent)
     
     #these are records that were put in place once all of the species were identified from above
+    #these will be updated during this loop, and the original values will be deleted
     thisCatchChildren <- allCatchChildren[allCatchChildren$parent_catch_id %in% parentIDs[i],]
+    catch <- df.diff(catch, thisCatchChildren)
     
-    #these baskets were all weighed as a mix.  One should be sampled
+    #these baskets were all weighed as a mix.  These will be used to assess the ratios of species amongest the mixed catch
+    #new records will be generated and these should be deleted
     mixedBaskets      <- basket[basket$catch_id %in% parentIDs[i],]
+    #remove mixed baskets from known baskets - these will be broken up by their consitituent species
+    basket <- df.diff(basket, mixedBaskets) 
+    
     # this is the basket for which we have a breakdown of the species.  We'll use this on to make proportions
     sampledBasket        <-  mixedBaskets[mixedBaskets$SAMPLED,]
     unsampledBaskets     <-  mixedBaskets[!mixedBaskets$SAMPLED,]
     
+    
     sampledBasketFindings <- basket[basket$catch_id %in% thisCatchChildren$catch_id,]
+    basket <- df.diff(basket, sampledBasketFindings)
     
     #dplyr below handles cases where several baskets of the mixed was identified as the same species
     #since we want the ratio of species weights in our mixed catch, we must roll up all wts by species
-    sampledBasketFindingsForRatio <- sampledBasketFindings %>%
+    sampledBasketFindings <- sampledBasketFindings %>%
       group_by(MISSION, SETNO, SPEC, SIZE_CLASS) %>%
       summarise(BASKET_WEIGHT = sum(BASKET_WEIGHT),
                 basket_id = min(basket_id),
                 catch_id= min(catch_id), .groups = "keep") %>% 
-      as.data.frame()
-    
-    if (nrow(sampledBasketFindingsForRatio[is.na(sampledBasketFindingsForRatio$BASKET_WEIGHT),])==1){
+      as.data.frame() 
+    sampledBasketFindings$SAMPLED <- T
+
+    if (nrow(sampledBasketFindings[is.na(sampledBasketFindings$BASKET_WEIGHT),])==1){
       #we know the parent basket weight and only a single species is missing a weight, so we can calculate the weight of the missing basket  
       catch_wt <- sampledBasket$BASKET_WEIGHT
-      known_wt <- sum(sampledBasketFindingsForRatio$BASKET_WEIGHT, na.rm = T)
+      known_wt <- sum(sampledBasketFindings$BASKET_WEIGHT, na.rm = T)
       derived_basket_wt <- catch_wt- known_wt
-      missing_dets <- sampledBasketFindingsForRatio[is.na(sampledBasketFindingsForRatio$BASKET_WEIGHT),c("MISSION","SETNO", "SPEC")] 
-      sampledBasketFindingsForRatio[is.na(sampledBasketFindingsForRatio$BASKET_WEIGHT),"BASKET_WEIGHT"] <- derived_basket_wt
+      missing_dets <- sampledBasketFindings[is.na(sampledBasketFindings$BASKET_WEIGHT),c("MISSION","SETNO", "SPEC")] 
+      sampledBasketFindings[is.na(sampledBasketFindings$BASKET_WEIGHT),"BASKET_WEIGHT"] <- derived_basket_wt
       message(paste0(missing_dets$MISSION,":",missing_dets$SETNO), ", SPEC:", missing_dets$SPEC, "; the reported basket weight (i.e. ",derived_basket_wt,") was derived from the weight of the parent basket \n(and the knowledge that this was the only species with an NA weight)")
     }
-    sampledBasketFindingsForRatio$SUM <- sum(sampledBasketFindingsForRatio$BASKET_WEIGHT, na.rm = T)
     
-    #in addition to the ratios, we also want to remember which baskets were sampled  
-    sampledBasketFindingsWSample <- sampledBasketFindings
+
+    forRatio               <- sampledBasketFindings 
+    forRatio$SUM           <- sum(forRatio$BASKET_WEIGHT, na.rm = T)
+    forRatio               <- merge(forRatio,thisCatchChildren[,c("catch_id","SIZE_CLASS", "NUMBER_CAUGHT")])
+    forRatio$RATIO         <- round(forRatio$BASKET_WEIGHT/forRatio$SUM,6)
+    forRatio$WT_EACH       <- NA
+    forRatio[!is.na(forRatio$NUMBER_CAUGHT),"WT_EACH"] <- round(forRatio[!is.na(forRatio$NUMBER_CAUGHT),"BASKET_WEIGHT"]/as.numeric(forRatio[!is.na(forRatio$NUMBER_CAUGHT),"NUMBER_CAUGHT"]),5)
+    forRatio$BASKET_WEIGHT <- NULL
+    #add wt_each back onto sampledBasketFindings to estimate number of indivs
+    sampledBasketFindings  <- merge(sampledBasketFindings, forRatio[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "catch_id", "basket_id", "WT_EACH")])
+    sampledBasketFindings$NUMBER_CAUGHT <- round(sampledBasketFindings$BASKET_WEIGHT / sampledBasketFindings$WT_EACH,0)
+    sampledBasketFindings$WT_EACH <- NULL
     
-    #check how much this differs from sampledBasket$BASKET_WEIGHT
-    if (nrow(unsampledBaskets)==0 && (abs(round(sampledBasketFindingsForRatio$SUM[1]-sampledBasket$BASKET_WEIGHT,1)) <=0.5 )){
+    if (nrow(unsampledBaskets)==0 && (abs(round(forRatio$SUM[1]-sampledBasket$BASKET_WEIGHT,1)) <=0.5 )){
       message("\tMore processing necessary: It appears that a mixed catch was handled at sea, but the parent records were not removed.")
       next
-    }else if (nrow(unsampledBaskets)==0 && (abs(round(sampledBasketFindingsForRatio$SUM[1]-sampledBasket$BASKET_WEIGHT,1)) >0.5 )){
+    }else if (nrow(unsampledBaskets)==0 && (abs(round(forRatio$SUM[1]-sampledBasket$BASKET_WEIGHT,1)) >0.5 )){
       warning("\tIt appears that a mixed catch was handled at sea, but the weight of the child records is different than the parent - this should be looked at")
     }else if (nrow(unsampledBaskets)==0){
       warning("check that reDistributeMixedCatch() handles this many mixed baskets properly")
     }
-    sampledBasketFindingsForRatio$RATIO <- round(sampledBasketFindingsForRatio$BASKET_WEIGHT/sampledBasketFindingsForRatio$SUM,6)
-    
-    #add the number caught onto the ratio so we can calculate wt/individual
-    sampledBasketFindingsForRatio <- merge(sampledBasketFindingsForRatio,thisCatchChildren[,c("catch_id","SIZE_CLASS", "NUMBER_CAUGHT")])
-    
-    sampledBasketFindingsForRatio$WT_EACH <- NA
-    sampledBasketFindingsForRatio[!is.na(sampledBasketFindingsForRatio$NUMBER_CAUGHT),"WT_EACH"] <- round(sampledBasketFindingsForRatio[!is.na(sampledBasketFindingsForRatio$NUMBER_CAUGHT),"BASKET_WEIGHT"]/as.numeric(sampledBasketFindingsForRatio[!is.na(sampledBasketFindingsForRatio$NUMBER_CAUGHT),"NUMBER_CAUGHT"]),5)
-    
+
     #use what we found about the sampled basket to add all of the species and the ratios to the other mixed baskets
     unsampledBaskets <-  merge(unsampledBaskets[,c("MISSION", "SETNO", "BASKET_WEIGHT", "basket_id", "catch_id")], 
-                               sampledBasketFindingsForRatio[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "RATIO", "WT_EACH")], #all.y = T,
+                               forRatio[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "RATIO", "WT_EACH")], #all.y = T,
                                by=c("MISSION", "SETNO"))
-    # if(thisCatchParent$MISSION == "TEL2023010" & thisCatchParent$SETNO==217)browser()
-    #use the ratio to portion out the weight amongst the species
-    
     unsampledBaskets$BASKET_WEIGHT <- round(unsampledBaskets$BASKET_WEIGHT * unsampledBaskets$RATIO,3)
     unsampledBaskets$NUMBER_CAUGHT <- round(unsampledBaskets$BASKET_WEIGHT / unsampledBaskets$WT_EACH,0)
-    unsampledBaskets$RATIO <- NULL
+    unsampledBaskets$WT_EACH <- unsampledBaskets$RATIO <- NULL
     unsampledBaskets$SAMPLED <- F
-    
-    sampledBasketFindingsWSample <- merge(sampledBasketFindingsWSample[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SAMPLED", "BASKET_WEIGHT", "basket_id", "catch_id")], 
-                                          sampledBasketFindingsForRatio[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "WT_EACH")], all.y = T,
-                                          by=c("MISSION", "SETNO", "SPEC","SIZE_CLASS"))
-    sampledBasketFindingsWSample$NUMBER_CAUGHT <- round(sampledBasketFindingsWSample$BASKET_WEIGHT / sampledBasketFindingsWSample$WT_EACH,0)
-    
-    
-    #unsampledBaskets             holds recs we want to keep!!
-    #sampledBasketFindingsWSample holds recs we want to drop!!
-    updatedBaskets <- unsampledBaskets
-    updatedBaskets$WT_EACH <- NULL
-    
-    deprecatedBaskets <- sort(unique(c(updatedBaskets$basket_id, mixedBaskets$basket_id, sampledBasketFindingsWSample$basket_id)))
-    
-    
-    
-    basket <- basket[-which(basket$basket_id %in% deprecatedBaskets),]
-    #check updated baskets for set 217
+    updatedBaskets <- rbind.data.frame(sampledBasketFindings,unsampledBaskets)
     basket <- rbind.data.frame(basket, updatedBaskets[,!names(updatedBaskets) %in% c("NUMBER_CAUGHT")])
     
     forCatch <- updatedBaskets %>%
       group_by(MISSION, SETNO, SPEC, SIZE_CLASS) %>%
       summarise(NUMBER_CAUGHT = sum(NUMBER_CAUGHT), .groups = "keep") %>% 
       as.data.frame()
+    
     updatedCatch <- thisCatchChildren
     updatedCatch$NUMBER_CAUGHT <- NULL
     
     updatedCatch<-merge(updatedCatch, forCatch)
-    
-    deprecatedCatch <- sort(unique(c(thisCatchChildren$catch_id, thisCatchParent$catch_id)))
-    catch <- catch[-which(catch$catch_id %in% deprecatedCatch),]
-    
     catch <- rbind.data.frame(catch, updatedCatch)
+    
   }
-  # browser()
   basket <- rbind.data.frame(basket, ignoredBaskets)
   catch <- rbind.data.frame(catch, ignoredCatch)
   x$basket <- basket

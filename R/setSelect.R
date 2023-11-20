@@ -53,8 +53,12 @@
 #' containing polygons of the areas where stations should not be located.   For example, one might 
 #' populate a file with areas known to contain unexploded ordinance, or areas where bottom contact 
 #' is forbidden.  No stations will be generated where polygons exist in this file.
-#' @param addNafoInfo
-#' @param oceansAreas
+#' @param addNafoInfo default is \code{TRUE}.  Should NAFO area information be part of the output 
+#' data?
+#' @param oceansAreas  default is \code{NULL}. This is a shapefile that contains polygons that have 
+#' information that should be associated with the selected stations.  The idea is that this can be 
+#' used to  associate important information with points that fall within that area. 
+#' that fall
 #' @examples \dontrun{
 #' NonMaritimesExample <-setSelect(minDistNM = 4, 
 #'                                 stationData = "mySurveyStrata_requirements.csv", 

@@ -44,7 +44,7 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
     ESE_MISSIONS           <- keepFieldsMissions(tmp$cruise_data, new=F) 
     ESE_MISSIONS           <- transmogrifyMissions(ESE_MISSIONS)
     mission                <- ESE_MISSIONS[1,"MISSION"]
-    tmp$specimensRaw           <- keepFieldsSpecimens(tmp$specimen_data, mission)
+    tmp$specimensRaw      <- keepFieldsSpecimens(tmp$specimen_data, mission)
   }else{
     ESE_MISSIONS           <- keepFieldsMissions(tmp$mission_data, new=T) 
     ESE_MISSIONS           <- transmogrifyMissions(ESE_MISSIONS)

@@ -14,6 +14,7 @@ transmogrifyMissions  <- function(df = NULL){
   df$PROGRAM_TITLE         = 'Maritimes Bottom Trawl Surveys'
   df$DATA_VERSION          = gsub("\\.","", utils::packageDescription('andesmerge')$Version)
   df$NOTE                  = cleanfields(df$NOTE)
+  df$NOTE	       = substr(df$NOTE, 1, 255) #Oracle table only allows length of 255
   df$mission_number <- NULL
   
   if (!is.na(theMsg)) message("MISSIONS (General): \n\t", theMsg,"\n")
@@ -97,6 +98,7 @@ transmogrifySets      <- function(df = NULL){
   df$AUX                     <- as.numeric(stringi::stri_extract_first_regex(df$auxiliary_equipment, "[0-9]+"))
   df$WARPOUT                 <- round(meters2Fathoms(df$port_warp),0)
   df$NOTE                    <- cleanfields(df$remarks)
+  df$NOTE	       = substr(df$NOTE, 1, 255) #Oracle table only allows length of 255
   df$SURFACE_TEMPERATURE     <- NA # data to come later, not captured during survey
   df$BOTTOM_TEMPERATURE      <- NA # data to come later, not captured during survey
   df$BOTTOM_SALINITY         <- NA # data to come later, not captured during survey
@@ -108,6 +110,16 @@ transmogrifySets      <- function(df = NULL){
   df$LIGHT_LEVEL_CODE        <- NA
   df$GEAR_MONITOR_DEVICE_CODE<- NA
   
+  if(df$MISSION[1] == "TEL2023010"){
+    df[df$SETNO %in% c(232),"SLAT"]                  <- round(4426.07017,2)
+    df[df$SETNO %in% c(232),"SLAT_dd"]               <- 44.434503
+    df[df$SETNO %in% c(232),"start_latitude_DD"  ]   <- 44
+    df[df$SETNO %in% c(232),"start_latitude_MMmm"]   <- 26.07017
+    df[df$SETNO %in% c(232),"SLONG"]                 <- round(5721.16031,2)
+    df[df$SETNO %in% c(232),"SLONG_dd"]              <- -57.352672
+    df[df$SETNO %in% c(232),"start_longitude_DD"]    <- -57
+    df[df$SETNO %in% c(232),"start_longitude_MMmm"]  <- 21.16031 
+  }
   df <- Mar.utils::identify_area(df, lat.field = "SLAT_dd", lon.field = "SLONG_dd", agg.poly.shp = RVSurveyData::nafo_sf, agg.poly.field = "AREA_ID")
   colnames(df)[colnames(df)=="AREA_ID"] <- "AREA"
   df[df$AREA %in% "<outside known areas>", "AREA"] <- NA
@@ -153,6 +165,7 @@ transmogrifyCatches   <- function(df = NULL){
   colnames(df)[colnames(df)=="unweighed_baskets"] <- "UNWEIGHED_BASKETS"
   colnames(df)[colnames(df)=="specimen_count"]    <- "NUMBER_CAUGHT"
   df$is_parent <-charToBinary(df$is_parent, bool=T)
+  df$NOTE	       = substr(df$NOTE, 1, 255) #Oracle table only allows length of 255
   #match expected field order
   df <- df[,c("MISSION","SETNO", "SPEC", "NOTE", "UNWEIGHED_BASKETS", "NUMBER_CAUGHT",
               "catch_id", "is_parent", "parent_catch_id")]

@@ -28,7 +28,7 @@ Other internal:
 \code{\link{keepFieldsSpecimens}()},
 \code{\link{meters2Fathoms}()},
 \code{\link{reFormatSpecimen}()},
-\code{\link{redistributeMixedCatch}()},
+\code{\link{redistributeMixedCatch2}()},
 \code{\link{transmogrifyBaskets}()},
 \code{\link{transmogrifyCatches}()},
 \code{\link{transmogrifyLV1_OBS}()},
