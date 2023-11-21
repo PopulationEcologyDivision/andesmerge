@@ -14,7 +14,8 @@ setSelect(
   localCRS = NULL,
   minDistNM = 4,
   addNafoInfo = T,
-  oceansAreas = NULL
+  oceansAreas = NULL,
+  tryXTimes = 100
 )
 }
 \arguments{
@@ -75,13 +76,15 @@ be appropriate for your data.}
 \item{minDistNM}{default is \code{4}. This is the minimum required distance between the sets.  By
 default, sets will be no closer than 4 nautical miles from each other.}
 
-\item{addNafoInfo}{default is \code{TRUE}.  Should NAFO area information be part of the output 
-data?}
+\item{addNafoInfo}{default is \code{TRUE}.  Should NAFO area information be part of the output data?}
 
 \item{oceansAreas}{default is \code{NULL}. This is a shapefile that contains polygons that have 
 information that should be associated with the selected stations.  The idea is that this can be 
 used to  associate important information with points that fall within that area. 
 that fall}
+
+\item{tryXTimes}{default is \code{100}  By default, the script will make this many attempts to 
+fit the requested number of stations into each strata.}
 }
 \description{
 This function randomly selects stations within particular strata.  A specified 

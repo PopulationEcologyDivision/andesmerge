@@ -53,12 +53,13 @@
 #' containing polygons of the areas where stations should not be located.   For example, one might 
 #' populate a file with areas known to contain unexploded ordinance, or areas where bottom contact 
 #' is forbidden.  No stations will be generated where polygons exist in this file.
-#' @param addNafoInfo default is \code{TRUE}.  Should NAFO area information be part of the output 
-#' data?
+#' @param addNafoInfo default is \code{TRUE}.  Should NAFO area information be part of the output data?
 #' @param oceansAreas  default is \code{NULL}. This is a shapefile that contains polygons that have 
 #' information that should be associated with the selected stations.  The idea is that this can be 
 #' used to  associate important information with points that fall within that area. 
 #' that fall
+#' @param tryXTimes default is \code{100}  By default, the script will make this many attempts to 
+#' fit the requested number of stations into each strata. 
 #' @examples \dontrun{
 #' NonMaritimesExample <-setSelect(minDistNM = 4, 
 #'                                 stationData = "mySurveyStrata_requirements.csv", 
@@ -85,10 +86,12 @@ setSelect <- function(MaritimesSurvey = NULL,
                       localCRS = NULL,
                       minDistNM = 4,
                       addNafoInfo=T,
-                      oceansAreas = NULL){
+                      oceansAreas = NULL,
+                      tryXTimes = 100){
   library(maptools)
   library(dplyr)
   library(Mar.data)
+  library(Mar.utils)
   #maptools must be loaded, or behavior of as.owin changes
   TYPE <- LABEL <- polygon_ <- SPRING_4VW <- SPRING_4X <- SUMMER_4VWX <- GEORGES_5Z <- NA 
   
@@ -115,6 +118,7 @@ setSelect <- function(MaritimesSurvey = NULL,
               \tALTERNATE")
       names(stationData_)<- toupper(names(stationData_))
     }
+    
     stationData_StratField_ <- "STRATUM"
     
     strataShp_ <- RVSurveyData::strataMar_sf %>% sf::st_transform(crs = localCRS_) 
@@ -134,6 +138,8 @@ setSelect <- function(MaritimesSurvey = NULL,
     stationData_[,stationData_StratField] <- NULL
     strataShp_[, stationData_StratField_]<- NULL
   }
+  
+  stationData_[stationData_==0]<-NA
   #buffer is in meters, and is 1/2 the min distance
   buffSize <- (minDistNM * 1852)
   
@@ -193,13 +199,30 @@ setSelect <- function(MaritimesSurvey = NULL,
   
   allStrat <- unique(sf::st_drop_geometry(filtStrata$filterField_))
   stations <-list()
-  
+  failed = FALSE
+  failedStrata <- c()
   for (s in 1:length(allStrat)){ 
-    message("Working on ",allStrat[s])
+    # message("Working on ",allStrat[s])
     x = filtStrata[filtStrata$filterField_==allStrat[s],]
     x.owin <- spatstat.geom::as.owin(sf::as_Spatial(x))
     
-    polySet <- sf::st_as_sf(spatstat.random::rSSI(r = buffSize, n = x$TOT, win = x.owin, giveup = 100))
+    polySet = tryCatch(
+      {
+        suppressWarnings(sf::st_as_sf(spatstat.random::rSSI(r = buffSize, n = x$TOT, win = x.owin, giveup = tryXTimes)))
+      },
+      error=function(cond){
+        return(-1)
+      }
+    )
+
+    if (any(class(polySet)=="numeric") | nrow(polySet[polySet$label == "point",])< x$TOT){
+      failedStrata <- c(failedStrata, allStrat[s])
+      # message("Despite ", tryXTimes, " attempts, ", allStrat[s], " appears to be too small to sufficiently place ", x$TOT, " stations ", minDistNM, " NM apart")
+      # message("\t failed")
+      failed <- TRUE
+      next
+    }
+    if(!failed){
     polySet <- polySet[polySet$label=="point",]
     polySet <- sf::st_set_crs(polySet, localCRS_)
     
@@ -209,7 +232,6 @@ setSelect <- function(MaritimesSurvey = NULL,
     stations[[allStrat[s]]]<- merge(stations[[allStrat[s]]], sf::st_drop_geometry(x), by.x= "polygon_", by.y="filterField_")
     stations[[allStrat[s]]]$TYPE <- NA
     
-
     n_prim <- stations[[allStrat[s]]]$PRIMARY[1]
     n_alt  <- stations[[allStrat[s]]]$ALTERNATE[1]
     n_sec  <- stations[[allStrat[s]]]$SECONDARY[1]
@@ -230,8 +252,14 @@ setSelect <- function(MaritimesSurvey = NULL,
                                               type = "SECONDARY", 
                                               n_sets = n_sec)
     }   
-    if (any(is.na(stations[[allStrat[s]]]$TYPE)))browser()
+    }
   } 
+
+  if(length(failedStrata)>0){
+    stop("\nDespite ", tryXTimes, " attempts, the strata below appear to be too small to sufficiently place the requested number of stations ", minDistNM, " NM apart:",
+         "\n\t", paste(failedStrata, collapse = ", ", sep = ", "),
+         "\nPlease review your stationData file and ensure that the number of stations is reasonable for the area of the strata")  
+  }
   stations <- do.call(rbind, stations)
   stations <- sf::st_transform(x = stations, crs = 4326) 
   stations <- cbind(stations, round(sf::st_coordinates(stations$geometry),6))
@@ -258,7 +286,7 @@ setSelect <- function(MaritimesSurvey = NULL,
   
   timestamp <- format(Sys.time(),"%Y%m%d_%H%M")
   #add original field name back, and delete the one I made
-
+  
   if (!is.null(MaritimesSurvey)){
     #add dmin dmax from gsstratum
     depths <- RVSurveyData::GSSTRATUM
@@ -273,14 +301,14 @@ setSelect <- function(MaritimesSurvey = NULL,
   if (addNafoInfo){
     forNAFO <- sf::st_drop_geometry(stations)
     forNAFO <- forNAFO[,c("LABEL","LAT_DD", "LON_DD")]
-
+    
     forNAFO <- identify_area(forNAFO, lat.field = "LAT_DD", lon.field = "LON_DD",agg.poly.field = "NAFO")
     colnames(forNAFO)[colnames(forNAFO)=="NAFO"] <- "NAFO_AREA"
     forNAFO[forNAFO=="<outside known areas>"]<-NA
     forNAFO$LAT_DD <- forNAFO$LON_DD <- NULL
     stations <- merge(stations, forNAFO, by="LABEL")
   }
-
+  
   if (!is.null(oceansAreas)){
     forOceans<- sf::st_drop_geometry(stations)
     forOceans <- forOceans[,c("LABEL","LAT_DD", "LON_DD")]
