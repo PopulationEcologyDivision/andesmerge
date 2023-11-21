@@ -139,7 +139,7 @@ setSelect <- function(MaritimesSurvey = NULL,
     strataShp_[, stationData_StratField_]<- NULL
   }
   
-  stationData_[stationData_==0]<-NA
+
   #buffer is in meters, and is 1/2 the min distance
   buffSize <- (minDistNM * 1852)
   
@@ -177,9 +177,8 @@ setSelect <- function(MaritimesSurvey = NULL,
   # st_erase from https://bit.ly/3WuRj1b
   st_erase <- function(x, y) sf::st_difference(x, sf::st_union(sf::st_combine(y)))
   
-  
-  
   #handle submitted station data - replace "NA" with NA, and convert fields to numeric/character as appropriate
+  stationData_[stationData_==0]<-NA
   stationData_[stationData_ == "NA"] <- NA  
   stationData_[] <- lapply(stationData_, function(x) utils::type.convert(as.character(x), as.is = TRUE))
   stationData_ <- stationData_[!is.na(stationData_$PRIMARY),]
@@ -188,7 +187,6 @@ setSelect <- function(MaritimesSurvey = NULL,
   #create filtered version of strata file of only those strata present in the stationData_ csv and add the stationData_ into the sf
   filtStrata <- strataShp_[strataShp_$filterField_ %in% stationData_$filterField_,]
   filtStrata <- merge(filtStrata, stationData_, all.x=T, by.x="filterField_", by.y="filterField_")
-  
   if(!is.null(avoidShp)){
     # remove untrawlable areas from the selected strata prior to station selection
     # generates warning "attribute variables are assumed to be spatially constant throughout all geometries"
@@ -204,57 +202,56 @@ setSelect <- function(MaritimesSurvey = NULL,
   for (s in 1:length(allStrat)){ 
     # message("Working on ",allStrat[s])
     x = filtStrata[filtStrata$filterField_==allStrat[s],]
+
     x.owin <- spatstat.geom::as.owin(sf::as_Spatial(x))
     
     polySet = tryCatch(
       {
-        suppressWarnings(sf::st_as_sf(spatstat.random::rSSI(r = buffSize, n = x$TOT, win = x.owin, giveup = tryXTimes)))
+        suppressWarnings(sf::st_as_sf(spatstat.random::rSSI(r = buffSize, n = x$TOT[1], win = x.owin, giveup = tryXTimes)))
       },
       error=function(cond){
         return(-1)
       }
     )
 
-    if (any(class(polySet)=="numeric") | nrow(polySet[polySet$label == "point",])< x$TOT){
+    if (any(class(polySet)=="numeric") | nrow(polySet[polySet$label == "point",])< x$TOT[1]){
       failedStrata <- c(failedStrata, allStrat[s])
-      # message("Despite ", tryXTimes, " attempts, ", allStrat[s], " appears to be too small to sufficiently place ", x$TOT, " stations ", minDistNM, " NM apart")
-      # message("\t failed")
       failed <- TRUE
       next
     }
     if(!failed){
-    polySet <- polySet[polySet$label=="point",]
-    polySet <- sf::st_set_crs(polySet, localCRS_)
-    
-    stations[[allStrat[s]]] <- sf::st_as_sf(polySet)
-    stations[[allStrat[s]]]$polygon_ <- allStrat[s]
-    
-    stations[[allStrat[s]]]<- merge(stations[[allStrat[s]]], sf::st_drop_geometry(x), by.x= "polygon_", by.y="filterField_")
-    stations[[allStrat[s]]]$TYPE <- NA
-    
-    n_prim <- stations[[allStrat[s]]]$PRIMARY[1]
-    n_alt  <- stations[[allStrat[s]]]$ALTERNATE[1]
-    n_sec  <- stations[[allStrat[s]]]$SECONDARY[1]
-    n_tot  <- stations[[allStrat[s]]]$TOT[1]
-    
-    if (!is.na(n_prim)){
-      stations[[allStrat[s]]] <- assignStrata(df= stations[[allStrat[s]]], 
-                                              type = "PRIMARY", 
-                                              n_sets = n_prim)
-    }
-    if (!is.na(n_alt)){
-      stations[[allStrat[s]]] <- assignStrata(df= stations[[allStrat[s]]], 
-                                              type = "ALTERNATE", 
-                                              n_sets = n_alt)
-    }     
-    if (!is.na(n_sec)){
-      stations[[allStrat[s]]] <- assignStrata(df= stations[[allStrat[s]]], 
-                                              type = "SECONDARY", 
-                                              n_sets = n_sec)
-    }   
+      polySet <- polySet[polySet$label=="point",]
+      polySet <- sf::st_set_crs(polySet, localCRS_)
+      stations[[allStrat[s]]] <- sf::st_as_sf(polySet)
+      stations[[allStrat[s]]]$polygon_ <- allStrat[s]
+      
+      stations[[allStrat[s]]]<- merge(stations[[allStrat[s]]], sf::st_drop_geometry(x), by.x= "polygon_", by.y="filterField_")
+      stations[[allStrat[s]]]$TYPE <- NA
+      
+      # if (allStrat[s]==103)browser()
+      n_prim <- stations[[allStrat[s]]]$PRIMARY[1]
+      n_alt  <- stations[[allStrat[s]]]$ALTERNATE[1]
+      n_sec  <- stations[[allStrat[s]]]$SECONDARY[1]
+      n_tot  <- stations[[allStrat[s]]]$TOT[1]
+      
+      if (!is.na(n_prim)){
+        stations[[allStrat[s]]] <- assignStrata(df= stations[[allStrat[s]]], 
+                                                type = "PRIMARY", 
+                                                n_sets = n_prim)
+      }
+      if (!is.na(n_alt)){
+        stations[[allStrat[s]]] <- assignStrata(df= stations[[allStrat[s]]], 
+                                                type = "ALTERNATE", 
+                                                n_sets = n_alt)
+      }     
+      if (!is.na(n_sec)){
+        stations[[allStrat[s]]] <- assignStrata(df= stations[[allStrat[s]]], 
+                                                type = "SECONDARY", 
+                                                n_sets = n_sec)
+      }   
     }
   } 
-
+  
   if(length(failedStrata)>0){
     stop("\nDespite ", tryXTimes, " attempts, the strata below appear to be too small to sufficiently place the requested number of stations ", minDistNM, " NM apart:",
          "\n\t", paste(failedStrata, collapse = ", ", sep = ", "),
@@ -282,7 +279,7 @@ setSelect <- function(MaritimesSurvey = NULL,
     dplyr::ungroup()%>% 
     dplyr::arrange(polygon_,LABEL)
   
-  
+  stations <- stations[!is.na(stations$LABEL),]
   
   timestamp <- format(Sys.time(),"%Y%m%d_%H%M")
   #add original field name back, and delete the one I made
@@ -296,27 +293,34 @@ setSelect <- function(MaritimesSurvey = NULL,
     stations[, stationData_StratField] <- stations$polygon_
     stations$polygon_<-NULL
   }
-  
+
   #NAFO unit area and code
   if (addNafoInfo){
     forNAFO <- sf::st_drop_geometry(stations)
     forNAFO <- forNAFO[,c("LABEL","LAT_DD", "LON_DD")]
-    
+
     forNAFO <- identify_area(forNAFO, lat.field = "LAT_DD", lon.field = "LON_DD",agg.poly.field = "NAFO")
     colnames(forNAFO)[colnames(forNAFO)=="NAFO"] <- "NAFO_AREA"
     forNAFO[forNAFO=="<outside known areas>"]<-NA
     forNAFO$LAT_DD <- forNAFO$LON_DD <- NULL
     stations <- merge(stations, forNAFO, by="LABEL")
   }
-  
   if (!is.null(oceansAreas)){
     forOceans<- sf::st_drop_geometry(stations)
+
     forOceans <- forOceans[,c("LABEL","LAT_DD", "LON_DD")]
+    
     oceansAreas <- sf::st_read(oceansAreas, quiet = T) %>% sf::st_transform(crs = localCRS_) 
+    
+    message("forOceans1: ", nrow(forOceans))
     forOceans <- identify_area(forOceans, lat.field = "LAT_DD", lon.field = "LON_DD", agg.poly.shp = oceansAreas, agg.poly.field = "NAME_E")
+    message("forOceans2: ", nrow(forOceans))
     forOceans <- identify_area(forOceans, lat.field = "LAT_DD", lon.field = "LON_DD", agg.poly.shp = oceansAreas, agg.poly.field = "ZONE_E")
+    message("forOceans3: ", nrow(forOceans))
     forOceans <- identify_area(forOceans, lat.field = "LAT_DD", lon.field = "LON_DD", agg.poly.shp = oceansAreas, agg.poly.field = "URL_E")
+    message("forOceans4: ", nrow(forOceans))
     forOceans <- identify_area(forOceans, lat.field = "LAT_DD", lon.field = "LON_DD", agg.poly.shp = oceansAreas, agg.poly.field = "REGULATION")
+    message("forOceans5: ", nrow(forOceans))
     colnames(forOceans)[colnames(forOceans)=="NAME_E"] <- "OCEANS_NAME"
     colnames(forOceans)[colnames(forOceans)=="ZONE_E"] <- "OCEANS_ZONE"
     colnames(forOceans)[colnames(forOceans)=="URL_E"] <- "OCEANS_INFO"
