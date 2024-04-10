@@ -3,19 +3,19 @@ library(dplyr)
 library(RVSurveyData)
 
 
-theData_tel = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groups/Groundfish/ANDES_Summer_2023/TELEOST"
-results_tel <-matchAndesToESE(dataPath = theData_tel, gulfCodes=F)
+theData_cab = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groups/Groundfish/ANDES_Winter_2024/"
+results_cab <-matchAndesToESE(dataPath = theData_cab, gulfCodes=F)
 
 
 
 cxn <- Mar.utils::make_oracle_cxn(fn.oracle.username = groundfish.username,fn.oracle.password = groundfish.password, fn.oracle.dsn = "PTRAN", usepkg = 'roracle')
 
-loadESEData(cxnObj = cxn, source_df = results_tel$ESE_MISSIONS,         target_table = "TEL_ESE_MISSIONS", confirmOverwrite = T)
-loadESEData(cxnObj = cxn, source_df = results_tel$ESE_SETS,             target_table = "TEL_ESE_SETS", confirmOverwrite = T)
-loadESEData(cxnObj = cxn, source_df = results_tel$ESE_BASKETS,          target_table = "TEL_ESE_BASKETS", confirmOverwrite = T)
-loadESEData(cxnObj = cxn, source_df = results_tel$ESE_CATCHES,          target_table = "TEL_ESE_CATCHES", confirmOverwrite = T)
-loadESEData(cxnObj = cxn, source_df = results_tel$ESE_SPECIMENS,        target_table = "TEL_ESE_SPECIMENS", confirmOverwrite = T)
-loadESEData(cxnObj = cxn, source_df = results_tel$ESE_LV1_OBSERVATIONS, target_table = "TEL_ESE_LV1_OBSERVATIONS", confirmOverwrite = T)
+loadESEData(cxnObj = cxn, source_df = results_cab$ESE_MISSIONS,         target_table = "CAB_ESE_MISSIONS", confirmOverwrite = T)
+loadESEData(cxnObj = cxn, source_df = results_cab$ESE_SETS,             target_table = "CAB_ESE_SETS", confirmOverwrite = T)
+loadESEData(cxnObj = cxn, source_df = results_cab$ESE_BASKETS,          target_table = "CAB_ESE_BASKETS", confirmOverwrite = T)
+loadESEData(cxnObj = cxn, source_df = results_cab$ESE_CATCHES,          target_table = "CAB_ESE_CATCHES", confirmOverwrite = T)
+loadESEData(cxnObj = cxn, source_df = results_cab$ESE_SPECIMENS,        target_table = "CAB_ESE_SPECIMENS", confirmOverwrite = T)
+loadESEData(cxnObj = cxn, source_df = results_cab$ESE_LV1_OBSERVATIONS, target_table = "CAB_ESE_LV1_OBSERVATIONS", confirmOverwrite = T)
 
 theData_car = "c:/Users/McMahonM/OneDrive - DFO-MPO/Support/Groups/Groundfish/ANDES_Summer_2023/CARTIER"
 results_car <-matchAndesToESE(dataPath = theData_car, gulfCodes=F)

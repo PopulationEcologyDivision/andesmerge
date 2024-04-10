@@ -1,6 +1,6 @@
 Package: andesmerge
 Title: andesmerge: Maritimes tools for getting data out of ANDES and into the Maritimes groundfish database 
-Version: 2023.02.06
+Version: 2024.04.10
 Authors@R: c(
             person(given = "Pablo",
             family = "Vergara",
@@ -16,7 +16,6 @@ Depends:
 Imports:
     dplyr,
     lubridate,
-    maptools,
     Mar.utils,
     RVSurveyData,
     sf,

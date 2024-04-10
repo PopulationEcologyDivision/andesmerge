@@ -7,7 +7,6 @@
 #' @author Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
-  
   # load Andes CSV files extracted from server at end of survey 
   tmp                    <- loadData(dataPath = dataPath)
  
@@ -23,7 +22,7 @@ matchAndesToESE <- function(dataPath = NULL, gulfCodes=F){
   catch_data_wo_baskets$id   <- 888888
   catch_data_wo_baskets$last_modified_date <- catch_data_wo_baskets$creation_date 
   
-  tmp$basket_data <- rbind.data.frame(tmp$basket_data, catch_data_wo_baskets)
+  # tmp$basket_data <- rbind.data.frame(tmp$basket_data, catch_data_wo_baskets)
   if (gulfCodes) {
     tmp                    <- uuidToGulf(tmp)
   }else{
