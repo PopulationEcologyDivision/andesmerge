@@ -1,3 +1,20 @@
+#' @title convert_to_DDMM
+#' @description This function converts coordinates from decimal degrees to DDMM.MM
+#' @param decimal_degrees default is \code{NULL}. This is the value you wish to convert
+#' @param roundDec default is \code{NULL}.  This is how many decimals you would like your final 
+#' output to have.  If you do not want to round the result, you can leave it as NULL
+#' @return la coordinate in DDMM.MM
+#' @author  Mike McMahon, \email{mike.mcmahon@@dfo-mpo.gc.ca}
+#' @export
+convert_to_DDMM <- function(decimal_degrees, roundDec = NULL) {
+  degrees <- trunc(decimal_degrees)
+  minutes <- abs(decimal_degrees - degrees) * 60
+  if(!is.null(roundDec)) minutes <- round(minutes, roundDec)
+  DDMM <- abs(degrees) * 100 + minutes
+  DDMM <- DDMM * sign(decimal_degrees)
+  return(DDMM)
+}
+
 #' @title get_value
 #' @description This function returns the  lookup value in a vector
 #' @param myKey default is \code{NULL}.
@@ -13,61 +30,31 @@ get_value <- function(myKey, mylookupvector){
   return(myvalue)
 }
 
-# @title convertFORCE
-# @description This function returns converted FORCE codes
-# @param x default is \code{NULL}. This is the string to be processed.
-# @return converted FORCE codes
-# @family internal
-# @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-# @export
-# 
-# convertFORCE <- function(x){
-#   if (is.character(any(x))){
-#     ESE.vals <- list("0" = 0,
-#                      "1" = 1,
-#                      "2" = 2,
-#                      "3" = 3,
-#                      "4" = 4,
-#                      "5" = 5,
-#                      "6" = 6,
-#                      "7" = 7,
-#                      "8" = 8,
-#                      "9" = NA)
-#     
-#     ESE.vals = unlist(ESE.vals)
-#     x = get_value(x, ESE.vals)
-#   }
-#   return(x)
-# }
-
-# @title convertHOWOBT
-# @description This function returns converted obtained_code codes
-# @param x default is \code{NULL}. This is the string to be processed.
-# @return converted FORCE codes
-# @family internal
-# @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-# @export
-# 
-#' convertHOWOBT <- function(x){
-#'   # browser()
-#'   # if (any(grepl(" - ", x = x))){
-#'     x <- as.numeric(stringi::stri_extract_first_regex(x, "[0-9]+"))
-#'   # }else{
-#'   #   ESE.vals <- list("1" = 1, # "Ships log or distance program"
-#'   #                    "2" = 2, # "Radar bouy"
-#'   #                    "3" = 3, # "DECCA bearings"
-#'   #                    "4" = 0, # "LORAN bearings or GPS"
-#'   #                    "5" = 5, # "DECCA radar"
-#'   #                    "6" = 6, # "LORAN radar"
-#'   #                    "7" = 7, # "DECCA and LORAN"
-#'   #                    "8" = 8, # "Satelite navigation"
-#'   #                    "9" = 9) # "No observation / hydrographic station"
-#'   #   
-#'   #   ESE.vals = unlist(ESE.vals)
-#'   #   x = get_value(x, ESE.vals)
-#'   # }
-#'   return(x)
-#' }
+#' @title convertFORCE
+#' @description This function returns converted FORCE codes
+#' @param x default is \code{NULL}. This is the string to be processed.
+#' @return converted FORCE codes
+#' @family internal
+#' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
+#' 
+convertFORCE <- function(x) {
+  wind_force <- function(knots) {
+    if (is.na(knots)) return(NA)
+    if (knots == 0) return(0)
+    if (knots >= 1 && knots <= 3) return(1)
+    if (knots >= 4 && knots <= 6) return(2)
+    if (knots >= 7 && knots <= 10) return(3)
+    if (knots >= 11 && knots <= 16) return(4)
+    if (knots >= 17 && knots <= 21) return(5)
+    if (knots >= 22 && knots <= 27) return(6)
+    if (knots >= 28 && knots <= 33) return(7)
+    if (knots >= 34 && knots <= 40) return(8)
+    return(NA)  # For values outside the defined ranges
+  }
+  
+  return(sapply(x, wind_force))
+}
 
 #' @title getEseTables
 #' @description This function returns the names of the ese tables.
@@ -122,28 +109,31 @@ cleanStrata <- function(x){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 reFormatSpecimen <- function(x = NULL){ 
-
   colnames(x)[colnames(x)=="set_number"]    <- "SETNO"
-  colnames(x)[colnames(x)=="size_class"]    <- "SIZE_CLASS"
-  colnames(x)[colnames(x)=="id"]            <- "SPECIMEN_ID"
+  # colnames(x)[colnames(x)=="sample_class"]    <- "SIZE_CLASS"
+  # colnames(x)[colnames(x)=="id"]            <- "SPECIMEN_ID" 
   y <- list()
-  y$specimen <- x[,c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID", "basket_id")]
+  y$specimen <- x[,c("MISSION", "SETNO", "catch_code", "sample_class", "specimen_id", "basket_id")]
 
   # Match data for level 1 observations 
   # Need to turn specimen table from wide format to long in order to have each observation on its own row
-  x$basket_id <- x$basket <- NULL
-  specDets <- names(x[, !names(x) %in% c("MISSION", "SETNO", "SPEC", "SIZE_CLASS", "SPECIMEN_ID")])
+  x$basket_id <-NULL
+  dropFields <- c("mission_number","station_name","scientific_name","common_name_en","common_name_fr","is_mixed_catch",
+                    "length_type","length_unit", "rounding_rule","weight_type","weight_unit","fin_clip_with_label","pre_anal_length",
+                    "ripe_or_running","sex_display","basket_id","specimen_uuid")
+  x<-x[,!names(x) %in% dropFields] 
+  specDets <- names(x[, !names(x) %in% c("MISSION", "SETNO", "catch_code", "sample_class", "specimen_id")])
   x <- x %>% dplyr::mutate_all(as.character) %>% tidyr::pivot_longer(dplyr::all_of(specDets), names_to = "variable", values_to = "value") %>% as.data.frame()
   colnames(x)[colnames(x)=="variable"] <- "LV1_OBSERVATION"
   colnames(x)[colnames(x)=="value"] <- "DATA_VALUE"  
   
   #remove records where the value is 0 for collect.specimen/collect.otoliths
   #these have no impact
-  if (nrow(x[which(x$LV1_OBSERVATION == "collect.specimen" & x$DATA_VALUE == 0),])>0){
-    x <- x[-which(x$LV1_OBSERVATION == "collect.specimen" & x$DATA_VALUE == 0),]
+  if (nrow(x[which(x$LV1_OBSERVATION == "collect_specimen" & x$DATA_VALUE == 0),])>0){
+    x <- x[-which(x$LV1_OBSERVATION == "collect_specimen" & x$DATA_VALUE == 0),]
   }
-  if (nrow(x[which(x$LV1_OBSERVATION == "collect.otoliths" & x$DATA_VALUE == 0),])>0){
-    x <- x[-which(x$LV1_OBSERVATION == "collect.otoliths" & x$DATA_VALUE == 0),]
+  if (nrow(x[which(x$LV1_OBSERVATION == "collect_otoliths" & x$DATA_VALUE == 0),])>0){
+    x <- x[-which(x$LV1_OBSERVATION == "collect_otoliths" & x$DATA_VALUE == 0),]
   }
   
   # remove 1) all NA values, 2) empty cells (i.e. ""), 3) cases of 1 character entries
@@ -160,11 +150,14 @@ reFormatSpecimen <- function(x = NULL){
   #the following two values show up that cannot be matched against obstypes
   x$LV1_OBSERVATION[x$LV1_OBSERVATION=="comment"]<-"comments"
   x$LV1_OBSERVATION[x$LV1_OBSERVATION=="maturity maritimes"]<-"maturity"
+  x$LV1_OBSERVATION[x$LV1_OBSERVATION=="maturity halibut"]<-"maturity"
+  x$LV1_OBSERVATION[x$LV1_OBSERVATION=="maturity redfish"]<-"maturity"
+  x$LV1_OBSERVATION[x$LV1_OBSERVATION=="maturity winterfl"]<-"maturity"
   x$LV1_OBSERVATION =  stringi::stri_trans_totitle(x$LV1_OBSERVATION)
   
   #add LV1_OBSERVATION_ID by grouping by Specimen_id, and then numbering all measurements within the group
   x <- x %>%
-    dplyr::group_by(MISSION,SETNO, SPEC, SIZE_CLASS, SPECIMEN_ID) %>%
+    dplyr::group_by(MISSION,SETNO, catch_code, sample_class, specimen_id) %>%
     dplyr::arrange(LV1_OBSERVATION, .by_group = TRUE) %>% 
     dplyr::mutate(LV1_OBSERVATION_ID =dplyr::row_number()) %>%
     as.data.frame()
@@ -219,12 +212,16 @@ populate_DATA_DESC <- function(x){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 cleanfields <- function(data= NULL){
   #remove leading & trailing whitespace; replace multiple space/tabs with single space
+  data <- iconv(data, from = "ISO-8859-1", to = "UTF-8")
+
   data <- trimws(gsub(x=data, pattern = ("\\s+"), ' '))
   
   #replace other stuff with nothing
   data <- gsub(x = data, pattern = "\u00e2\u20ac\u2122", replacement = "'") # replace curly apostrophe (â€™) with '
   data <- gsub(x = data, pattern = '\u00e2\u20ac\u0153', replacement = '"') # replace curly open quote (â€œ) with "
   data <- gsub(x = data, pattern = '\u00e2\u20ac\u009d', replacement = '"') # replace curly close quote (â€)with "
+  
+  data <- gsub(x = data, pattern = '\u0092', replacement = "'") # replace curly apostrophe with normal one
   return(data)
 }
 
@@ -237,6 +234,7 @@ cleanfields <- function(data= NULL){
 #' @author  Pablo Vergara, \email{Pablo.Vergara@@dfo-mpo.gc.ca}
 #' @export
 setExperimentType <- function(x){
+  #df$experiment_type, df$set_result
   # possible experiment types (from : andesdb.shared_models_experimenttype)
   #   1	Stratified random survey set		
   #   5	Comparative fishing experiment	
@@ -245,14 +243,13 @@ setExperimentType <- function(x){
   #   7	Gear testing		
   #   99	Systematic		
   valid.exp.num = c(1, 5, 6, 7, 9, 99)
-  #exp.num =  x$experiment_type_id
-  exp.num =  as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", x$experiment_type))
-  set.res =  x$set_result_id
-
+  exp.num =  x$experiment_type
+  # exp.num =  as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", x$experiment_type))
+  set.res =  x$set_result
   if(!all(exp.num %in% valid.exp.num)) stop("Unknown Experiment type(s) found")
-  x$experiment_type_id_tweaked <- NA
-  x$experiment_type_id_tweaked <- as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", x$experiment_type))
-  
+  x$experiment_type_id_tweaked <- 0
+  # x$experiment_type_id_tweaked <- as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", x$experiment_type))
+  # x$experiment_type_id_tweaked <- exp.num
   # Possible set result values (from  : andesdb.shared_models_setresult)
   # 1	NORMAL - No damage to gear	
   # 2	NORMAL - Minor damage to gear - Catch unaffected	NORMAL 
@@ -266,25 +263,25 @@ setExperimentType <- function(x){
   if(!all(set.res %in% valid.result.num)) stop("Set result not in list")
   
   #NORMAL - GOOD
-  index = (exp.num %in% valid.exp.num & set.res %in% c(1, 2))
-  if(length(which(index)) > 0)
+  indexG = (exp.num %in% valid.exp.num & set.res %in% c(1, 2))
+  if(length(which(indexG)) > 0)
   {
-    x[index,]$experiment_type_id_tweaked = 1
+    x[indexG,]$experiment_type_id_tweaked <- 1
   }
   
   #NORMAL - FAIL
-  index = (exp.num %in% valid.exp.num & set.res %in% c(3, 4, 5, 6))
-  if(length(which(index)) > 0 ){
-    x[index,]$experiment_type_id_tweaked = 3
+  indexF = (exp.num %in% valid.exp.num & set.res %in% c(3, 4, 5, 6))
+  if(length(which(indexF)) > 0 ){
+    x[indexF,]$experiment_type_id_tweaked <- 3
   }
   
   #NORMAL - HYDROGRAPHY
   #Added by MMM - not sure about using an NA as an identifier, but maybe in combo with exp.num==9 
-  index = (exp.num == 9 & is.na(set.res))
-  if(length(which(index)) > 0 ){
-    x[index,]$experiment_type_id_tweaked = 9
+  indexH = (exp.num == 9 & (is.na(set.res)|set.res==1))
+  if(length(which(indexH)) > 0 ){
+    x[indexH,]$experiment_type_id_tweaked <- 9
   }
-  
+ x[x$experiment_type_id_tweaked ==1 & x$valid_outcome =="False","experiment_type_id_tweaked"] <- 3
   return(as.numeric(x$experiment_type_id_tweaked))
 }
 
@@ -333,22 +330,32 @@ colTypeConverter <- function(df = NULL){
 loadData <- function(dataPath = NULL){
   #add trailing "/" if necess
   if(substr(dataPath ,(nchar(dataPath)+1)-1,nchar(dataPath)) != "/")dataPath = paste0(dataPath,"/")
-  filenames <- list.files(dataPath, pattern="^.*_(basket|catch|cruise|mission|observation|set|specimen|species)_(data|export).*\\.csv$")
+  filenames <- list.files(dataPath, pattern="^.*_(specimen_and_observation|observation|specimen|basket|catch|cruise|mission|set|species)_(data|export).*\\.csv$") #
   if (length(filenames)<1)stop("No csv files found")
   res<-list()
-  for(i in 1:length(filenames))
-  {
-    # message("Working on ",filenames[i])
+  for(i in 1:length(filenames)){
+    message("Working on ",filenames[i])
     thisFile = filenames[i]
-    if(grepl('basket', thisFile))thisFileName <- "basket_data"
-    if(grepl('catch', thisFile))thisFileName <- "catch_data"
-    if(grepl('cruise', thisFile))thisFileName <- "cruise_data"
-    if(grepl('mission', thisFile))thisFileName <- "mission_data"
-    if(grepl('observation', thisFile))thisFileName <- "observation_data"
-    if(grepl('set', thisFile))thisFileName <- "set_data"
-    if(grepl('specimen', thisFile))thisFileName <- "specimen_data"
-    if(grepl('species', thisFile))thisFileName <- "species_data"
-    res[[thisFileName]]<- utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE)
+    if(grepl('specimen_and_observation', thisFile)) {
+      thisFileName <- "specimen_and_observation_data"
+    } else if(grepl('observation', thisFile)) {
+      thisFileName <- "observation_data"
+    } else if(grepl('specimen', thisFile)) {
+      thisFileName <- "specimen_data"
+    } else if(grepl('basket', thisFile)) {
+      thisFileName <- "basket_data"
+    } else if(grepl('catch', thisFile)) {
+      thisFileName <- "catch_data"
+    } else if(grepl('cruise', thisFile)) {
+      thisFileName <- "cruise_data"
+    } else if(grepl('mission', thisFile)) {
+      thisFileName <- "mission_data"
+    } else if(grepl('set', thisFile)) {
+      thisFileName <- "set_data"
+    } else if(grepl('species', thisFile)) {
+      thisFileName <- "species_data"
+    }
+    res[[thisFileName]]<- utils::read.csv(file.path(dataPath,thisFile), stringsAsFactors=FALSE, fileEncoding="ISO-8859-1")
   }
   return(res)
 }
@@ -366,8 +373,8 @@ uuidToGulf <-function(x=NULL){
   x$catch_data$uuid <- NULL
   return(x)
 }
-uuidToCODE <-function(x=NULL){
-  MARCodes<- RVSurveyData::GSSPECIES[, c("UUID", "CODE")]
+uuidToCODE <-function(x=NULL, spCodes=NULL){
+  MARCodes<- spCodes[, c("UUID", "CODE")]
   # can do ESE_BASKETS("SPEC"), ESE_CATCHES("SPEC"), ESE_SPECIMENS ("SPEC"), ESE_LV1_OBSERVATIONS ("SPEC") 
   x$specimen_data<- merge(x$specimen_data, MARCodes, all.x=T, by.x="species_uuid", by.y="UUID")
   x$basket_data<- merge(x$basket_data, MARCodes, all.x=T, by.x="species_uuid", by.y="UUID")

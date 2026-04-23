@@ -10,9 +10,9 @@ keepFieldsMissions <- function(df = NULL, new=T){
               "area_of_operation", 
               "description")]
   }else{
-    mission_number <- df[df$KEY== "mission_number", "VALUE"]
-    area_of_operation <- df[df$KEY== "area_of_operation", "VALUE"]
-    description <- df[df$KEY== "description", "VALUE"]
+    mission_number <- df[df$ï..KEY== "mission_number", "VALUE"]
+    area_of_operation <- df[df$ï..KEY== "area_of_operation", "VALUE"]
+    description <- df[df$ï..KEY== "description", "VALUE"]
     df <- data.frame("mission_number"=c(mission_number),"area_of_operation"=c(area_of_operation),"description"=c(description))
   }
   return(df)
@@ -25,70 +25,36 @@ keepFieldsMissions <- function(df = NULL, new=T){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 keepFieldsSets <- function(df = NULL, mission=NULL){
-  if (mission =="CAR2022102"){
-    df <- df[,c("set_number",
+  df <- df[,c("set_number",
                 "start_date",
                 "end_date",
                 "stratum",
-                "start_latitude_DD",
-                "start_latitude_MMmm",
-                "start_longitude_DD",
-                "start_longitude_MMmm",
-                "end_latitude_DD",
-                "end_latitude_MMmm",
-                "end_longitude_DD",
-                "end_longitude_MMmm",
+                "start_latitude_dd",
+                "start_longitude_dd",
+              "end_latitude_dd",
+              "end_longitude_dd",
                 "distance_towed_obtained_code",
-                "distance_towed",
-                # "ship_speed_obtained_code",
-                # "ship_speed",
-                "speed",
+                "distance_towed", #was "distance_towed", #left this field in in case we need it for tweaks
+                "calculated_distance_nm_xy", #was "crow_distance",
+                "ship_speed",#was  "ship_speed",
+                 "ship_speed_obtained_code",
                 "start_depth_m",
                 "end_depth_m",
                 "wind_direction_degree",
-                "wind_force_code",
+                "wind_force_kts",
                 "tide_direction_code",
                 "experiment_type",
-                "set_result_id",
+                "set_result",
+              "valid_outcome",
                 "gear_type",
                 "auxiliary_equipment",
                 "port_warp",
                 "remarks",
-                "new_station")]
-    colnames(df)[colnames(df)=="new_station"] <- "station_number"
-    colnames(df)[colnames(df)=="distance_towed"] <- "crow_distance"
-  }else{
-    df <- df[,c("set_number",
-                "start_date",
-                "end_date",
-                "stratum",
-                "start_latitude_DD",
-                "start_latitude_MMmm",
-                "start_longitude_DD",
-                "start_longitude_MMmm",
-                "end_latitude_DD",
-                "end_latitude_MMmm",
-                "end_longitude_DD",
-                "end_longitude_MMmm",
-                "distance_towed_obtained_code",
-                "distance_towed", #left this field in in case we need it for tweaks
-                "crow_distance",
-                # "ship_speed_obtained_code",
-                # "ship_speed",
-                "speed",
-                "start_depth_m",
-                "end_depth_m",
-                "wind_direction_degree",
-                "wind_force_code",
-                "tide_direction_code",
-                "experiment_type",
-                "set_result_id",
-                "gear_type",
-                "auxiliary_equipment",
-                "port_warp",
-                "remarks",
-                "station_number")]
-  }
+                "station_number",
+              "max_depth_m",
+              "min_depth_m"
+              )]
+ 
   df <- data.frame(MISSION = mission, df)
   return(df)
 }
@@ -101,15 +67,15 @@ keepFieldsSets <- function(df = NULL, mission=NULL){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 keepFieldsCatches <- function(df = NULL, mission=NULL){
   df <- df[,c("set_number",
-              "SPEC",
+              "catch_code",
+              "catch_uuid",
+              "is_mixed_catch",
               "notes",
-              "unweighed_baskets",
-              "specimen_count",
-              "id",
-              "is_parent",
-              "parent_catch_id")] 
+              "total_adjusted_basket_weight_kg",
+              "unmeasured_specimen_count"
+              ,"unweighed_baskets"
+              )] 
   
-  colnames(df)[colnames(df)=="id"] <- "catch_id"
   df <- data.frame(MISSION = mission, df)
   return(df)
 }
@@ -121,16 +87,19 @@ keepFieldsCatches <- function(df = NULL, mission=NULL){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 keepFieldsBaskets <- function(df = NULL, mission=NULL){
-  
+  #ship_speed_obtained_code
   df <- df[,c("set_number",
-              "SPEC",
-              "size_class",
-              "basket_wt_kg",
-              "id",
+              "catch_code",
+              "basket_uuid",
+              "basket_id",
               "catch_id",
-              "sampled")] 
-  
-  colnames(df)[colnames(df)=="id"] <- "basket_id"
+              "was_sampled",
+              "sample_class",
+              "adjusted_basket_weight_kg",
+              "measured_specimen_count",
+              "adjusted_unmeasured_specimen_count"
+              )] 
+
   df <- data.frame(MISSION = mission, df)
   return(df)
 }

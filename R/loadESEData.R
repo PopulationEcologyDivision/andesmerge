@@ -18,8 +18,8 @@
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 loadESEData <- function(cxnObj = NULL, source_df= NULL, target_table = NULL, confirmOverwrite = F){
-  
-  if (cxnObj$usepkg=='rodbc') stop("Sorry - rodbc is not supported, please create an roracle connection")
+  thecmd = Mar.utils::connectionCheck(cxnObj)
+  # if (cxnObj$usepkg=='rodbc') stop("Sorry - rodbc is not supported, please create an roracle connection")
   thisMission <- source_df$MISSION[1]
   dryRun <- T
   dfNm <-deparse(substitute(source_df))
@@ -133,7 +133,7 @@ DATA_DESC VARCHAR2(255)
     #remove the old table
     tryDeleteTabs = tryCatch(
       {
-        DBI::dbRemoveTable(cxnObj$channel, target_table)
+        DBI::dbRemoveTable(cxn, target_table)
       },
       error=function(cond){
         message(cond)
@@ -148,7 +148,7 @@ DATA_DESC VARCHAR2(255)
     #create a new, specifically defined, empty table
     tryCreate = tryCatch(
       {
-        DBI::dbGetQuery(cxnObj$channel, create_table)
+        DBI::dbGetQuery(cxn, create_table)
       },
       error=function(cond){
         message(cond)
@@ -164,7 +164,7 @@ DATA_DESC VARCHAR2(255)
     #about to write new andesmerge data into ESE tables - make sure no records exist for the current mission...
     tryDeleteRecs = tryCatch(
       {
-        DBI::dbGetQuery(cxnObj$channel, delete_recs)
+        DBI::dbGetQuery(cxn, delete_recs)
       },
       error=function(cond){
         message(cond)
@@ -181,7 +181,7 @@ DATA_DESC VARCHAR2(255)
   ##### dry run or not, we will now load the data into the tables 
   tryLoad = tryCatch(
     {
-      DBI::dbGetQuery(cxnObj$channel, ins_str, source_df)
+      DBI::dbGetQuery(cxn, ins_str, source_df)
     },
     error=function(cond){
       message(cond)
@@ -197,7 +197,7 @@ DATA_DESC VARCHAR2(255)
   
   tryCommit = tryCatch(
     {
-      DBI::dbCommit(cxnObj$channel)
+      DBI::dbCommit(cxnObj)
     },
     error=function(cond){
       message(cond)

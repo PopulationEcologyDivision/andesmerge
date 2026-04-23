@@ -11,6 +11,12 @@ tweakUniversal <- function(x = NULL, mission=NULL){
   theMsg <- NA
   #get rid of text species name for overwritten spp, we will really entirely on the species codes
   x$catch_data$species <- x$catch_data$species_id <- NULL
+  if (mission =="CAR2024010"){
+    x$mrg <- x$mrg[!x$mrg$specimen_id ==78307,]
+    x$specimen_data <- x$specimen_data[!x$specimen_data$specimen_id ==78307,]
+    x$observation_data <- x$observation_data[!x$observation_data$specimen_id ==78307,]
+    x$specimen_and_observation_data <-  x$specimen_and_observation_data[!x$specimen_and_observation_data$specimen_id==78307,]
+  }
   if (mission =="CAR2023011"){
     
     #•	Delete specimen_id 23286 from all tables.  Setno 47, spec 11, length 1 (23286)
@@ -223,7 +229,7 @@ tweakUniversal <- function(x = NULL, mission=NULL){
   }
   
   if(mission == "CAB2022010"){  
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemapping species in  the catch_, basket and speciment_ data\n")
+    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemapping species in  the catch_, basket_ and specimen_ data\n")
     #Mar varies from Gulf
     x$basket_data[x$basket_data$SPEC==7706,"SPEC"] <- c(8382)
     x$basket_data[x$basket_data$SPEC==7712,"SPEC"] <- c(8367)
@@ -409,6 +415,11 @@ tweakUniversal <- function(x = NULL, mission=NULL){
 tweakBaskets <- function(x = NULL){
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   theMsg <- NA
+  if(x$MISSION[1] == "CAR2024010"){
+    x[x$SETNO ==23 & x$catch_code == 8601, "SAMPLED"] <- F
+    
+    x[x$SETNO ==84 & x$catch_code == 13,"BASKET_WEIGHT_e"]<-0.065
+  }
   if(x$MISSION[1] == "CAR2023011"){
     #as requested by Jamie in "CAR2023011 Post Survey Processing.docx"
     x[x$SETNO==56 & x$SPEC == 2555, "SAMPLED"] <- F
@@ -451,6 +462,7 @@ tweakBaskets <- function(x = NULL){
   }
   if(x$MISSION[1] == "VEN2023001"){
   }
+  
   if (!is.na(theMsg)) message("Tweaking BASKET: \n", theMsg)
   return(x)
 }
@@ -514,142 +526,164 @@ tweakCatches <- function(x = NULL){
 tweakSpecimensRaw <- function(x = NULL){
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   theMsg <- NA
-  x$species_aphia_id <- NULL
-  # theMsg <- paste0(theMsg[!is.na(theMsg)], "\tBerried female crabs and lobsters recoded to 3\n")
-  x[which(x$sex==2 & (x$crab.female.eggs == 1 | x$lobster.female.eggs==1)), "sex"] <-3
-  if(nrow(x[which(x$sex==1 & (x$crab.female.eggs == 1 | x$lobster.female.eggs==1)), ]))warning("Berried Males detected")
-  if(x$MISSION[1] == "TEL2023010"){
-    x[x$id==4690,"weight"]<-0.5
-    x[x$id==4696,"weight"]<-0.5
-    x[x$id==4699,"weight"]<-0.5
-    x[x$id==22537,"weight"]<-13
-    x[x$id==24812,"length"]<-230
-    # •	Setno 3, spec 610, specimen_id 4690 – update weight to 0.5
-    # •	Setno 3, spec 610, specimen_id 4696 – update weight to 0.5
-    # •	Setno 3, spec 610, specimen_id 4699 – update weight to 0.5
-    # •	Setno 40, spec 14, specimen_id 22537 – update weight to 13
-    #•	Setno 44, spec 60, specimen_id 24812 – update length to 230
-    
-    x[x$id==75096,"gonad.weight"] <- 2
-    x[x$id==75846,"gonad.weight"] <- 2670
-    x[x$id==75846,"collect.gonads"] <- 1
-    # •	Setno 214, spec 30, specimen_id 75096 – update gonad weight to 2
-    # •	Setno 219, spec 30, specimen_id 75846 – update gonad weight to 2670, update collect gonads to 1 and data desc = collected
-    
-    x[x$id==25131,"sex"]<-0
-    x[x$id==72792,"sex"]<-0
-    # •	Setno 45, spec 2550, specimen_id 25131 – update sex to 0 (undetermined)
-    # •	Setno 209, spec 41, specimen_id 72792 – update sex to 0 (undetermined)
-    
-  }
-  if(x$MISSION[1] == "CAR2023002"){
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving Fish Numbers from Mackerel records\n") 
-    # •	Set 171, spec 11, specimen id 71795 – length entered as 0.30.  Update length to 30
-    x[x$id==71795,"length"]<-30
-    # •	Set 17 – spec 11, specimen id 5022, change weight to 217
-    x[x$id==5022,"weight"]<-217
-    # •	Set 11 – spec 4511, specimen id 3709, remove the weight observation
-    x[x$id==3709,"weight"]<-NA
-    # •	Set 104 – spec 303, specimen id 37264, change weight to 1.5
-    x[x$id==37264,"weight"]<-1.5
-    # •	Set 65 – spec 303, specimen id 19640, Change weight to 0.5
-    x[x$id==19640,"weight"]<-0.5
-    # •	Set 153 – spec 14, specimen id 63547, Change weight to 0.5
-    x[x$id==63547,"weight"]<-0.5
-    # •	Set 69 – spec 150, specimen id 22031, change weight to 4
-    x[x$id==22031,"weight"]<-4
-    # •	Set 189 – spec 340, specimen id 30865, change weight to 1.5
-    x[x$id==30865,"weight"]<-1.5
-    # •	Set 167, spec 410, specimen id 70480, Change weight to 0.5
-    x[x$id==70480,"weight"]<-0.5
-    # •	Set 166, spec 410, specimen id 70267, Change weight to 0.5
-    x[x$id==70267,"weight"]<-0.5
-    # •	Set 166, spec 410, specimen id 70272, Change weight to 0.5
-    x[x$id==70272,"weight"]<-0.5
-    # •	Set 166, spec 410, specimen id	70277, Change weight to 0.5
-    x[x$id==70277,"weight"]<-0.5
-    # •	Set 166, spec 410, specimen id	70283, Change weight to 0.5
-    x[x$id==70283,"weight"]<-0.5
-    # •	Set 167, spec 604, specimen id	70566, Change weight to 0.5
-    x[x$id==70566,"weight"]<-0.5
-    # •	Set 7, spec 44, specimen id 1231, change weight from .5 to 0.5
-    x[x$id==1231,"weight"]<-0.5
-    # •	Set 24, spec 143, specimen id 6483, change weight from .5 to 0.5
-    x[x$id==6483,"weight"]<-0.5
-    # •	Set 47, spec 60, specimen id 11696, change length from 376 to 276
-    x[x$id==11696,"length"]<-276
-    
-    #SET 29. SPEC 4321, SPECIMEN ID 7713
-    x <- x[-which(x$id == 7713),]
-    #SETNO 7, SPEC 2541, SPECIMEN ID 1094,
-    x <- x[-which(x$id == 1094),]
-  }
-  if(x$MISSION[1] == "CAR2022102"){
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving Fish Numbers from Mackerel records\n")
-    x[x$species_code == 70,"fish_number"] <- NA
-    
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving comments created solely to generate labels\n")
-    commentsDrop <- c(".", "1", "edrftgujik", "fdgj", "fgjh", "rdfyg", "srdtfygvuh")
-    x[x$comment %in% commentsDrop,"comment"]<- NA
-    x[x$comments %in% commentsDrop,"comments"]<- NA
-    
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 44/Spec 1191/Specimen id 14496: Removing incorrect length\n")
-    x[x$id == 14496,"length"] <- NA
-    
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 26/Spec   14/Specimen id  9332: Weight corrected to grams\n")
-    x[x$id == 9332,"weight"] <- x[x$id == 9332,"weight"]*1000 
-    
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 49/Spec   11/Specimen id  16236: No useful info entered - deleted\n")
-    x <- x[-which(x$id == 16236),]
-    
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSpec 60: Several sets list weight as less than <0.5g - the smallest precision available.  Bump all of these up to 0.5g\n")
-    x[which(x$species_code == 60 & x$weight <0.5),"weight"] <- 0.5
-    
-  }
-  if(x$MISSION[1] == "TEL2022010"){
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 133 - removed a duplicate sunfish record")
-    x <- x[!x$id %in% 49411,]
-    
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving some bad records")
-    x <- x[!x$id %in% 49475,]
-    x <- x[!x$id %in% 20427,]
-    x <- x[!x$id %in% 14656,]
-  }
+  x$aphia_id <- NULL
   
-  if(x$MISSION[1] == "CAB2022010"){
-    theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 46 - The first 30 'silver hake' records are actually dogfish (fixed)")
-    x<- x[with(x,order(id)),]
-    x[x$set_number == 46 & x$SPEC == 14,][1:30,"SPEC"]<- 220
-    
-    #remove specimens with length = 0
-    x <- x[!x$id==34724,]
-    x <- x[!x$id==34744,]
-    #certain 0cm lengths should be 10cm
-    x[x$id==35107,"length"]<-10
-    x[x$id==31275,"length"]<-10
-    x[x$id==47775,"length"]<-10
-    x[x$id==32839,"length"]<-10
-    x[x$id==27596,"length"]<-10
-    #likely typo - length should be 250 (not 25)
-    x[x$id==17577,"length"]<-250
-    
-    #lobsters measured as less than 3mm are likely typos
-    x<-x[!(x$SPEC == 2550 & x$length <3),]
-    #some entries for the following spp had tiny lengths - almost certainly typos
-    x<-x[!(x$SPEC %in% c(11,13,14,23, 1191) & x$length <3),]
+  x[which(x$sex==2 & (x$crab_female_eggs == 1 | x$lobster_female_eggs==1)), "sex"] <-3
+  if(nrow(x[which(x$sex==1 & (x$crab_female_eggs == 1 | x$lobster_female_eggs==1)), ]))warning("Berried Males detected")
+  
+  x[which(x$sex==9),  "sex"] <-0
+  
+  if(x$MISSION[1] == "CAR2024010"){
+    x[x$specimen_id==8980,"weight"]<-0.5
+    x[x$specimen_id==40979,"weight"]<-0.5
+    x[x$specimen_id==40981,"weight"]<-0.5
+    x[x$specimen_id==78307,"weight"]<-0.5
+    x[x$specimen_id==87471,"weight"]<-0.5
     
     
+    x[x$specimen_id==17322,"weight"]<-1
+    x[x$specimen_id==20075,"weight"]<-1
+    x[x$specimen_id==87471,"weight"]<-2
+    
+    x[x$specimen_id==38318,"weight"]<-9920
+    x[x$specimen_id==994,"weight"]<-10
+    
+    
+    x[x$specimen_id==62428,"weight"]<-11560
+    x[x$specimen_id==41141,"weight"]<-390
   }
-  if(x$MISSION[1] == "VEN2023001"){
-    #changes requested following Jamie Emberley's initial QC
-    x <- x[!x$id==4098,]
-    x <- x[!x$id==14617,]
-    x <- x[!x$id==17226,]
-    x[x$id==3315,"weight"]<- 2 #0.002 to 2
-    x[x$id==9641,"weight"]<- 5 #0.0005 to 5
-    x[x$id==14872,"sex"] <- 0 #too small to have been sexed
-    x[x$id==20014,"weight"] <- 264 #likely typo in wgt
-  }
+  # if(x$MISSION[1] == "TEL2023010"){
+  #   x[x$id==4690,"weight"]<-0.5
+  #   x[x$id==4696,"weight"]<-0.5
+  #   x[x$id==4699,"weight"]<-0.5
+  #   x[x$id==22537,"weight"]<-13
+  #   x[x$id==24812,"length"]<-230
+  #   # •	Setno 3, spec 610, specimen_id 4690 – update weight to 0.5
+  #   # •	Setno 3, spec 610, specimen_id 4696 – update weight to 0.5
+  #   # •	Setno 3, spec 610, specimen_id 4699 – update weight to 0.5
+  #   # •	Setno 40, spec 14, specimen_id 22537 – update weight to 13
+  #   #•	Setno 44, spec 60, specimen_id 24812 – update length to 230
+  #   
+  #   x[x$id==75096,"gonad.weight"] <- 2
+  #   x[x$id==75846,"gonad.weight"] <- 2670
+  #   x[x$id==75846,"collect.gonads"] <- 1
+  #   # •	Setno 214, spec 30, specimen_id 75096 – update gonad weight to 2
+  #   # •	Setno 219, spec 30, specimen_id 75846 – update gonad weight to 2670, update collect gonads to 1 and data desc = collected
+  #   
+  #   x[x$id==25131,"sex"]<-0
+  #   x[x$id==72792,"sex"]<-0
+  #   # •	Setno 45, spec 2550, specimen_id 25131 – update sex to 0 (undetermined)
+  #   # •	Setno 209, spec 41, specimen_id 72792 – update sex to 0 (undetermined)
+  #   
+  # }
+  # if(x$MISSION[1] == "CAR2023002"){
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving Fish Numbers from Mackerel records\n") 
+  #   # •	Set 171, spec 11, specimen id 71795 – length entered as 0.30.  Update length to 30
+  #   x[x$id==71795,"length"]<-30
+  #   # •	Set 17 – spec 11, specimen id 5022, change weight to 217
+  #   x[x$id==5022,"weight"]<-217
+  #   # •	Set 11 – spec 4511, specimen id 3709, remove the weight observation
+  #   x[x$id==3709,"weight"]<-NA
+  #   # •	Set 104 – spec 303, specimen id 37264, change weight to 1.5
+  #   x[x$id==37264,"weight"]<-1.5
+  #   # •	Set 65 – spec 303, specimen id 19640, Change weight to 0.5
+  #   x[x$id==19640,"weight"]<-0.5
+  #   # •	Set 153 – spec 14, specimen id 63547, Change weight to 0.5
+  #   x[x$id==63547,"weight"]<-0.5
+  #   # •	Set 69 – spec 150, specimen id 22031, change weight to 4
+  #   x[x$id==22031,"weight"]<-4
+  #   # •	Set 189 – spec 340, specimen id 30865, change weight to 1.5
+  #   x[x$id==30865,"weight"]<-1.5
+  #   # •	Set 167, spec 410, specimen id 70480, Change weight to 0.5
+  #   x[x$id==70480,"weight"]<-0.5
+  #   # •	Set 166, spec 410, specimen id 70267, Change weight to 0.5
+  #   x[x$id==70267,"weight"]<-0.5
+  #   # •	Set 166, spec 410, specimen id 70272, Change weight to 0.5
+  #   x[x$id==70272,"weight"]<-0.5
+  #   # •	Set 166, spec 410, specimen id	70277, Change weight to 0.5
+  #   x[x$id==70277,"weight"]<-0.5
+  #   # •	Set 166, spec 410, specimen id	70283, Change weight to 0.5
+  #   x[x$id==70283,"weight"]<-0.5
+  #   # •	Set 167, spec 604, specimen id	70566, Change weight to 0.5
+  #   x[x$id==70566,"weight"]<-0.5
+  #   # •	Set 7, spec 44, specimen id 1231, change weight from .5 to 0.5
+  #   x[x$id==1231,"weight"]<-0.5
+  #   # •	Set 24, spec 143, specimen id 6483, change weight from .5 to 0.5
+  #   x[x$id==6483,"weight"]<-0.5
+  #   # •	Set 47, spec 60, specimen id 11696, change length from 376 to 276
+  #   x[x$id==11696,"length"]<-276
+  #   
+  #   #SET 29. SPEC 4321, SPECIMEN ID 7713
+  #   x <- x[-which(x$id == 7713),]
+  #   #SETNO 7, SPEC 2541, SPECIMEN ID 1094,
+  #   x <- x[-which(x$id == 1094),]
+  # }
+  # if(x$MISSION[1] == "CAR2022102"){
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving Fish Numbers from Mackerel records\n")
+  #   x[x$species_code == 70,"fish_number"] <- NA
+  #   
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving comments created solely to generate labels\n")
+  #   commentsDrop <- c(".", "1", "edrftgujik", "fdgj", "fgjh", "rdfyg", "srdtfygvuh")
+  #   x[x$comment %in% commentsDrop,"comment"]<- NA
+  #   x[x$comments %in% commentsDrop,"comments"]<- NA
+  #   
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 44/Spec 1191/Specimen id 14496: Removing incorrect length\n")
+  #   x[x$id == 14496,"length"] <- NA
+  #   
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 26/Spec   14/Specimen id  9332: Weight corrected to grams\n")
+  #   x[x$id == 9332,"weight"] <- x[x$id == 9332,"weight"]*1000 
+  #   
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 49/Spec   11/Specimen id  16236: No useful info entered - deleted\n")
+  #   x <- x[-which(x$id == 16236),]
+  #   
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSpec 60: Several sets list weight as less than <0.5g - the smallest precision available.  Bump all of these up to 0.5g\n")
+  #   x[which(x$species_code == 60 & x$weight <0.5),"weight"] <- 0.5
+  #   
+  # }
+  # if(x$MISSION[1] == "TEL2022010"){
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 133 - removed a duplicate sunfish record")
+  #   x <- x[!x$id %in% 49411,]
+  #   
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tRemoving some bad records")
+  #   x <- x[!x$id %in% 49475,]
+  #   x <- x[!x$id %in% 20427,]
+  #   x <- x[!x$id %in% 14656,]
+  # }
+  # 
+  # if(x$MISSION[1] == "CAB2022010"){
+  #   theMsg <- paste0(theMsg[!is.na(theMsg)], "\tSet 46 - The first 30 'silver hake' records are actually dogfish (fixed)")
+  #   x<- x[with(x,order(id)),]
+  #   x[x$set_number == 46 & x$SPEC == 14,][1:30,"SPEC"]<- 220
+  #   
+  #   #remove specimens with length = 0
+  #   x <- x[!x$id==34724,]
+  #   x <- x[!x$id==34744,]
+  #   #certain 0cm lengths should be 10cm
+  #   x[x$id==35107,"length"]<-10
+  #   x[x$id==31275,"length"]<-10
+  #   x[x$id==47775,"length"]<-10
+  #   x[x$id==32839,"length"]<-10
+  #   x[x$id==27596,"length"]<-10
+  #   #likely typo - length should be 250 (not 25)
+  #   x[x$id==17577,"length"]<-250
+  #   
+  #   #lobsters measured as less than 3mm are likely typos
+  #   x<-x[!(x$SPEC == 2550 & x$length <3),]
+  #   #some entries for the following spp had tiny lengths - almost certainly typos
+  #   x<-x[!(x$SPEC %in% c(11,13,14,23, 1191) & x$length <3),]
+  #   
+  #   
+  # }
+  # if(x$MISSION[1] == "VEN2023001"){
+  #   #changes requested following Jamie Emberley's initial QC
+  #   x <- x[!x$id==4098,]
+  #   x <- x[!x$id==14617,]
+  #   x <- x[!x$id==17226,]
+  #   x[x$id==3315,"weight"]<- 2 #0.002 to 2
+  #   x[x$id==9641,"weight"]<- 5 #0.0005 to 5
+  #   x[x$id==14872,"sex"] <- 0 #too small to have been sexed
+  #   x[x$id==20014,"weight"] <- 264 #likely typo in wgt
+  # }
   if (!is.na(theMsg)) message("Tweaking specimen_data: \n", theMsg)
   return(x)
 }
@@ -665,13 +699,28 @@ tweakSpecimensRaw <- function(x = NULL){
 tweakSets <- function(x = NULL){
   if(length(unique(x$MISSION)) > 1) stop("The object sent has more than one mission in it, abort")
   theMsg <- NA
+
+  if(any(x$GEAR == 23, na.rm = TRUE)) x[x$GEAR==23,"GEAR"] <- 15
+  x[,"SLONG"]<-x[,"SLONG"]*-1
+  x[,"ELONG"]<-x[,"ELONG"]*-1
+
   if(x$MISSION[1] == "CAR2023011"){
     x[x$SETNO %in% c(1,216), "EXPERIMENT_TYPE_CODE"] <- 9 
     x[x$SETNO %in% c(1,216), "STATION"] <- NA 
     x[x$SETNO %in% c(1,216), "NOTE"] <- trimws(paste(x[x$SETNO %in% c(1,216), "NOTE"], "HFX HYD"))
     x[x$EXPERIMENT_TYPE_CODE %in% c(1), "EXPERIMENT_TYPE_CODE"]<-5 
-
   }
+  if(x$MISSION[1] == "CAR2024010"){
+    x[x$SETNO %in% c(19), "remarks"] <- "Andes bottom and recovered times missed for ctd. Crossed NAFO line from 5Zej to 5Zem near end of tow" 
+    x[x$SETNO %in% c(105), "remarks"] <- "Sampling on the slope.  Sounding when start was 346 and sampled at 410m. slope area.  Crossed stratum line near end of tow.  Bulk of tow in correct stratum"
+    x[x$SETNO %in% c(195), "remarks"] <- "Had to tow outside range near station due to bottom depth change" 
+
+    x[x$SETNO %in% c(13), "START_TIME"] <- "0320"
+    x[x$SETNO %in% c(13), "start_date_utc"]<- x[x$SETNO %in% c(13), "start_date_utc"] + (as.difftime(1, units = "mins") + as.difftime(40, units = "secs"))
+    
+    x[x$SETNO %in% c(13), "start_date_loc"] <- x[x$SETNO %in% c(13), "start_date_loc"] + (as.difftime(1, units = "mins") + as.difftime(40, units = "secs"))
+  }
+  
   if(x$MISSION[1] == "TEL2023010"){
     theMsg <- paste0(theMsg[!is.na(theMsg)], "\tUsed manually recorded distance for  sets 222 to 234\n")
     x[x$SETNO %in% c(222:234),"DIST"]<- x[x$SETNO%in% c(222:234),"distance_towed"]
@@ -839,7 +888,7 @@ tweakBasketsPostProcessing <- function(basket=NULL, lv1 = NULL){
     basket[which(basket$BASKET_WEIGHT<0.0005 & !basket$SAMPLED),"BASKET_WEIGHT"] <- 0.0005
   }
   if (length(badBasksSampled)>0){
-    message("\tOne or more sampled baskets reporting a weight lower than the minimum were bumped up using recorded speciment weights\n\n")
+    message("\tOne or more sampled baskets reporting a weight lower than the minimum were bumped up using recorded specimen weights\n\n")
     for (i in 1:length(badBasksSampled)){
       thisBasketSampled <- basket[basket$basket_id %in% badBasksSampled[i],]
       thisBasketSampledSpecimensWeight <- as.numeric(lv1[lv1$basket_id %in% badBasksSampled[i] & lv1$LV1_OBSERVATION == "Weight","DATA_VALUE"])

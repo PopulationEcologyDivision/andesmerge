@@ -17,6 +17,7 @@ Other internal:
 \code{\link{charToBinary}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
+\code{\link{convertFORCE}()},
 \code{\link{getEseTables}()},
 \code{\link{get_value}()},
 \code{\link{keepFieldsBaskets}()},

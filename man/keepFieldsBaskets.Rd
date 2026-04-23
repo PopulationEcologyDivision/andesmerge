@@ -21,6 +21,7 @@ Other internal:
 \code{\link{cleanEse}()},
 \code{\link{cleanStrata}()},
 \code{\link{cleanfields}()},
+\code{\link{convertFORCE}()},
 \code{\link{getEseTables}()},
 \code{\link{get_value}()},
 \code{\link{keepFieldsCatches}()},

@@ -17,22 +17,19 @@ Imports:
     dplyr,
     lubridate,
     Mar.utils,
-    RVSurveyData,
     sf,
     spatstat.geom,
     spatstat.random,
     stringi,
 	  tidyr,
-	  utils,
-    xlsx
+	  utils
 Enhances: 
   ROracle,
   DBI
 Remotes: 
-  Maritimes/Mar.utils,
-  PopulationEcologyDivision/RVSurveyData
+  Maritimes/Mar.utils
 Encoding: UTF-8
 License: MIT + file LICENSE
 URL: https://github.com/pevweb/andesmerge/
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 LazyData: true

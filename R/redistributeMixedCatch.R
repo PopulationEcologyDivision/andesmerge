@@ -9,7 +9,6 @@ redistributeMixedCatch2 <- function(catch=NULL, basket = NULL, quiet=T){
   x <- list()
   message("Mixed catches:")
   theMsg <- NA
-  
   #there may be cases where we don't want to apply redistribution to certain baskets/catches
   #pull off such records, but retain them as ignored*, and then add them back on again after processing
   
@@ -23,13 +22,17 @@ redistributeMixedCatch2 <- function(catch=NULL, basket = NULL, quiet=T){
   dontRedistributeCatch <- catch[catch$MISSION=="TEL2023010" & catch$SETNO==217 & catch$SIZE_CLASS==1 & catch$SPEC %in% c(2521, 2526, 6411),]
   ignoredCatch <- rbind.data.frame(ignoredCatch, dontRedistributeCatch)
   catch <- df.diff(catch, ignoredCatch)
+  
+
   #if we've ignored a catch, then we should not use the (merged) number caught for the bum up
   catch[paste0(catch$MISSION, catch$SETNO, catch$SPEC) %in% paste0(ignoredCatch$MISSION, ignoredCatch$SETNO, ignoredCatch$SPEC),"NUMBER_CAUGHT"] <- NA
   
   
   allCatchParents <- catch[catch$is_parent==T,]
-  allCatchChildren<- catch[catch$parent_catch_id %in% allCatchParents$catch_id,]
-  # print(allCatchChildren[allCatchChildren$SETNO==217 & allCatchChildren$SPEC == 6211,])
+  # browser()
+  # allCatchChildren<- catch[catch$parent_catch_id %in% allCatchParents$catch_id,]
+  allCatchChildren<- catch[catch$catch_id %in% allCatchParents$catch_id,]
+  
   if (nrow(allCatchChildren)<1){
     if(!quiet) message("(No mixed catches found - skipping subsampling)")
     x$basket <- basket

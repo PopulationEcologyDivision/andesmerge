@@ -28,37 +28,16 @@ transmogrifyMissions  <- function(df = NULL){
 #' @family internal
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifySets      <- function(df = NULL){
-  #####
-  valid.exp.num = c(1, 5, 6, 7, 9, 99)
-
-  if (nrow(#df[!(as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", df$experiment_type)) %in% valid.exp.num) &
-    df[df$start_latitude_DD > 90 | (is.na(df$crow_distance) &
-             is.na(df$start_latitude_DD) &
-             is.na(df$start_latitude_MMmm)&
-             is.na(df$start_longitude_DD) &
-             is.na(df$start_longitude_MMmm ) &
-             is.na(df$end_latitude_DD) &
-             is.na(df$end_latitude_MMmm) &
-             is.na(df$end_longitude_DD) &
-             is.na(df$end_longitude_MMmm)),])>0){
-    stoppedSets<- data.frame()
-    stoppedSets<- #df[!(as.numeric(gsub("(^[0-9]{1,2})(.*$)", "\\1", df$experiment_type)) %in% valid.exp.num) &
-                    df[df$start_latitude_DD > 90 | (is.na(df$crow_distance) &
-                      is.na(df$start_latitude_DD) &
-                      is.na(df$start_latitude_MMmm)&
-                      is.na(df$start_longitude_DD) &
-                      is.na(df$start_longitude_MMmm ) &
-                      is.na(df$end_latitude_DD) &
-                      is.na(df$end_latitude_MMmm) &
-                      is.na(df$end_longitude_DD) &
-                      is.na(df$end_longitude_MMmm)),]
-    if (nrow(stoppedSets) > 0 ){
-      message("The following set(s) were detected that had almost no information, or glaringly incorrect latitudes.  These were likely started accidentally and will be dropped")
-      print(stoppedSets)
-      df <-setdiff(df,stoppedSets)
-    }
+  stoppedSets <- df[df$start_latitude_dd > 90 | (is.na(df$calculated_distance_nm_xy) &
+                                                   is.na(df$start_latitude_dd) &
+                                                   is.na(df$start_longitude_dd) &
+                                                   is.na(df$end_latitude_dd) &
+                                                   is.na(df$end_longitude_dd)),]
+  if(nrow(stoppedSets)>0){
+    message("The following set(s) were detected that had almost no information, or glaringly incorrect latitudes.  These were likely started accidentally and will be dropped")
+    print(stoppedSets)
+    df <- dplyr::anti_join(df, stoppedSets, by = names(stoppedSets))
   }
-  #####
   theMsg <- NA
   colnames(df)[colnames(df)=="set_number"] <- "SETNO"
   df$start_date_utc          <- as.POSIXlt(df$start_date, tz="UTC",format = "%Y-%m-%d %H:%M:%S")
@@ -67,33 +46,33 @@ transmogrifySets      <- function(df = NULL){
   df$end_date_loc            <- lubridate::with_tz(df$end_date_utc, tz="America/Halifax")
   df$START_DATE              <- format.Date(strftime(df$start_date_loc), format = "%d%m%Y")
   df$END_DATE                <- format.Date(strftime(df$end_date_loc), format = "%d%m%Y")
-  df$START_TIME              <- as.character(df$start_date_loc , format = '%H%M')
-  df$END_TIME                <- as.character(df$end_date_loc , format = '%H%M')
+  df$START_TIME              <- format(df$start_date_loc , format = '%H%M')
+  df$END_TIME                <- format(df$end_date_loc , format = '%H%M')
   df$STRAT                   <- cleanStrata(df$stratum)
-  df$SLAT                    <- paste0(df$start_latitude_DD,sprintf("%05.2f",df$start_latitude_MMmm))  #sprintf used to ensure leading zeroes added as necessary.
-  df$SLONG                   <- paste0(abs(df$start_longitude_DD),sprintf("%05.2f",df$start_longitude_MMmm))
-  df$ELAT                    <- paste0(df$end_latitude_DD,sprintf("%05.2f",df$end_latitude_MMmm))
-  df$ELONG                   <- paste0(abs(df$end_longitude_DD),sprintf("%05.2f",df$end_longitude_MMmm))
-  df$SLAT_dd                 <- df$start_latitude_DD+(df$start_latitude_MMmm/60)
-  df$SLONG_dd                <- abs(abs(df$start_longitude_DD)+(df$start_longitude_MMmm/60))*-1
-  df$DIST                    <- df$crow_distance
-  df$HOWD                    <- as.numeric(stringi::stri_extract_first_regex(df$distance_towed_obtained_code, "[0-9]+"))
-  if (any(grepl("4 - ", c(df$ship_speed_obtained_code,df$distance_towed_obtained_code))))theMsg <- 'Assuming entries of "4 - LORAN bearings or GPS" for HOWD/HOWS should be  "0 - GPS"'
-  df[df$HOWD==4,"HOWD"] <- 0
-  # df$SPEED                 <- round(df$ship_speed,2)
-  # df$HOWS                  <- convertHOWOBT(df$ship_speed_obtained_code)
-  df$SPEED                   <- round(df$speed,2)
-  df$HOWS                    <- 0 #hardcoding GPS
-  df$DMIN                    <- NA # = df$dmin/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
-  df$DMAX                    <- NA # = df$dmax/1.8288 # MMM - converting from meters to fathoms, but not sure what it would map to yet
+  df$SLAT_dd                 <- df$start_latitude_dd
+  df$SLONG_dd                <- df$start_longitude_dd
+  df$SLAT                    <- convert_to_DDMM(df$start_latitude_dd)
+  df$SLONG                   <- convert_to_DDMM(df$start_longitude_dd)
+  # df$SLAT                   coords in DDMM.MM - not sure if necess for anything
+  # df$SLONG                  coords in DDMM.MM
+  df$ELAT                    <- convert_to_DDMM(df$end_latitude_dd)   
+  df$ELONG                   <- convert_to_DDMM(df$end_longitude_dd)
+  df$DIST                    <- df$calculated_distance_nm_xy
+  df$HOWD                    <- df$distance_towed_obtained_code
+  df$HOWS                   <- df$ship_speed_obtained_code
+  # 'Assuming entries of "4 - LORAN bearings or GPS" for HOWD/HOWS should be  "0 - GPS"'
+  df[which(df$HOWD==4),"HOWD"] <- 0
+  df[which(df$HOWS==0),"HOWS"] <- 0
+  df$SPEED                   <- round(df$ship_speed,2)
+  df$DMIN                    <- round(meters2Fathoms(df$min_depth_m),0)
+  df$DMAX                    <- round(meters2Fathoms(df$max_depth_m),0)
   df$START_DEPTH             <- round(meters2Fathoms(df$start_depth_m),0)
   df$END_DEPTH               <- round(meters2Fathoms(df$end_depth_m),0)
-  df$WIND                    <- df$wind_direction_degree          # MMM - verified that actual degree is entered 
-  # df$FORCE                   <- convertFORCE(df$wind_force_code)  # MMM - force of "9" is actually NA
-  df$FORCE                    <- as.numeric(stringi::stri_extract_first_regex(df$wind_force_code, "[0-9]+"))
-  df[which(df$FORCE==9),"FORCE"] <- NA
+  df$WIND                    <- df$wind_direction_degree        # MMM - verified that actual degree is entered 
+  df$FORCE                  <- convertFORCE(df$wind_force_kts)
   df$CURNT                   <- as.numeric(stringi::stri_extract_first_regex(df$tide_direction_code, "[0-9]+")) #df$tide_direction_code            # verified
   df$EXPERIMENT_TYPE_CODE    <- setExperimentType(df)
+  # browser()
   df$GEAR                    <- as.numeric(stringi::stri_extract_first_regex(df$gear_type, "[0-9]+"))  #assume this is correct (and not gear_type_id)
   df$AUX                     <- as.numeric(stringi::stri_extract_first_regex(df$auxiliary_equipment, "[0-9]+"))
   df$WARPOUT                 <- round(meters2Fathoms(df$port_warp),0)
@@ -110,24 +89,14 @@ transmogrifySets      <- function(df = NULL){
   df$LIGHT_LEVEL_CODE        <- NA
   df$GEAR_MONITOR_DEVICE_CODE<- NA
   
-  if(df$MISSION[1] == "TEL2023010"){
-    df[df$SETNO %in% c(232),"SLAT"]                  <- round(4426.07017,2)
-    df[df$SETNO %in% c(232),"SLAT_dd"]               <- 44.434503
-    df[df$SETNO %in% c(232),"start_latitude_DD"  ]   <- 44
-    df[df$SETNO %in% c(232),"start_latitude_MMmm"]   <- 26.07017
-    df[df$SETNO %in% c(232),"SLONG"]                 <- round(5721.16031,2)
-    df[df$SETNO %in% c(232),"SLONG_dd"]              <- -57.352672
-    df[df$SETNO %in% c(232),"start_longitude_DD"]    <- -57
-    df[df$SETNO %in% c(232),"start_longitude_MMmm"]  <- 21.16031 
-  }
-  df <- Mar.utils::identify_area(df, lat.field = "SLAT_dd", lon.field = "SLONG_dd", agg.poly.shp = RVSurveyData::nafo_sf, agg.poly.field = "AREA_ID")
+  df <- Mar.utils::identify_area(df, lat.field = "SLAT_dd", lon.field = "SLONG_dd", agg.poly.shp = Mar.data::NAFOSubunits_sf, agg.poly.field = "AREA_ID")
   colnames(df)[colnames(df)=="AREA_ID"] <- "AREA"
-  df[df$AREA %in% "<outside known areas>", "AREA"] <- NA
+  df[df$AREA %in% c("<outside known areas>","<missing coord>"), "AREA"] <- NA
   if (any(is.na(df$AREA))){
     warning("One or more sets could not be assigned to a NAFO area.")
   }
   df$AREA <- as.integer(df$AREA)
-  if (!is.na(theMsg)) message("SETS (General): \n\t", theMsg,"\n")
+  if (!any(is.na(theMsg))) message("SETS (General): \n\t", theMsg,"\n")
   return(df)
 }
 #' @title transmogrifyBaskets
@@ -139,15 +108,14 @@ transmogrifySets      <- function(df = NULL){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyBaskets   <- function(df = NULL){
   theMsg <- NA
-  df$sampled <-charToBinary(df$sampled, bool=T)
-  # df$sampled <- tolower(df$sampled)
-  # df$sampled <- ifelse(df$sampled == "true", T, ifelse(df$sampled == "false", F, NA))
+  df <- df[df$catch_code!=9990,]
+  df$was_sampled <-charToBinary(df$was_sampled, bool=T)
   colnames(df)[colnames(df)=="set_number"]    <- "SETNO"
-  colnames(df)[colnames(df)=="size_class"]    <- "SIZE_CLASS"
-  colnames(df)[colnames(df)=="basket_wt_kg"]  <- "BASKET_WEIGHT"  
-  colnames(df)[colnames(df)=="sampled"]       <- "SAMPLED"
-  #match expected field order
-  df <- df[,c("MISSION","SETNO", "SPEC", "SIZE_CLASS", "BASKET_WEIGHT", "SAMPLED", "basket_id", "catch_id")]
+  # colnames(df)[colnames(df)=="sample_class"]    <- "SIZE_CLASS"
+  colnames(df)[colnames(df)=="adjusted_basket_weight_kg"]  <- "BASKET_WEIGHT_e"  
+  df$BASKET_COUNT_e <- df$adjusted_unmeasured_specimen_count
+  # df$BASKET_COUNT_e <- rowSums(df[c("adjusted_unmeasured_specimen_count", "measured_specimen_count")], na.rm = TRUE)
+  colnames(df)[colnames(df)=="was_sampled"]       <- "SAMPLED"
   if (!is.na(theMsg)) message("BASKETS (General): \n\t", theMsg,"\n")
   return(df)
 }
@@ -160,15 +128,17 @@ transmogrifyBaskets   <- function(df = NULL){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyCatches   <- function(df = NULL){
   theMsg <- NA
+  df <- df[df$catch_code!=9990,]
+  
+  df$is_mixed_catch <-charToBinary(df$is_mixed_catch, bool=T)
+  df$is_parent <-charToBinary(df$is_mixed_catch, bool=T)
   colnames(df)[colnames(df)=="set_number"]        <- "SETNO"
   colnames(df)[colnames(df)=="notes"]             <- "NOTE"
-  colnames(df)[colnames(df)=="unweighed_baskets"] <- "UNWEIGHED_BASKETS"
-  colnames(df)[colnames(df)=="specimen_count"]    <- "NUMBER_CAUGHT"
-  df$is_parent <-charToBinary(df$is_parent, bool=T)
+  colnames(df)[colnames(df)=="unweighed_baskets"]             <- "UNWEIGHED_BASKETS"
+  
+  # colnames(df)[colnames(df)=="total_adjusted_basket_weight"] <- "CATCH_WEIGHT_e"
+  colnames(df)[colnames(df)=="unmeasured_specimen_count"]    <- "CATCH_COUNT_e"
   df$NOTE	       = substr(df$NOTE, 1, 255) #Oracle table only allows length of 255
-  #match expected field order
-  df <- df[,c("MISSION","SETNO", "SPEC", "NOTE", "UNWEIGHED_BASKETS", "NUMBER_CAUGHT",
-              "catch_id", "is_parent", "parent_catch_id")]
   if (!is.na(theMsg)) message("CATCH (general): \n\t", theMsg,"\n")
   return(df) 
 }
@@ -196,6 +166,7 @@ transmogrifySpecimens <- function(df = NULL){
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 transmogrifyLV1_OBS   <- function(df = NULL){
   theMsg <- NA
+
   if(nrow(df[nchar(df$DATA_VALUE)>50,])>0){
     theMsg <- "At least one value for LV1_OBSERVATIONS$DATA_VALUE must be truncated to 50 characters"
     df$DATA_VALUE	       = substr(df$DATA_VALUE, 1, 50) #Oracle table only allows length of 50

@@ -4,7 +4,7 @@
 \alias{matchAndesToESE}
 \title{matchAndesToESE}
 \usage{
-matchAndesToESE(dataPath = NULL, gulfCodes = F)
+matchAndesToESE(dataPath = NULL, gulfCodes = F, spCodes = NULL)
 }
 \arguments{
 \item{dataPath}{default is \code{NULL}. This is the location of the csv files exported from andes}
@@ -22,8 +22,8 @@ Other general_use:
 \code{\link{loadData}()},
 \code{\link{loadESEData}()},
 \code{\link{setExperimentType}()},
-\code{\link{tweakBasketsPostProcessing}()},
 \code{\link{tweakBaskets}()},
+\code{\link{tweakBasketsPostProcessing}()},
 \code{\link{tweakCatches}()},
 \code{\link{tweakLv1}()},
 \code{\link{tweakSets}()},
